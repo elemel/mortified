@@ -1,0 +1,34 @@
+root {
+    stretch: 1;
+}
+
+main {
+    weight: 1;
+    stretch: 1;
+}
+
+scene {
+    weight: 1;
+    alignment: 0.5;
+}
+
+text {
+    padding: 5, 2;
+}
+
+menu-bar {
+    border: 0, 0, 0, 1;
+    spacing: 20;
+}
+
+status-bar {
+    border: 0, 1, 0, 0;
+}
+
+object-tree {
+    border: 0, 0, 1, 0;
+}
+
+property-list {
+    border: 1, 0, 0, 0;
+}

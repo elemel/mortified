@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<layout style="editor">
+  <column name="root">
+    <row name="menu-bar">
+      <text name="file-menu">File</label>
+      <text name="edit-menu">Edit</label>
+    </row>
+    <row name="main">
+      <text name="object-tree">Objects</label>
+      <canvas name="scene"/>
+      <text name="property-list">Properties</label>
+    </row>
+    <text name="status-bar">Status</label>
+  </column>
+</layout>
