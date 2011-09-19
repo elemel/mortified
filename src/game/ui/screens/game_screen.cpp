@@ -8,9 +8,7 @@
 #include "default_camera.hpp"
 #include "default_character_actor.hpp"
 #include "default_game_logic.hpp"
-#include "default_framebuffer.hpp"
 #include "default_scene_graph.hpp"
-#include "framebuffer.hpp"
 #include "game_logic.hpp"
 #include "math.hpp"
 #include "physics_draw.hpp"
@@ -45,14 +43,16 @@ namespace mortified {
 
     private:
         Window *window_;
-        bool supersample_;
         float updateTime_;
         float dt_;
         std::auto_ptr<GameLogic> gameLogic_;
         std::auto_ptr<b2Draw> physicsDraw_;
         std::auto_ptr<SceneGraph> sceneGraph_;
-        std::auto_ptr<Framebuffer> framebuffer_;
         std::auto_ptr<Camera> camera_;
+
+        bool supersample_;
+        GLuint supersampleTexture_;
+        GLuint supersampleFramebuffer_;
 
         void skipFrames(float time);
         void updateControls();
@@ -66,9 +66,11 @@ namespace mortified {
 
     GameScreen::GameScreen(Window *window, bool supersample) :
         window_(window),
-        supersample_(supersample),
         updateTime_(0.0f),
-        dt_(1.0f / 60.0f)
+        dt_(1.0f / 60.0f),
+        supersample_(supersample),
+        supersampleTexture_(0),
+        supersampleFramebuffer_(0)
     { }
 
     void GameScreen::create()
@@ -100,7 +102,14 @@ namespace mortified {
 
     void GameScreen::destroy()
     {
-        framebuffer_.reset();
+        if (supersampleFramebuffer_) {
+            glDeleteFramebuffersEXT(1, &supersampleFramebuffer_);
+            supersampleFramebuffer_ = 0;
+        }
+        if (supersampleTexture_) {
+            glDeleteTextures(1, &supersampleTexture_);
+            supersampleTexture_ = 0;
+        }
     }
 
     bool GameScreen::handleEvent(SDL_Event const *event)
@@ -138,10 +147,8 @@ namespace mortified {
 
     void GameScreen::resize(int width, int height)
     {
-        if (framebuffer_.get()) {
-            framebuffer_->invalidate();
-        }
-        framebuffer_ = createFramebuffer(2 * width, 2 * height);
+        supersampleFramebuffer_ = 0;
+        supersampleTexture_ = 0;
         camera_->aspectRatio(float(width) / float(height));
     }
 
@@ -201,10 +208,31 @@ namespace mortified {
 
     void GameScreen::drawSceneToFramebuffer()
     {
-        framebuffer_->bind();
-        glViewport(0, 0, framebuffer_->width(), framebuffer_->height());
+        if (supersampleTexture_ == 0) {
+            glGenTextures(1, &supersampleTexture_);
+            glBindTexture(GL_TEXTURE_2D, supersampleTexture_);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER,
+                            GL_LINEAR);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER,
+                            GL_LINEAR);
+            glTexImage2D(GL_TEXTURE_2D, 0, 4, window_->width() * 2,
+                         window_->height() * 2, 0, GL_RGBA, GL_UNSIGNED_BYTE,
+                         0);
+        }
+
+        if (supersampleFramebuffer_ == 0) {
+            glGenFramebuffersEXT(1, &supersampleFramebuffer_);
+            glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, supersampleFramebuffer_);
+            glFramebufferTexture2DEXT(GL_FRAMEBUFFER_EXT,
+                                      GL_COLOR_ATTACHMENT0_EXT,
+                                      GL_TEXTURE_2D, supersampleTexture_, 0);
+            glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);
+        }
+
+        glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, supersampleFramebuffer_);
+        glViewport(0, 0, window_->width() * 2, window_->height() * 2);
         drawScene();
-        framebuffer_->unbind();
+        glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);
     }
 
     void GameScreen::drawFramebufferToScreen()
@@ -212,12 +240,27 @@ namespace mortified {
         glViewport(0, 0, window_->width(), window_->height());
         glMatrixMode(GL_PROJECTION);
         glLoadIdentity();
-        glOrtho(0.0, double(framebuffer_->width()),
-                0.0, double(framebuffer_->height()),
+        glOrtho(0.0, double(window_->width() * 2),
+                0.0, double(window_->height() * 2),
                 -1.0, 1.0);
         glMatrixMode(GL_MODELVIEW);
 
-        framebuffer_->draw();
+        glEnable(GL_TEXTURE_2D);
+        glBindTexture(GL_TEXTURE_2D, supersampleTexture_);
+        glBegin(GL_QUADS);
+        {
+            glTexCoord2i(0, 0);
+            glVertex2i(0, 0);
+            glTexCoord2i(1, 0);
+            glVertex2i(window_->width() * 2, 0);
+            glTexCoord2i(1, 1);
+            glVertex2i(window_->width() * 2, window_->height() * 2);
+            glTexCoord2i(0, 1);
+            glVertex2i(0, window_->height() * 2);
+        }
+        glEnd();
+        glBindTexture(GL_TEXTURE_2D, 0);
+        glDisable(GL_TEXTURE_2D);
     }
 
     void GameScreen::drawPhysics()

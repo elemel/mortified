@@ -11,6 +11,7 @@ solution "mortified"
         }
         libdirs { "../ext/Box2D/lib", "../ext/SDL/lib" }
         links { "Box2D", "SDL", "SDL_image", "SDL_ttf" }
+        defines { "GL_GLEXT_PROTOTYPES" }
 
         configuration "debug"
            defines { "DEBUG" }
