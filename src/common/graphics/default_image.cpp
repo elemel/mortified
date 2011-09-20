@@ -26,21 +26,24 @@ namespace mortified {
             SDL_FreeSurface(surface_);
         }
 
-        ImageSize size() const
+        int width() const
         {
-            return ImageSize(surface_->w, surface_->h);
+            return surface_->w;
         }
 
-        unsigned char *data()
+        int height() const
         {
-            assert(surface_);
-            return reinterpret_cast<unsigned char *>(surface_->pixels);
+            return surface_->h;
         }
 
-        unsigned char const *data() const
+        void *pixels()
         {
-            assert(surface_);
-            return reinterpret_cast<unsigned char const *>(surface_->pixels);
+            return surface_->pixels;
+        }
+
+        void const *pixels() const
+        {
+            return surface_->pixels;
         }
 
         void flipVertical()
@@ -63,7 +66,7 @@ namespace mortified {
         SDL_Surface *surface_;
     };
 
-    std::auto_ptr<Image> createImage(ImageSize size)
+    boost::shared_ptr<Image> createImage(int width, int height)
     {
         Uint32 redMask = 0, greenMask = 0, blueMask = 0, alphaMask = 0;
         if (SDL_BYTEORDER == SDL_BIG_ENDIAN) {
@@ -79,16 +82,16 @@ namespace mortified {
         }
 
         SDL_Surface *surface =
-            SDL_CreateRGBSurface(SDL_SWSURFACE, size.width, size.height, 32,
+            SDL_CreateRGBSurface(SDL_SWSURFACE, width, height, 32,
                                  redMask, greenMask, blueMask, alphaMask);
         if (surface == 0) {
             throw std::runtime_error(std::string("Failed to create image: ") +
                                      SDL_GetError());
         }
-        return std::auto_ptr<Image>(new DefaultImage(surface));
+        return boost::shared_ptr<Image>(new DefaultImage(surface));
     }
 
-    std::auto_ptr<Image> createImage(SDL_Surface const *surface)
+    boost::shared_ptr<Image> createImage(SDL_Surface const *surface)
     {
         assert(surface);
         SDL_PixelFormat format;
@@ -126,10 +129,10 @@ namespace mortified {
             throw std::runtime_error(std::string("Failed to convert image to RGBA format: ") +
                                      SDL_GetError());
         }
-        return std::auto_ptr<Image>(new DefaultImage(convertedSurface));
+        return boost::shared_ptr<Image>(new DefaultImage(convertedSurface));
     }
 
-    std::auto_ptr<Image> createImage(Stream *stream, char const *type)
+    boost::shared_ptr<Image> createImage(Stream *stream, char const *type)
     {
         assert(stream);
         SDL_Surface *surface = type ?
@@ -140,7 +143,7 @@ namespace mortified {
                                      SDL_GetError());
         }
         try {
-            std::auto_ptr<Image> image = createImage(surface);
+            boost::shared_ptr<Image> image = createImage(surface);
             SDL_FreeSurface(surface);
             return image;
         } catch (...) {

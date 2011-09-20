@@ -1,14 +1,15 @@
 #ifndef MORTIFIED_DEFAULT_TEXTURE_HPP
 #define MORTIFIED_DEFAULT_TEXTURE_HPP
 
-#include <memory>
+#include <boost/shared_ptr.hpp>
+
+#include <SDL/SDL_opengl.h>
 
 namespace mortified {
-    class Image;
     class Texture;
+    class TextureSource;
 
-    std::auto_ptr<Texture> createTexture();
-    std::auto_ptr<Texture> createTexture(Image const *image);
+    boost::shared_ptr<Texture> createTexture(boost::shared_ptr<TextureSource const> source);
 }
 
 #endif

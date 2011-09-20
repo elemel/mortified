@@ -47,12 +47,12 @@ namespace mortified {
         {
             if (image_.get() == 0 && font_ && !text_.empty()) {
                 image_ = font_->render(text_.c_str());
-                texture_ = createTexture(image_.get());
+                texture_ = createTexture(image_);
+                texture_->create();
             }
     
             if (image_.get()) {
-                ImageSize imageSize = image_->size();
-                minContentSize_ = WidgetSize(imageSize.width, imageSize.height);
+                minContentSize_ = WidgetSize(image_->width(), image_->height());
             } else {
                 minContentSize_ = WidgetSize();
             }
@@ -66,9 +66,8 @@ namespace mortified {
                 WidgetPosition origin = minContentPosition();
                 WidgetSize outerSize = maxContentSize();
         
-                TextureSize textureSize = texture_->size();
-                int width = textureSize.width;
-                int height = textureSize.height;
+                int width = texture_->width();
+                int height = texture_->height();
         
                 int x = (position_.x + origin.x +
                          align(width, outerSize.width,
@@ -81,7 +80,7 @@ namespace mortified {
                            style_.color.green,
                            style_.color.blue,
                            style_.color.alpha);
-                texture_->bind();
+                glBindTexture(GL_TEXTURE_2D, texture_->name());
                 glBegin(GL_QUADS);
                 {
                     glTexCoord2i(0, 0);
@@ -94,7 +93,7 @@ namespace mortified {
                     glVertex2i(x, y + height);
                 }
                 glEnd();
-                texture_->unbind();
+                glBindTexture(GL_TEXTURE_2D, 0);
             }
     
             drawBorder();
@@ -114,8 +113,8 @@ namespace mortified {
         boost::shared_ptr<Font> font_;
         std::string text_;
 
-        std::auto_ptr<Image> image_;
-        std::auto_ptr<Texture> texture_;
+        boost::shared_ptr<Image> image_;
+        boost::shared_ptr<Texture> texture_;
     };
 
     std::auto_ptr<Widget> createTextWidget()

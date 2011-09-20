@@ -73,7 +73,7 @@ namespace mortified {
             updateVertices();
 
             glColor4ub(color_.red, color_.green, color_.blue, color_.alpha);
-            texture_->bind();
+            glBindTexture(GL_TEXTURE_2D, texture_->name());
             glBegin(GL_QUADS);
             {
                 glTexCoord2f(0.0f, 0.0f);
@@ -89,7 +89,7 @@ namespace mortified {
                 glVertex2f(vertices_[3].x, vertices_[3].y);
             }
             glEnd();
-            texture_->unbind();
+            glBindTexture(GL_TEXTURE_2D, 0);
         }
 
     private:
@@ -103,20 +103,20 @@ namespace mortified {
 
         void updateVertices()
         {
-            TextureSize size = texture_->size();
+            int width = texture_->width();
+            int height = texture_->height();
 
             Matrix3 m;
             m.translate(position_);
             m.rotate(angle_);
             m.scale(scale_);
-            m.translate(Vector2(-alignment_.x * float(size.width),
-                                -alignment_.y * float(size.height)));
+            m.translate(Vector2(-alignment_.x * float(width),
+                                -alignment_.y * float(height)));
 
             vertices_[0] = m * Vector2(0.0f, 0.0f);
-            vertices_[1] = m * Vector2(float(size.width), 0.0f);
-            vertices_[2] =
-                m * Vector2(float(size.width), float(size.height));
-            vertices_[3] = m * Vector2(0.0f, float(size.height));
+            vertices_[1] = m * Vector2(float(width), 0.0f);
+            vertices_[2] = m * Vector2(float(width), float(height));
+            vertices_[3] = m * Vector2(0.0f, float(height));
         }
     };
 

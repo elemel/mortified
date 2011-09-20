@@ -1,13 +1,13 @@
 #ifndef MORTIFIED_DEFAULT_FONT_HPP
 #define MORTIFIED_DEFAULT_FONT_HPP
 
-#include <memory>
+#include <boost/shared_ptr.hpp>
 
 namespace mortified {
     class Font;
     class Stream;
 
-    std::auto_ptr<Font> createFont(Stream *stream, int fontSize);
+    boost::shared_ptr<Font> createFont(Stream *stream, int fontSize);
 }
 
 #endif

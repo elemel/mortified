@@ -1,7 +1,7 @@
 #ifndef MORTIFIED_FONT_HPP
 #define MORTIFIED_FONT_HPP
 
-#include <memory>
+#include <boost/shared_ptr.hpp>
 
 namespace mortified {
     class Image;
@@ -11,7 +11,7 @@ namespace mortified {
         virtual ~Font()
         { }
 
-        virtual std::auto_ptr<Image> render(char const *text) = 0;
+        virtual boost::shared_ptr<Image> render(char const *text) = 0;
     };
 }
 

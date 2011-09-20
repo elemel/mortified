@@ -26,7 +26,7 @@ namespace mortified {
             TTF_CloseFont(font_);
         }
 
-        std::auto_ptr<Image> render(char const *text)
+        boost::shared_ptr<Image> render(char const *text)
         {
             assert(text);
             SDL_Color color = { 255, 255, 255, 255 };
@@ -35,22 +35,21 @@ namespace mortified {
                 throw std::runtime_error(std::string("Failed to render text: ") +
                                          TTF_GetError());
             }
-            std::auto_ptr<Image> image;
             try {
-                image = createImage(surface);
+                boost::shared_ptr<Image> image = createImage(surface);
                 SDL_FreeSurface(surface);
+                return image;
             } catch (...) {
                 SDL_FreeSurface(surface);
                 throw;
             }
-            return image;
         }
 
     private:
         TTF_Font *font_;
     };
 
-    std::auto_ptr<Font> createFont(Stream *stream, int fontSize)
+    boost::shared_ptr<Font> createFont(Stream *stream, int fontSize)
     {
         assert(stream);
         TTF_Font *font = TTF_OpenFontRW(stream->rwops(), 0, fontSize);
@@ -58,6 +57,6 @@ namespace mortified {
             throw std::runtime_error(std::string("Failed to load font: ") +
                                      TTF_GetError());
         }
-        return std::auto_ptr<Font>(new DefaultFont(font));
+        return boost::shared_ptr<Font>(new DefaultFont(font));
     }
 }
