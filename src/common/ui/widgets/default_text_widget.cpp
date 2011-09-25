@@ -4,6 +4,7 @@
 #include "default_image.hpp"
 #include "default_texture.hpp"
 #include "font.hpp"
+#include "graphics_manager.hpp"
 #include "image.hpp"
 #include "text_widget.hpp"
 #include "texture.hpp"
@@ -18,6 +19,17 @@ namespace mortified {
         private virtual WidgetBase
     {
     public:
+        explicit DefaultTextWidget(boost::shared_ptr<GraphicsManager> graphicsManager) :
+            graphicsManager_(graphicsManager)
+        { }
+
+        ~DefaultTextWidget()
+        {
+            if (texture_) {
+                graphicsManager_->removeResource(textureIterator_);
+            }
+        }
+
         char const *type() const
         {
             return "text";
@@ -47,11 +59,14 @@ namespace mortified {
         {
             if (image_.get() == 0 && font_ && !text_.empty()) {
                 image_ = font_->render(text_.c_str());
+                if (texture_) {
+                    graphicsManager_->removeResource(textureIterator_);
+                }
                 texture_ = createTexture(image_);
-                texture_->create();
+                textureIterator_ = graphicsManager_->addResource(texture_);
             }
     
-            if (image_.get()) {
+            if (image_) {
                 minContentSize_ = WidgetSize(image_->width(), image_->height());
             } else {
                 minContentSize_ = WidgetSize();
@@ -62,7 +77,9 @@ namespace mortified {
         {
             drawBackground();
     
-            if (texture_.get()) {
+            if (texture_) {
+                texture_->create();
+
                 WidgetPosition origin = minContentPosition();
                 WidgetSize outerSize = maxContentSize();
         
@@ -110,15 +127,18 @@ namespace mortified {
         }
 
     private:
+        boost::shared_ptr<GraphicsManager> graphicsManager_;
         boost::shared_ptr<Font> font_;
         std::string text_;
 
         boost::shared_ptr<Image> image_;
         boost::shared_ptr<Texture> texture_;
+        GraphicsManager::ResourceIterator textureIterator_;
     };
 
-    std::auto_ptr<Widget> createTextWidget()
+    std::auto_ptr<Widget>
+        createTextWidget(boost::shared_ptr<GraphicsManager> graphicsManager)
     {
-        return std::auto_ptr<Widget>(new DefaultTextWidget);
+        return std::auto_ptr<Widget>(new DefaultTextWidget(graphicsManager));
     }
 }

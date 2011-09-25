@@ -17,10 +17,12 @@
 #include <vector>
 
 namespace mortified {
-    class DefaultLayoutParser :
-        public virtual LayoutParser
-    {
+    class DefaultLayoutParser : public virtual LayoutParser {
     public:
+        explicit DefaultLayoutParser(boost::shared_ptr<GraphicsManager> graphicsManager) :
+            graphicsManager_(graphicsManager)
+        { }
+        
         std::auto_ptr<Widget> parse(Stream *stream)
         {
             int size = stream->seek(0, RW_SEEK_END);
@@ -59,7 +61,7 @@ namespace mortified {
             } else if (strcmp(element->name(), "row") == 0) {
                 widget = createRowWidget();
             } else if (strcmp(element->name(), "text") == 0) {
-                widget = createTextWidget();
+                widget = createTextWidget(graphicsManager_);
                 if (TextWidget *textWidget = widget->asTextWidget()) {
                     textWidget->text(element->value());
                 }
@@ -86,10 +88,14 @@ namespace mortified {
 
             return widget;
         }
+
+    private:
+        boost::shared_ptr<GraphicsManager> graphicsManager_;
     };
 
-    std::auto_ptr<LayoutParser> createLayoutParser()
+    std::auto_ptr<LayoutParser>
+        createLayoutParser(boost::shared_ptr<GraphicsManager> graphicsManager)
     {
-        return std::auto_ptr<LayoutParser>(new DefaultLayoutParser);
+        return std::auto_ptr<LayoutParser>(new DefaultLayoutParser(graphicsManager));
     }
 }

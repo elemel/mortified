@@ -6,9 +6,9 @@
 namespace mortified {
     class TextureSource {
     public:
-        virtual GLsizei width() const = 0;
-        virtual GLsizei height() const = 0;
-        virtual GLvoid const *pixels() const = 0;
+        virtual int width() const = 0;
+        virtual int height() const = 0;
+        virtual void const *pixels() const = 0;
     };
 }
 

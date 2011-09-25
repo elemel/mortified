@@ -24,7 +24,7 @@ namespace mortified {
             }
         }
 
-        bool valid() const
+        bool exists() const
         {
             return name_ != 0;
         }
@@ -81,7 +81,8 @@ namespace mortified {
         GLenum magFilter_;
     };
 
-    boost::shared_ptr<Texture> createTexture(boost::shared_ptr<TextureSource const> source)
+    boost::shared_ptr<Texture>
+        createTexture(boost::shared_ptr<TextureSource const> source)
     {
         return boost::shared_ptr<Texture>(new DefaultTexture(source));
     }

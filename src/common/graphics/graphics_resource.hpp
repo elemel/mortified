@@ -8,7 +8,7 @@ namespace mortified {
         { }
 
         /// Does the resource exist in the graphics context?
-        virtual bool valid() const = 0;
+        virtual bool exists() const = 0;
 
         /// Create the resource in the graphics context.
         virtual void create() = 0;
