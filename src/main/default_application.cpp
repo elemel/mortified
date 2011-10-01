@@ -5,6 +5,7 @@
 #include "editor_screen.hpp"
 #include "game_screen.hpp"
 #include "screen.hpp"
+#include "title_screen.hpp"
 #include "window.hpp"
 
 #include <cassert>
@@ -21,6 +22,7 @@ namespace mortified {
         bool drawPhysics;
         bool editor;
         bool fullscreen;
+        bool game;
         bool multisample;
         bool supersample;
 
@@ -31,6 +33,7 @@ namespace mortified {
         drawPhysics(false),
         editor(false),
         fullscreen(false),
+        game(false),
         multisample(false),
         supersample(false)
     { }
@@ -61,9 +64,11 @@ namespace mortified {
             window_->create();
             if (settings_.editor) {
                 window_->addScreen(createEditorScreen(window_.get()));
-            } else {
+            } else if (settings_.game) {
                 window_->addScreen(createGameScreen(window_.get(),
                                                     settings_.supersample));
+            } else {
+                window_->addScreen(createTitleScreen(window_.get()));
             }
             eventLoop();
             return 0;
@@ -84,6 +89,9 @@ namespace mortified {
                 }
                 if (strcmp(argv[i], "--fullscreen") == 0) {
                     settings_.fullscreen = true;
+                }
+                if (strcmp(argv[i], "--game") == 0) {
+                    settings_.game = true;
                 }
                 if (strcmp(argv[i], "--multisample") == 0) {
                     settings_.multisample = true;
