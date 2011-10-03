@@ -1,11 +1,9 @@
 #include "game_screen.hpp"
 
 #include "default_font.hpp"
-#include "default_graphics_manager.hpp"
 #include "default_stream.hpp"
 #include "default_texture.hpp"
 #include "font.hpp"
-#include "graphics_manager.hpp"
 #include "image.hpp"
 #include "screen.hpp"
 #include "stream.hpp"
@@ -18,8 +16,7 @@ namespace mortified {
     class TitleScreen : public virtual Screen {
     public:
         explicit TitleScreen(Window *window) :
-            window_(window),
-            graphicsManager_(createGraphicsManager())
+            window_(window)
         { }
 
         void create()
@@ -29,8 +26,7 @@ namespace mortified {
             font_ = createFont(fontStream.get(), 256);
 
             logotypeImage_ = font_->render("mortified");
-            logotypeTexture_ = createTexture(logotypeImage_);
-            graphicsManager_->addResource(logotypeTexture_);
+            logotypeTexture_ = createTexture(window_->context(), logotypeImage_);
         }
 
         void destroy()
@@ -86,16 +82,13 @@ namespace mortified {
         }
 
         void resize(int width, int height)
-        {
-            graphicsManager_->invalidate();
-        }
-        
+        { }
+
     private:
         Window *window_;
-        boost::shared_ptr<GraphicsManager> graphicsManager_;
         boost::shared_ptr<Font> font_;
         boost::shared_ptr<Image> logotypeImage_;
-        boost::shared_ptr<Texture> logotypeTexture_;
+        boost::intrusive_ptr<Texture> logotypeTexture_;
     };
 
     std::auto_ptr<Screen> createTitleScreen(Window *window)

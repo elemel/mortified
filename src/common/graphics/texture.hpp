@@ -6,6 +6,8 @@
 #include <SDL/SDL_opengl.h>
 
 namespace mortified {
+    class Context;
+
     class Texture : public virtual GraphicsResource {
     public:
         virtual int name() const = 0;

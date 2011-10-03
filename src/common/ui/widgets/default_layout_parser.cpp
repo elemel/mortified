@@ -1,6 +1,7 @@
 #include "default_layout_parser.hpp"
 
 #include "column_widget.hpp"
+#include "context.hpp"
 #include "default_canvas_widget.hpp"
 #include "default_text_widget.hpp"
 #include "layout_parser.hpp"
@@ -15,12 +16,13 @@
 #include <iostream>
 #include <stdexcept>
 #include <vector>
+#include <boost/intrusive_ptr.hpp>
 
 namespace mortified {
     class DefaultLayoutParser : public virtual LayoutParser {
     public:
-        explicit DefaultLayoutParser(boost::shared_ptr<GraphicsManager> graphicsManager) :
-            graphicsManager_(graphicsManager)
+        explicit DefaultLayoutParser(Context *context) :
+            context_(context)
         { }
         
         std::auto_ptr<Widget> parse(Stream *stream)
@@ -61,7 +63,7 @@ namespace mortified {
             } else if (strcmp(element->name(), "row") == 0) {
                 widget = createRowWidget();
             } else if (strcmp(element->name(), "text") == 0) {
-                widget = createTextWidget(graphicsManager_);
+                widget = createTextWidget(context_.get());
                 if (TextWidget *textWidget = widget->asTextWidget()) {
                     textWidget->text(element->value());
                 }
@@ -90,12 +92,11 @@ namespace mortified {
         }
 
     private:
-        boost::shared_ptr<GraphicsManager> graphicsManager_;
+        boost::intrusive_ptr<Context> context_;
     };
 
-    std::auto_ptr<LayoutParser>
-        createLayoutParser(boost::shared_ptr<GraphicsManager> graphicsManager)
+    std::auto_ptr<LayoutParser> createLayoutParser(Context *context)
     {
-        return std::auto_ptr<LayoutParser>(new DefaultLayoutParser(graphicsManager));
+        return std::auto_ptr<LayoutParser>(new DefaultLayoutParser(context));
     }
 }

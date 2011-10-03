@@ -181,13 +181,18 @@ namespace mortified {
             SDL_GL_SwapWindow(window_);
         }
 
+        Context *context()
+        {
+            return context_.get();
+        }
+
     private:
         int width_;
         int height_;
         bool fullscreen_;
         bool multisample_;
         SDL_Window *window_;
-        std::auto_ptr<Context> context_;
+        boost::intrusive_ptr<Context> context_;
         std::vector<Screen *> screens_;
 
         void initContext()

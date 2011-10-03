@@ -5,11 +5,10 @@
 #include <boost/shared_ptr.hpp>
 
 namespace mortified {
-    class GraphicsManager;
+    class Context;
     class Widget;
 
-    std::auto_ptr<Widget>
-        createTextWidget(boost::shared_ptr<GraphicsManager> graphicsManager);
+    std::auto_ptr<Widget> createTextWidget(Context *context);
 }
 
 #endif

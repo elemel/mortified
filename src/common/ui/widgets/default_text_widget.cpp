@@ -1,10 +1,10 @@
 #include "default_text_widget.hpp"
 
+#include "context.hpp"
 #include "default_font.hpp"
 #include "default_image.hpp"
 #include "default_texture.hpp"
 #include "font.hpp"
-#include "graphics_manager.hpp"
 #include "image.hpp"
 #include "text_widget.hpp"
 #include "texture.hpp"
@@ -19,16 +19,9 @@ namespace mortified {
         private virtual WidgetBase
     {
     public:
-        explicit DefaultTextWidget(boost::shared_ptr<GraphicsManager> graphicsManager) :
-            graphicsManager_(graphicsManager)
+        explicit DefaultTextWidget(Context *context) :
+            context_(context)
         { }
-
-        ~DefaultTextWidget()
-        {
-            if (texture_) {
-                graphicsManager_->removeResource(textureIterator_);
-            }
-        }
 
         char const *type() const
         {
@@ -59,11 +52,7 @@ namespace mortified {
         {
             if (image_.get() == 0 && font_ && !text_.empty()) {
                 image_ = font_->render(text_.c_str());
-                if (texture_) {
-                    graphicsManager_->removeResource(textureIterator_);
-                }
-                texture_ = createTexture(image_);
-                textureIterator_ = graphicsManager_->addResource(texture_);
+                texture_ = context_->createTexture(image_);
             }
     
             if (image_) {
@@ -127,18 +116,16 @@ namespace mortified {
         }
 
     private:
-        boost::shared_ptr<GraphicsManager> graphicsManager_;
+        boost::intrusive_ptr<Context> context_;
         boost::shared_ptr<Font> font_;
         std::string text_;
 
         boost::shared_ptr<Image> image_;
-        boost::shared_ptr<Texture> texture_;
-        GraphicsManager::ResourceIterator textureIterator_;
+        boost::intrusive_ptr<Texture> texture_;
     };
 
-    std::auto_ptr<Widget>
-        createTextWidget(boost::shared_ptr<GraphicsManager> graphicsManager)
+    std::auto_ptr<Widget> createTextWidget(Context *context)
     {
-        return std::auto_ptr<Widget>(new DefaultTextWidget(graphicsManager));
+        return std::auto_ptr<Widget>(new DefaultTextWidget(context));
     }
 }

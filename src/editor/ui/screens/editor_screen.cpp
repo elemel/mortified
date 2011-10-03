@@ -3,7 +3,6 @@
 #include "canvas_widget.hpp"
 #include "default_editor_scene.hpp"
 #include "default_font.hpp"
-#include "default_graphics_manager.hpp"
 #include "default_layout_parser.hpp"
 #include "default_polygon_editor_scene_object.hpp"
 #include "default_stream.hpp"
@@ -12,7 +11,6 @@
 #include "editor_scene_object.hpp"
 #include "font.hpp"
 #include "geometry.hpp"
-#include "graphics_manager.hpp"
 #include "layout_parser.hpp"
 #include "polygon_editor_scene_object.hpp"
 #include "screen.hpp"
@@ -36,8 +34,7 @@ namespace mortified {
             window_(window),
             resize_(false),
             width_(0),
-            height_(0),
-            graphicsManager_(createGraphicsManager())
+            height_(0)
         { }
 
         void create()
@@ -121,7 +118,6 @@ namespace mortified {
             resize_ = true;
             width_ = width;
             height_ = height;
-            graphicsManager_->invalidate();
         }
 
     private:
@@ -129,7 +125,6 @@ namespace mortified {
         bool resize_;
         int width_;
         int height_;
-        boost::shared_ptr<GraphicsManager> graphicsManager_;
         std::auto_ptr<EditorScene> scene_;
         std::auto_ptr<Widget> rootWidget_;
         boost::shared_ptr<Font> font_;
@@ -139,7 +134,7 @@ namespace mortified {
             std::auto_ptr<Stream> layoutStream =
                 createStreamFromFile("../../../content/layouts/editor.xml", "rb");
             std::auto_ptr<LayoutParser>
-                layoutParser = createLayoutParser(graphicsManager_);
+                layoutParser = createLayoutParser(window_->context());
             rootWidget_ = layoutParser->parse(layoutStream.get());
 
             std::auto_ptr<Stream> styleStream =

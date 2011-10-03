@@ -1,11 +1,11 @@
 #ifndef MORTIFIED_WINDOW_HPP
 #define MORTIFIED_WINDOW_HPP
 
+#include <memory>
 #include <SDL/SDL.h>
 
-#include <memory>
-
 namespace mortified {
+    class Context;
     class Screen;
 
     class Window {
@@ -33,6 +33,8 @@ namespace mortified {
         virtual bool handleEvent(SDL_Event const *event) = 0;
         virtual void update() = 0;
         virtual void draw() = 0;
+
+        virtual Context *context() = 0;
     };
 }
 

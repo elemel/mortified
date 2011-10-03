@@ -1,16 +1,22 @@
 #ifndef MORTIFIED_CONTEXT_HPP
 #define MORTIFIED_CONTEXT_HPP
 
+#include "graphics_resource.hpp"
+
+#include <boost/intrusive_ptr.hpp>
+#include <boost/shared_ptr.hpp>
+
 namespace mortified {
-    class Context {
+    class Texture;
+    class TextureSource;
+
+    class Context : public virtual GraphicsResource {
     public:
         virtual ~Context()
         { }
 
-        virtual void create() = 0;
-        virtual void destroy() = 0;
-
-        virtual void invalidate() = 0;
+        virtual boost::intrusive_ptr<Texture>
+            createTexture(boost::shared_ptr<TextureSource> source) = 0;
     };
 }
 
