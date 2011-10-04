@@ -12,10 +12,12 @@ namespace mortified {
     public:
         typedef std::list<GraphicsResource *> ChildList;
         typedef std::list<GraphicsResource *>::iterator ChildIterator;
+        typedef std::pair<ChildIterator, ChildIterator> ChildRange;
         typedef boost::intrusive_ptr<GraphicsResource> ParentPtr;
         typedef std::pair<ParentPtr, ChildIterator> ParentPair;
         typedef std::list<ParentPair> ParentList;
         typedef std::list<ParentPair>::iterator ParentIterator;
+        typedef std::pair<ParentIterator, ParentIterator> ParentRange;
         
         virtual ~GraphicsResource()
         { }
@@ -40,6 +42,9 @@ namespace mortified {
 
         virtual Texture *asTexture() = 0;
         virtual Texture const *asTexture() const = 0;
+
+        virtual ParentRange parents() = 0;
+        virtual ChildRange children() = 0;
 
         virtual ChildIterator addChild(GraphicsResource *child) = 0;
         virtual void removeChild(ChildIterator child) = 0;

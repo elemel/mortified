@@ -93,6 +93,26 @@ namespace mortified {
         {
             return 0;
         }
+
+        ParentRange parents()
+        {
+            return ParentRange(parents_.begin(), parents_.end());
+        }
+
+        ChildRange children()
+        {
+            return ChildRange(children_.begin(), children_.end());
+        }
+
+        ChildIterator addChild(GraphicsResource *child)
+        {
+            return children_.insert(children_.end(), child);
+        }
+        
+        void removeChild(ChildIterator child)
+        {
+            children_.erase(child);
+        }
         
     protected:
         mutable int refCount_;
@@ -113,14 +133,9 @@ namespace mortified {
             return iterator;
         }
 
-        ChildIterator addChild(GraphicsResource *child)
+        void removeParent(ParentIterator parent)
         {
-            return children_.insert(children_.end(), child);
-        }
-
-        void removeChild(ChildIterator child)
-        {
-            children_.erase(child);
+            parents_.erase(parent);
         }
 
         virtual void createImpl()
