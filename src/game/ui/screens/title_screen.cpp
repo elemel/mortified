@@ -54,7 +54,7 @@ namespace mortified {
         void update()
         {
             float time = 0.001f * SDL_GetTicks();
-            angle_ = 5.0f * time + 0.5f * std::sin(10.0f * time);
+            angle_ = 3.0f * time + 0.5f * std::sin(5.0f * time);
         }
 
         void draw()
@@ -68,17 +68,20 @@ namespace mortified {
             logoTexture_->create();
             targetFramebuffer_->create();
 
-            glViewport(0, 0, targetTexture_->width(), targetTexture_->height());
+            glViewport(0, 0, targetTexture_->width(),
+                       targetTexture_->height());
             
             glMatrixMode(GL_PROJECTION);
             glLoadIdentity();
             glOrtho(-1.0, 1.0, -1.0, 1.0, -1.0, 1.0);
             glMatrixMode(GL_MODELVIEW);
 
-            float aspectRatio = float(logoTexture_->height()) / float(logoTexture_->width());
-            float scale = 0.8f;
+            float aspectRatio = (float(logoTexture_->width()) /
+                                 float(logoTexture_->height()));
+            float scale = 0.2f;
 
-            glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, targetFramebuffer_->name());
+            glBindFramebufferEXT(GL_FRAMEBUFFER_EXT,
+                                 targetFramebuffer_->name());
             glClearColor(0.0, 0.0, 0.0, 0.0);
             glClear(GL_COLOR_BUFFER_BIT);
             glEnable(GL_BLEND);
@@ -91,13 +94,13 @@ namespace mortified {
             glBegin(GL_QUADS);
             {
                 glTexCoord2i(0, 0);
-                glVertex2f(-scale, -scale * aspectRatio);
+                glVertex2f(-scale * aspectRatio, -scale);
                 glTexCoord2i(1, 0);
-                glVertex2f(scale, -scale * aspectRatio);
+                glVertex2f(scale * aspectRatio, -scale);
                 glTexCoord2i(1, 1);
-                glVertex2f(scale, scale * aspectRatio);
+                glVertex2f(scale * aspectRatio, scale);
                 glTexCoord2i(0, 1);
-                glVertex2f(-scale, scale * aspectRatio);
+                glVertex2f(-scale * aspectRatio, scale);
             }
             glEnd();
             glPopMatrix();
@@ -111,13 +114,14 @@ namespace mortified {
         {
             int windowWidth = window_->width();
             int windowHeight = window_->height();
-            float aspectRatio = float(windowHeight) / float(windowWidth);
+            float aspectRatio = float(windowWidth) / float(windowHeight);
+            float scale = 1.5f;
 
             glViewport(0, 0, windowWidth, windowHeight);
 
             glMatrixMode(GL_PROJECTION);
             glLoadIdentity();
-            glOrtho(-1.0, 1.0, -aspectRatio, aspectRatio, -1.0, 1.0);
+            glOrtho(-aspectRatio, aspectRatio, -1.0, 1.0, -1.0, 1.0);
             glMatrixMode(GL_MODELVIEW);
             
             glEnable(GL_BLEND);
@@ -129,13 +133,13 @@ namespace mortified {
             glBegin(GL_QUADS);
             {
                 glTexCoord2i(0, 0);
-                glVertex2i(-1, -1);
+                glVertex2f(-scale, -scale);
                 glTexCoord2i(1, 0);
-                glVertex2i(1, -1);
+                glVertex2f(scale, -scale);
                 glTexCoord2i(1, 1);
-                glVertex2i(1, 1);
+                glVertex2f(scale, scale);
                 glTexCoord2i(0, 1);
-                glVertex2i(-1, 1);
+                glVertex2f(-scale, scale);
             }
             glEnd();
             glPopMatrix();
