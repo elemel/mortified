@@ -112,12 +112,11 @@ namespace mortified {
 
         void drawTargetToScreen()
         {
-            int windowWidth = window_->width();
-            int windowHeight = window_->height();
-            float aspectRatio = float(windowWidth) / float(windowHeight);
+            float aspectRatio = (float(window_->width()) /
+                                 float(window_->height()));
             float scale = 1.5f;
 
-            glViewport(0, 0, windowWidth, windowHeight);
+            glViewport(0, 0, window_->width(), window_->height());
 
             glMatrixMode(GL_PROJECTION);
             glLoadIdentity();
