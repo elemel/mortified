@@ -62,12 +62,24 @@ namespace mortified {
             drawLogoToTarget();
             drawTargetToScreen();
         }
+        
+        void resize(int width, int height)
+        { }
+
+    private:
+        Window *window_;
+        boost::shared_ptr<Font> font_;
+        boost::shared_ptr<Image> logoImage_;
+        boost::intrusive_ptr<Texture> logoTexture_;
+        boost::intrusive_ptr<Texture> targetTexture_;
+        boost::intrusive_ptr<Framebuffer> targetFramebuffer_;
+        float angle_;
 
         void drawLogoToTarget()
         {
             logoTexture_->create();
             targetFramebuffer_->create();
-
+            
             glViewport(0, 0, targetTexture_->width(),
                        targetTexture_->height());
             
@@ -75,11 +87,11 @@ namespace mortified {
             glLoadIdentity();
             glOrtho(-1.0, 1.0, -1.0, 1.0, -1.0, 1.0);
             glMatrixMode(GL_MODELVIEW);
-
+            
             float aspectRatio = (float(logoTexture_->width()) /
                                  float(logoTexture_->height()));
             float scale = 0.2f;
-
+            
             glBindFramebufferEXT(GL_FRAMEBUFFER_EXT,
                                  targetFramebuffer_->name());
             glClearColor(0.0, 0.0, 0.0, 0.0);
@@ -109,15 +121,15 @@ namespace mortified {
             glDisable(GL_BLEND);
             glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);
         }
-
+        
         void drawTargetToScreen()
         {
             float aspectRatio = (float(window_->width()) /
                                  float(window_->height()));
             float scale = 1.5f;
-
+            
             glViewport(0, 0, window_->width(), window_->height());
-
+            
             glMatrixMode(GL_PROJECTION);
             glLoadIdentity();
             glOrtho(-aspectRatio, aspectRatio, -1.0, 1.0, -1.0, 1.0);
@@ -146,18 +158,6 @@ namespace mortified {
             glDisable(GL_TEXTURE_2D);
             glDisable(GL_BLEND);
         }
-        
-        void resize(int width, int height)
-        { }
-
-    private:
-        Window *window_;
-        boost::shared_ptr<Font> font_;
-        boost::shared_ptr<Image> logoImage_;
-        boost::intrusive_ptr<Texture> logoTexture_;
-        boost::intrusive_ptr<Texture> targetTexture_;
-        boost::intrusive_ptr<Framebuffer> targetFramebuffer_;
-        float angle_;
     };
 
     std::auto_ptr<Screen> createTitleScreen(Window *window)
