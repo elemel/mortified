@@ -2,10 +2,8 @@
 #include "game_screen.hpp"
 
 #include "actor.hpp"
-#include "camera.hpp"
 #include "character_actor.hpp"
 #include "character_sprite_controller.hpp"
-#include "default_camera.hpp"
 #include "default_character_actor.hpp"
 #include "default_game_logic.hpp"
 #include "default_scene_graph.hpp"
@@ -35,7 +33,8 @@ namespace mortified {
             dt_(1.0f / 60.0f),
             supersample_(supersample),
             supersampleTexture_(0),
-            supersampleFramebuffer_(0)
+            supersampleFramebuffer_(0),
+            cameraScale_(5.0f)
         { }
         
         void create()
@@ -43,8 +42,6 @@ namespace mortified {
             gameLogic_ = createGameLogic();
             physicsDraw_.reset(new PhysicsDraw);
             sceneGraph_ = createSceneGraph();
-            camera_ = createCamera();
-            camera_->scale(5.0f);
             
             gameLogic_->addActor(createPlatformActor(gameLogic_.get(), Vector2(0.0f, -2.0f), Vector2(1.0f, 0.1f), 0.1f));
             gameLogic_->addActor(createPlatformActor(gameLogic_.get(), Vector2(4.0f, -2.5f), Vector2(1.0f, 0.1f), -0.2f));
@@ -114,7 +111,6 @@ namespace mortified {
         {
             supersampleFramebuffer_ = 0;
             supersampleTexture_ = 0;
-            camera_->aspectRatio(float(width) / float(height));
         }
 
     private:
@@ -124,7 +120,8 @@ namespace mortified {
         std::auto_ptr<GameLogic> gameLogic_;
         std::auto_ptr<b2Draw> physicsDraw_;
         std::auto_ptr<SceneGraph> sceneGraph_;
-        std::auto_ptr<Camera> camera_;
+        Vector2 cameraPosition_;
+        float cameraScale_;
 
         bool supersample_;
         GLuint supersampleTexture_;
@@ -165,15 +162,16 @@ namespace mortified {
         void updateCamera()
         {
             if (CharacterActor *hero = gameLogic_->hero()) {
-                Vector2 offset = camera_->position() - hero->position();
+                Vector2 offset = cameraPosition_ - hero->position();
                 offset.clampLength(2.0f);
-                camera_->position(hero->position() + offset);
+                cameraPosition_ = hero->position() + offset;
             }
         }
         
         void drawScene()
         {
-            camera_->apply();
+            applyCamera();
+
             glClearColor(0.0, 0.0, 0.0, 0.0);
             glClear(GL_COLOR_BUFFER_BIT);
             glEnable(GL_BLEND);
@@ -244,7 +242,7 @@ namespace mortified {
         void drawPhysics()
         {
             if (b2World *world = gameLogic_->world()) {
-                camera_->apply();
+                applyCamera();
                 
                 glColor3ub(0, 255, 0);
                 b2Transform transform;
@@ -253,6 +251,19 @@ namespace mortified {
                 world->SetDebugDraw(physicsDraw_.get());
                 world->DrawDebugData();
             }
+        }
+
+        void applyCamera()
+        {
+            float aspectRatio = float(window_->width()) / float(window_->height());
+
+            glMatrixMode(GL_PROJECTION);
+            glLoadIdentity();
+            glOrtho(cameraPosition_.x - cameraScale_ * aspectRatio,
+                    cameraPosition_.x + cameraScale_ * aspectRatio,
+                    cameraPosition_.y - cameraScale_,
+                    cameraPosition_.y + cameraScale_, -1.0f, 1.0f);
+            glMatrixMode(GL_MODELVIEW);
         }
     };
 
