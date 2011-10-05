@@ -29,17 +29,93 @@ namespace mortified {
         public virtual Screen
     {
     public:
-        explicit GameScreen(Window *window, bool supersample);
-
-        void create();
-        void destroy();
-
-        bool handleEvent(SDL_Event const *event);
-
-        void update();
-        void draw();
-
-        void resize(int width, int height);
+        GameScreen(Window *window, bool supersample) :
+            window_(window),
+            updateTime_(0.0f),
+            dt_(1.0f / 60.0f),
+            supersample_(supersample),
+            supersampleTexture_(0),
+            supersampleFramebuffer_(0)
+        { }
+        
+        void create()
+        {
+            gameLogic_ = createGameLogic();
+            physicsDraw_.reset(new PhysicsDraw);
+            sceneGraph_ = createSceneGraph();
+            camera_ = createCamera();
+            camera_->scale(5.0f);
+            
+            gameLogic_->addActor(createPlatformActor(gameLogic_.get(), Vector2(0.0f, -2.0f), Vector2(1.0f, 0.1f), 0.1f));
+            gameLogic_->addActor(createPlatformActor(gameLogic_.get(), Vector2(4.0f, -2.5f), Vector2(1.0f, 0.1f), -0.2f));
+            gameLogic_->addActor(createPlatformActor(gameLogic_.get(), Vector2(9.0f, -2.0f), Vector2(1.0f, 0.1f), 0.0f));
+            gameLogic_->addActor(createPlatformActor(gameLogic_.get(), Vector2(13.0f, -1.5f), Vector2(1.0f, 0.1f), -0.1f));
+            gameLogic_->addActor(createPlatformActor(gameLogic_.get(), Vector2(18.0f, -2.5f), Vector2(1.0f, 0.1f), 0.2f));
+            
+            std::auto_ptr<Actor> heroAsActor =
+            createCharacterActor(gameLogic_.get(), Vector2(0.0f, 2.0f), 0.5f);
+            CharacterActor *heroAsCharacterActor = heroAsActor->asCharacterActor();
+            gameLogic_->addActor(heroAsActor);
+            gameLogic_->hero(heroAsCharacterActor);
+            
+            std::auto_ptr<SpriteController> characterSpriteController =
+            createCharacterSpriteController(sceneGraph_.get(), heroAsCharacterActor);
+            sceneGraph_->addSpriteController(characterSpriteController);
+            
+            resize(window_->width(), window_->height());
+        }
+        
+        void destroy()
+        {
+            if (supersampleFramebuffer_) {
+                glDeleteFramebuffersEXT(1, &supersampleFramebuffer_);
+                supersampleFramebuffer_ = 0;
+            }
+            if (supersampleTexture_) {
+                glDeleteTextures(1, &supersampleTexture_);
+                supersampleTexture_ = 0;
+            }
+        }
+        
+        bool handleEvent(SDL_Event const *event)
+        {
+            if (event->type == SDL_KEYDOWN &&
+                event->key.keysym.sym == SDLK_BACKSPACE)
+            {
+                destroy();
+                create();
+                return true;
+            }
+            return false;
+        }
+        
+        void update()
+        {
+            float time = 0.001f * SDL_GetTicks();
+            skipFrames(time);
+            updateControls();
+            updateGame(time);
+            sceneGraph_->update();
+        }
+        
+        void draw()
+        {
+            updateCamera();
+            if (supersample_) {
+                drawSceneToFramebuffer();
+                drawFramebufferToScreen();
+            } else {
+                drawScene();
+            }
+            drawPhysics();
+        }
+        
+        void resize(int width, int height)
+        {
+            supersampleFramebuffer_ = 0;
+            supersampleTexture_ = 0;
+            camera_->aspectRatio(float(width) / float(height));
+        }
 
     private:
         Window *window_;
@@ -54,228 +130,131 @@ namespace mortified {
         GLuint supersampleTexture_;
         GLuint supersampleFramebuffer_;
 
-        void skipFrames(float time);
-        void updateControls();
-        void updateGame(float time);
-        void updateCamera();
-        void drawScene();
-        void drawSceneToFramebuffer();
-        void drawFramebufferToScreen();
-        void drawPhysics();
-    };
-
-    GameScreen::GameScreen(Window *window, bool supersample) :
-        window_(window),
-        updateTime_(0.0f),
-        dt_(1.0f / 60.0f),
-        supersample_(supersample),
-        supersampleTexture_(0),
-        supersampleFramebuffer_(0)
-    { }
-
-    void GameScreen::create()
-    {
-        gameLogic_ = createGameLogic();
-        physicsDraw_.reset(new PhysicsDraw);
-        sceneGraph_ = createSceneGraph();
-        camera_ = createCamera();
-        camera_->scale(5.0f);
-
-        gameLogic_->addActor(createPlatformActor(gameLogic_.get(), Vector2(0.0f, -2.0f), Vector2(1.0f, 0.1f), 0.1f));
-        gameLogic_->addActor(createPlatformActor(gameLogic_.get(), Vector2(4.0f, -2.5f), Vector2(1.0f, 0.1f), -0.2f));
-        gameLogic_->addActor(createPlatformActor(gameLogic_.get(), Vector2(9.0f, -2.0f), Vector2(1.0f, 0.1f), 0.0f));
-        gameLogic_->addActor(createPlatformActor(gameLogic_.get(), Vector2(13.0f, -1.5f), Vector2(1.0f, 0.1f), -0.1f));
-        gameLogic_->addActor(createPlatformActor(gameLogic_.get(), Vector2(18.0f, -2.5f), Vector2(1.0f, 0.1f), 0.2f));
-
-        std::auto_ptr<Actor> heroAsActor =
-            createCharacterActor(gameLogic_.get(), Vector2(0.0f, 2.0f), 0.5f);
-        CharacterActor *heroAsCharacterActor = heroAsActor->asCharacterActor();
-        gameLogic_->addActor(heroAsActor);
-        gameLogic_->hero(heroAsCharacterActor);
-
-        std::auto_ptr<SpriteController> characterSpriteController =
-            createCharacterSpriteController(sceneGraph_.get(), heroAsCharacterActor);
-        sceneGraph_->addSpriteController(characterSpriteController);
-
-        resize(window_->width(), window_->height());
-    }
-
-    void GameScreen::destroy()
-    {
-        if (supersampleFramebuffer_) {
-            glDeleteFramebuffersEXT(1, &supersampleFramebuffer_);
-            supersampleFramebuffer_ = 0;
-        }
-        if (supersampleTexture_) {
-            glDeleteTextures(1, &supersampleTexture_);
-            supersampleTexture_ = 0;
-        }
-    }
-
-    bool GameScreen::handleEvent(SDL_Event const *event)
-    {
-        if (event->type == SDL_KEYDOWN &&
-            event->key.keysym.sym == SDLK_BACKSPACE)
+        void skipFrames(float time)
         {
-            destroy();
-            create();
-            return true;
+            if (time - updateTime_ >= 10.0f * dt_) {
+                int skip = int((time - updateTime_) / dt_);
+                updateTime_ += float(skip) * dt_;
+                std::cerr << "WARNING: Skipped " << skip << " frame(s)." << std::endl;
+            }
+            assert(time - updateTime_ <= 10.0f * dt_);
         }
-        return false;
-    }
-
-    void GameScreen::update()
-    {
-        float time = 0.001f * SDL_GetTicks();
-        skipFrames(time);
-        updateControls();
-        updateGame(time);
-        sceneGraph_->update();
-    }
-
-    void GameScreen::draw()
-    {
-        updateCamera();
-        if (supersample_) {
-            drawSceneToFramebuffer();
-            drawFramebufferToScreen();
-        } else {
-            drawScene();
+        
+        void updateControls()
+        {
+            if (CharacterActor *hero = gameLogic_->hero()) {
+                Uint8 *state = SDL_GetKeyboardState(NULL);
+                CharacterControls controls;
+                controls.up = state[SDL_SCANCODE_W] | state[SDL_SCANCODE_UP];
+                controls.left = state[SDL_SCANCODE_A] | state[SDL_SCANCODE_LEFT];
+                controls.down = state[SDL_SCANCODE_S] | state[SDL_SCANCODE_DOWN];
+                controls.right = state[SDL_SCANCODE_D] | state[SDL_SCANCODE_RIGHT];
+                controls.jump = state[SDL_SCANCODE_SPACE];
+                hero->controls(&controls);
+            }
         }
-        drawPhysics();
-    }
-
-    void GameScreen::resize(int width, int height)
-    {
-        supersampleFramebuffer_ = 0;
-        supersampleTexture_ = 0;
-        camera_->aspectRatio(float(width) / float(height));
-    }
-
-    void GameScreen::skipFrames(float time)
-    {
-        if (time - updateTime_ >= 10.0f * dt_) {
-            int skip = int((time - updateTime_) / dt_);
-            updateTime_ += float(skip) * dt_;
-            std::cerr << "WARNING: Skipped " << skip << " frame(s)." << std::endl;
+        
+        void updateGame(float time)
+        {
+            while (time - updateTime_ >= dt_) {
+                updateTime_ += dt_;
+                gameLogic_->update(dt_);
+            }
         }
-        assert(time - updateTime_ <= 10.0f * dt_);
-    }
-
-    void GameScreen::updateControls()
-    {
-        if (CharacterActor *hero = gameLogic_->hero()) {
-            Uint8 *state = SDL_GetKeyboardState(NULL);
-            CharacterControls controls;
-            controls.up = state[SDL_SCANCODE_W] | state[SDL_SCANCODE_UP];
-            controls.left = state[SDL_SCANCODE_A] | state[SDL_SCANCODE_LEFT];
-            controls.down = state[SDL_SCANCODE_S] | state[SDL_SCANCODE_DOWN];
-            controls.right = state[SDL_SCANCODE_D] | state[SDL_SCANCODE_RIGHT];
-            controls.jump = state[SDL_SCANCODE_SPACE];
-            hero->controls(&controls);
+        
+        void updateCamera()
+        {
+            if (CharacterActor *hero = gameLogic_->hero()) {
+                Vector2 offset = camera_->position() - hero->position();
+                offset.clampLength(2.0f);
+                camera_->position(hero->position() + offset);
+            }
         }
-    }
-
-    void GameScreen::updateGame(float time)
-    {
-        while (time - updateTime_ >= dt_) {
-            updateTime_ += dt_;
-            gameLogic_->update(dt_);
+        
+        void drawScene()
+        {
+            camera_->apply();
+            glClearColor(0.0, 0.0, 0.0, 0.0);
+            glClear(GL_COLOR_BUFFER_BIT);
+            glEnable(GL_BLEND);
+            glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+            glEnable(GL_TEXTURE_2D);
+            sceneGraph_->draw();
+            glDisable(GL_TEXTURE_2D);
+            glDisable(GL_BLEND);
         }
-    }
-
-    void GameScreen::updateCamera()
-    {
-        if (CharacterActor *hero = gameLogic_->hero()) {
-            Vector2 offset = camera_->position() - hero->position();
-            offset.clampLength(2.0f);
-            camera_->position(hero->position() + offset);
-        }
-    }
-
-    void GameScreen::drawScene()
-    {
-        camera_->apply();
-        glClearColor(0.0, 0.0, 0.0, 0.0);
-        glClear(GL_COLOR_BUFFER_BIT);
-        glEnable(GL_BLEND);
-        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-        glEnable(GL_TEXTURE_2D);
-        sceneGraph_->draw();
-        glDisable(GL_TEXTURE_2D);
-        glDisable(GL_BLEND);
-    }
-
-    void GameScreen::drawSceneToFramebuffer()
-    {
-        if (supersampleTexture_ == 0) {
-            glGenTextures(1, &supersampleTexture_);
-            glBindTexture(GL_TEXTURE_2D, supersampleTexture_);
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER,
-                            GL_LINEAR);
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER,
-                            GL_LINEAR);
-            glTexImage2D(GL_TEXTURE_2D, 0, 4, window_->width() * 2,
-                         window_->height() * 2, 0, GL_RGBA, GL_UNSIGNED_BYTE,
-                         0);
-        }
-
-        if (supersampleFramebuffer_ == 0) {
-            glGenFramebuffersEXT(1, &supersampleFramebuffer_);
+        
+        void drawSceneToFramebuffer()
+        {
+            if (supersampleTexture_ == 0) {
+                glGenTextures(1, &supersampleTexture_);
+                glBindTexture(GL_TEXTURE_2D, supersampleTexture_);
+                glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER,
+                                GL_LINEAR);
+                glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER,
+                                GL_LINEAR);
+                glTexImage2D(GL_TEXTURE_2D, 0, 4, window_->width() * 2,
+                             window_->height() * 2, 0, GL_RGBA, GL_UNSIGNED_BYTE,
+                             0);
+            }
+            
+            if (supersampleFramebuffer_ == 0) {
+                glGenFramebuffersEXT(1, &supersampleFramebuffer_);
+                glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, supersampleFramebuffer_);
+                glFramebufferTexture2DEXT(GL_FRAMEBUFFER_EXT,
+                                          GL_COLOR_ATTACHMENT0_EXT,
+                                          GL_TEXTURE_2D, supersampleTexture_, 0);
+                glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);
+            }
+            
             glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, supersampleFramebuffer_);
-            glFramebufferTexture2DEXT(GL_FRAMEBUFFER_EXT,
-                                      GL_COLOR_ATTACHMENT0_EXT,
-                                      GL_TEXTURE_2D, supersampleTexture_, 0);
+            glViewport(0, 0, window_->width() * 2, window_->height() * 2);
+            drawScene();
             glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);
         }
-
-        glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, supersampleFramebuffer_);
-        glViewport(0, 0, window_->width() * 2, window_->height() * 2);
-        drawScene();
-        glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);
-    }
-
-    void GameScreen::drawFramebufferToScreen()
-    {
-        glViewport(0, 0, window_->width(), window_->height());
-        glMatrixMode(GL_PROJECTION);
-        glLoadIdentity();
-        glOrtho(0.0, double(window_->width() * 2),
-                0.0, double(window_->height() * 2),
-                -1.0, 1.0);
-        glMatrixMode(GL_MODELVIEW);
-
-        glEnable(GL_TEXTURE_2D);
-        glBindTexture(GL_TEXTURE_2D, supersampleTexture_);
-        glBegin(GL_QUADS);
+        
+        void drawFramebufferToScreen()
         {
-            glTexCoord2i(0, 0);
-            glVertex2i(0, 0);
-            glTexCoord2i(1, 0);
-            glVertex2i(window_->width() * 2, 0);
-            glTexCoord2i(1, 1);
-            glVertex2i(window_->width() * 2, window_->height() * 2);
-            glTexCoord2i(0, 1);
-            glVertex2i(0, window_->height() * 2);
+            glViewport(0, 0, window_->width(), window_->height());
+            glMatrixMode(GL_PROJECTION);
+            glLoadIdentity();
+            glOrtho(0.0, double(window_->width() * 2),
+                    0.0, double(window_->height() * 2),
+                    -1.0, 1.0);
+            glMatrixMode(GL_MODELVIEW);
+            
+            glEnable(GL_TEXTURE_2D);
+            glBindTexture(GL_TEXTURE_2D, supersampleTexture_);
+            glBegin(GL_QUADS);
+            {
+                glTexCoord2i(0, 0);
+                glVertex2i(0, 0);
+                glTexCoord2i(1, 0);
+                glVertex2i(window_->width() * 2, 0);
+                glTexCoord2i(1, 1);
+                glVertex2i(window_->width() * 2, window_->height() * 2);
+                glTexCoord2i(0, 1);
+                glVertex2i(0, window_->height() * 2);
+            }
+            glEnd();
+            glBindTexture(GL_TEXTURE_2D, 0);
+            glDisable(GL_TEXTURE_2D);
         }
-        glEnd();
-        glBindTexture(GL_TEXTURE_2D, 0);
-        glDisable(GL_TEXTURE_2D);
-    }
-
-    void GameScreen::drawPhysics()
-    {
-        if (b2World *world = gameLogic_->world()) {
-            camera_->apply();
-
-            glColor3ub(0, 255, 0);
-            b2Transform transform;
-            transform.SetIdentity();
-            physicsDraw_->DrawTransform(transform);
-            world->SetDebugDraw(physicsDraw_.get());
-            world->DrawDebugData();
+        
+        void drawPhysics()
+        {
+            if (b2World *world = gameLogic_->world()) {
+                camera_->apply();
+                
+                glColor3ub(0, 255, 0);
+                b2Transform transform;
+                transform.SetIdentity();
+                physicsDraw_->DrawTransform(transform);
+                world->SetDebugDraw(physicsDraw_.get());
+                world->DrawDebugData();
+            }
         }
-    }
+    };
 
     std::auto_ptr<Screen> createGameScreen(Window *window, bool supersample)
     {
