@@ -1,6 +1,8 @@
 #include "default_texture.hpp"
 
 #include "context.hpp"
+#include "framebuffer.hpp"
+#include "default_framebuffer.hpp"
 #include "graphics_resource_base.hpp"
 #include "texture.hpp"
 #include "texture_source.hpp"
@@ -14,7 +16,6 @@ namespace mortified {
     {
     public:
         DefaultTexture(Context *context, boost::shared_ptr<TextureSource> source) :
-            context_(context),
             source_(source),
             name_(0),
             width_(0),
@@ -37,31 +38,6 @@ namespace mortified {
         bool exists() const
         {
             return name_ != 0;
-        }
-
-        void createImpl()
-        {
-            source_->create();
-            glGenTextures(1, &name_);
-            glBindTexture(GL_TEXTURE_2D, name_);
-            width_ = source_->width();
-            height_ = source_->height();
-            glTexImage2D(GL_TEXTURE_2D, 0, 4, width_, height_, 0,
-                         GL_RGBA, GL_UNSIGNED_BYTE, source_->pixels());
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, minFilter_);
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, magFilter_);
-            glBindTexture(GL_TEXTURE_2D, 0);
-        }
-
-        void destroyImpl()
-        {
-            glDeleteTextures(1, &name_);
-            name_ = 0;
-        }
-
-        void invalidateImpl()
-        {
-            name_ = 0;
         }
 
         Texture *asTexture()
@@ -89,14 +65,43 @@ namespace mortified {
             return height_;
         }
 
+        boost::intrusive_ptr<Framebuffer> createFramebuffer()
+        {
+            return mortified::createFramebuffer(this);
+        }
+
     private:
-        boost::intrusive_ptr<Context> context_;
         boost::shared_ptr<TextureSource> source_;
         GLuint name_;
         GLsizei width_;
         GLsizei height_;
         GLenum minFilter_;
         GLenum magFilter_;
+
+        void createImpl()
+        {
+            source_->create();
+            glGenTextures(1, &name_);
+            glBindTexture(GL_TEXTURE_2D, name_);
+            width_ = source_->width();
+            height_ = source_->height();
+            glTexImage2D(GL_TEXTURE_2D, 0, 4, width_, height_, 0,
+                         GL_RGBA, GL_UNSIGNED_BYTE, source_->pixels());
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, minFilter_);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, magFilter_);
+            glBindTexture(GL_TEXTURE_2D, 0);
+        }
+        
+        void destroyImpl()
+        {
+            glDeleteTextures(1, &name_);
+            name_ = 0;
+        }
+        
+        void invalidateImpl()
+        {
+            name_ = 0;
+        }
     };
 
     boost::intrusive_ptr<Texture>

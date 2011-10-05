@@ -7,12 +7,15 @@
 
 namespace mortified {
     class Context;
+    class Framebuffer;
 
     class Texture : public virtual GraphicsResource {
     public:
         virtual int name() const = 0;
         virtual int width() const = 0;
         virtual int height() const = 0;
+
+        virtual boost::intrusive_ptr<Framebuffer> createFramebuffer() = 0;
     };
 }
 

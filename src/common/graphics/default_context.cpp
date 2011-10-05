@@ -31,22 +31,6 @@ namespace mortified {
             return context_ != 0;
         }
         
-        void createImpl()
-        {
-            context_ = SDL_GL_CreateContext(window_);
-        }
-
-        void destroyImpl()
-        {
-            SDL_GL_DeleteContext(context_);
-            context_ = 0;
-        }
-
-        void invalidateImpl()
-        {
-            context_ = 0;
-        }
-
         Context *asContext()
         {
             return this;
@@ -66,6 +50,22 @@ namespace mortified {
     private:
         SDL_Window *window_;
         SDL_GLContext context_;
+
+        void createImpl()
+        {
+            context_ = SDL_GL_CreateContext(window_);
+        }
+        
+        void destroyImpl()
+        {
+            SDL_GL_DeleteContext(context_);
+            context_ = 0;
+        }
+        
+        void invalidateImpl()
+        {
+            context_ = 0;
+        }
     };
 
     boost::intrusive_ptr<Context> createContext(SDL_Window *window)

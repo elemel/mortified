@@ -83,7 +83,17 @@ namespace mortified {
         {
             return 0;
         }
+
+        Framebuffer *asFramebuffer()
+        {
+            return 0;
+        }
         
+        Framebuffer const *asFramebuffer() const
+        {
+            return 0;
+        }
+
         Texture *asTexture()
         {
             return 0;

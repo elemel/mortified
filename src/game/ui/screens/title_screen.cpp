@@ -1,32 +1,44 @@
 #include "game_screen.hpp"
 
+#include "context.hpp"
 #include "default_font.hpp"
+#include "default_image.hpp"
 #include "default_stream.hpp"
 #include "default_texture.hpp"
 #include "font.hpp"
+#include "framebuffer.hpp"
 #include "image.hpp"
 #include "screen.hpp"
 #include "stream.hpp"
 #include "texture.hpp"
 #include "window.hpp"
 
+#include <cmath>
 #include <boost/shared_ptr.hpp>
+#include <SDL/SDL_opengl.h>
+#include <SDL/SDL_timer.h>
 
 namespace mortified {
     class TitleScreen : public virtual Screen {
     public:
         explicit TitleScreen(Window *window) :
-            window_(window)
+            window_(window),
+            angle_(0.0f)
         { }
 
         void create()
         {
             std::auto_ptr<Stream> fontStream =
-                createStreamFromFile("../../../content/fonts/linux-biolinum/linux-biolinum-small-caps.ttf", "rb");
+                createStreamFromFile("../../../content/fonts/teen/teen.ttf", "rb");
             font_ = createFont(fontStream.get(), 256);
 
-            logotypeImage_ = font_->render("mortified");
-            logotypeTexture_ = createTexture(window_->context(), logotypeImage_);
+            logoImage_ = font_->render("Mortified");
+            logoImage_->flipVertical();
+            logoTexture_ = window_->context()->createTexture(logoImage_);
+
+            boost::shared_ptr<Image> targetImage = createImage(128, 128);
+            targetTexture_ = window_->context()->createTexture(targetImage);
+            targetFramebuffer_ = targetTexture_->createFramebuffer();
         }
 
         void destroy()
@@ -40,55 +52,109 @@ namespace mortified {
         }
         
         void update()
-        { }
+        {
+            float time = 0.001f * SDL_GetTicks();
+            angle_ = 5.0f * time + 0.5f * std::sin(10.0f * time);
+        }
 
         void draw()
         {
-            int windowWidth = window_->width();
-            int windowHeight = window_->height();
+            drawLogoToTarget();
+            drawTargetToScreen();
+        }
 
+        void drawLogoToTarget()
+        {
+            logoTexture_->create();
+            targetFramebuffer_->create();
+
+            glViewport(0, 0, targetTexture_->width(), targetTexture_->height());
+            
             glMatrixMode(GL_PROJECTION);
             glLoadIdentity();
-            glOrtho(0.0, double(windowWidth), double(windowHeight), 0.0, -1.0, 1.0);
+            glOrtho(-1.0, 1.0, -1.0, 1.0, -1.0, 1.0);
             glMatrixMode(GL_MODELVIEW);
 
-            logotypeTexture_->create();
+            float aspectRatio = float(logoTexture_->height()) / float(logoTexture_->width());
+            float scale = 0.8f;
 
-            int logotypeWidth = logotypeTexture_->width();
-            int logotypeHeight = logotypeTexture_->height();
-            int logotypeX = windowWidth / 2 - logotypeWidth / 2;
-            int logotypeY = windowHeight / 2 - logotypeHeight / 2;
-
+            glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, targetFramebuffer_->name());
+            glClearColor(0.0, 0.0, 0.0, 0.0);
+            glClear(GL_COLOR_BUFFER_BIT);
             glEnable(GL_BLEND);
             glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
             glEnable(GL_TEXTURE_2D);
-            glBindTexture(GL_TEXTURE_2D, logotypeTexture_->name());
+            glBindTexture(GL_TEXTURE_2D, logoTexture_->name());
+            glPushMatrix();
+            glRotatef(angle_, 0.0f, 0.0f, 1.0f);
+            glColor3f(1.0f, 0.8f, 0.2f);
             glBegin(GL_QUADS);
             {
-                glColor3f(1.0f, 0.8f, 0.2f);
                 glTexCoord2i(0, 0);
-                glVertex2i(logotypeX, logotypeY);
+                glVertex2f(-scale, -scale * aspectRatio);
                 glTexCoord2i(1, 0);
-                glVertex2i(logotypeX + logotypeWidth, logotypeY);
+                glVertex2f(scale, -scale * aspectRatio);
                 glTexCoord2i(1, 1);
-                glVertex2i(logotypeX + logotypeWidth, logotypeY + logotypeHeight);
+                glVertex2f(scale, scale * aspectRatio);
                 glTexCoord2i(0, 1);
-                glVertex2i(logotypeX, logotypeY + logotypeHeight);
+                glVertex2f(-scale, scale * aspectRatio);
             }
             glEnd();
+            glPopMatrix();
+            glBindTexture(GL_TEXTURE_2D, 0);
+            glDisable(GL_TEXTURE_2D);
+            glDisable(GL_BLEND);
+            glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);
+        }
+
+        void drawTargetToScreen()
+        {
+            int windowWidth = window_->width();
+            int windowHeight = window_->height();
+            float aspectRatio = float(windowHeight) / float(windowWidth);
+
+            glViewport(0, 0, windowWidth, windowHeight);
+
+            glMatrixMode(GL_PROJECTION);
+            glLoadIdentity();
+            glOrtho(-1.0, 1.0, -aspectRatio, aspectRatio, -1.0, 1.0);
+            glMatrixMode(GL_MODELVIEW);
+            
+            glEnable(GL_BLEND);
+            glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+            glEnable(GL_TEXTURE_2D);
+            glBindTexture(GL_TEXTURE_2D, targetTexture_->name());
+            glPushMatrix();
+            glRotatef(-angle_, 0.0f, 0.0f, 1.0f);
+            glBegin(GL_QUADS);
+            {
+                glTexCoord2i(0, 0);
+                glVertex2i(-1, -1);
+                glTexCoord2i(1, 0);
+                glVertex2i(1, -1);
+                glTexCoord2i(1, 1);
+                glVertex2i(1, 1);
+                glTexCoord2i(0, 1);
+                glVertex2i(-1, 1);
+            }
+            glEnd();
+            glPopMatrix();
             glBindTexture(GL_TEXTURE_2D, 0);
             glDisable(GL_TEXTURE_2D);
             glDisable(GL_BLEND);
         }
-
+        
         void resize(int width, int height)
         { }
 
     private:
         Window *window_;
         boost::shared_ptr<Font> font_;
-        boost::shared_ptr<Image> logotypeImage_;
-        boost::intrusive_ptr<Texture> logotypeTexture_;
+        boost::shared_ptr<Image> logoImage_;
+        boost::intrusive_ptr<Texture> logoTexture_;
+        boost::intrusive_ptr<Texture> targetTexture_;
+        boost::intrusive_ptr<Framebuffer> targetFramebuffer_;
+        float angle_;
     };
 
     std::auto_ptr<Screen> createTitleScreen(Window *window)
