@@ -35,6 +35,8 @@ namespace mortified {
             logoImage_ = font_->render("Mortified");
             logoImage_->flipVertical();
             logoTexture_ = window_->context()->createTexture(logoImage_);
+            logoTexture_->minFilter(GL_LINEAR);
+            logoTexture_->magFilter(GL_LINEAR);
 
             boost::shared_ptr<Image> targetImage = createImage(128, 128);
             targetTexture_ = window_->context()->createTexture(targetImage);
@@ -63,9 +65,6 @@ namespace mortified {
             drawTargetToScreen();
         }
         
-        void resize(int width, int height)
-        { }
-
     private:
         Window *window_;
         boost::shared_ptr<Font> font_;

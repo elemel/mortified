@@ -14,8 +14,9 @@ namespace mortified {
         private virtual GraphicsResourceBase
     {
     public:
-        explicit DefaultContext(SDL_Window *window) :
+        explicit DefaultContext(SDL_Window *window, bool multisample) :
             window_(window),
+            multisample_(multisample),
             context_(0)
         { }
 
@@ -49,11 +50,19 @@ namespace mortified {
 
     private:
         SDL_Window *window_;
+        bool multisample_;
         SDL_GLContext context_;
 
         void createImpl()
         {
             context_ = SDL_GL_CreateContext(window_);
+            if (SDL_GL_SetSwapInterval(1) == -1) {
+                std::cerr << "WARNING: Failed to enable vertical sync: "
+                << SDL_GetError() << std::endl;
+            }
+            if (multisample_) {
+                glEnable(GL_MULTISAMPLE);
+            }
         }
         
         void destroyImpl()
@@ -68,8 +77,9 @@ namespace mortified {
         }
     };
 
-    boost::intrusive_ptr<Context> createContext(SDL_Window *window)
+    boost::intrusive_ptr<Context>
+        createContext(SDL_Window *window, bool multisample)
     {
-        return new DefaultContext(window);
+        return new DefaultContext(window, multisample);
     }
 }

@@ -93,9 +93,8 @@ namespace mortified {
                                          SDL_GetError());
             }
 
-            context_ = createContext(window_);
+            context_ = createContext(window_, multisample_);
             context_->create();
-            initContext();
         }
 
         void destroy()
@@ -151,10 +150,6 @@ namespace mortified {
                 handled = true;
                 context_->invalidate();
                 context_->create();
-                initContext();
-                if (Screen *screen = currentScreen()) {
-                    screen->resize(width_, height_);
-                }
             }
             if (!handled) {
                 if (Screen *screen = currentScreen()) {
@@ -194,17 +189,6 @@ namespace mortified {
         SDL_Window *window_;
         boost::intrusive_ptr<Context> context_;
         std::vector<Screen *> screens_;
-
-        void initContext()
-        {
-            if (SDL_GL_SetSwapInterval(1) == -1) {
-                std::cerr << "WARNING: Failed to enable vertical sync: "
-                          << SDL_GetError() << std::endl;
-            }
-            if (multisample_) {
-                glEnable(GL_MULTISAMPLE);
-            }
-        }
 
         void removeAllScreens()
         {

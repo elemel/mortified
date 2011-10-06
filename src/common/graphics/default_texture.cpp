@@ -65,6 +65,26 @@ namespace mortified {
             return height_;
         }
 
+        GLenum minFilter() const
+        {
+            return minFilter_;
+        }
+
+        void minFilter(GLenum filter)
+        {
+            minFilter_ = filter;
+        }
+        
+        GLenum magFilter() const
+        {
+            return magFilter_;
+        }
+
+        void magFilter(GLenum filter)
+        {
+            magFilter_ = filter;
+        }
+
         boost::intrusive_ptr<Framebuffer> createFramebuffer()
         {
             return mortified::createFramebuffer(this);

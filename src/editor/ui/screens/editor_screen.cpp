@@ -32,7 +32,6 @@ namespace mortified {
     public:
         explicit EditorScreen(Window *window) :
             window_(window),
-            resize_(false),
             width_(0),
             height_(0)
         { }
@@ -55,10 +54,6 @@ namespace mortified {
 
             createWidgets();
             createHandlers();
-
-            resize_ = true;
-            width_ = window_->width();
-            height_ = window_->height();
         }
 
         void destroy()
@@ -86,23 +81,25 @@ namespace mortified {
 
         void update()
         {
-            if (resize_) {
-                resize_ = false;
+            if (width_ != window_->width() || height_ != window_->height()) {
+                width_ = window_->width();
+                height_ = window_->height();
+
                 if (rootWidget_.get()) {
                     rootWidget_->size(WidgetSize(width_, height_));
                     rootWidget_->measure();
                     rootWidget_->arrange();
                 }
-
-                glMatrixMode(GL_PROJECTION);
-                glLoadIdentity();
-                glOrtho(0.0, double(width_), double(height_), 0.0, -1.0, 1.0);
-                glMatrixMode(GL_MODELVIEW);
             }
         }
 
         void draw()
         {
+            glMatrixMode(GL_PROJECTION);
+            glLoadIdentity();
+            glOrtho(0.0, double(width_), double(height_), 0.0, -1.0, 1.0);
+            glMatrixMode(GL_MODELVIEW);
+
             if (rootWidget_.get()) {
                 glEnable(GL_BLEND);
                 glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -113,16 +110,8 @@ namespace mortified {
             }
         }
 
-        void resize(int width, int height)
-        {
-            resize_ = true;
-            width_ = width;
-            height_ = height;
-        }
-
     private:
         Window *window_;
-        bool resize_;
         int width_;
         int height_;
         std::auto_ptr<EditorScene> scene_;

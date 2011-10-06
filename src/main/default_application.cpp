@@ -33,14 +33,12 @@ namespace mortified {
         drawPhysics(false),
         editor(false),
         fullscreen(false),
-        game(false),
+        game(true),
         multisample(false),
-        supersample(false)
+        supersample(true)
     { }
 
-    class DefaultApplication :
-        public virtual Application
-    {
+    class DefaultApplication : public virtual Application {
     public:
         DefaultApplication() :
             window_(0)

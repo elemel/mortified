@@ -4,21 +4,28 @@
 #include "actor.hpp"
 #include "character_actor.hpp"
 #include "character_sprite_controller.hpp"
+#include "context.hpp"
 #include "default_character_actor.hpp"
 #include "default_game_logic.hpp"
+#include "default_image.hpp"
 #include "default_scene_graph.hpp"
+#include "framebuffer.hpp"
 #include "game_logic.hpp"
+#include "image.hpp"
 #include "math.hpp"
 #include "physics_draw.hpp"
 #include "platform_actor.hpp"
 #include "scene_graph.hpp"
 #include "screen.hpp"
 #include "sprite_controller.hpp"
+#include "texture.hpp"
 #include "window.hpp"
 
 #include <memory>
 #include <iostream>
 #include <stdexcept>
+#include <boost/intrusive_ptr.hpp>
+#include <boost/shared_ptr.hpp>
 #include <Box2D/Box2D.h>
 #include <SDL/SDL_opengl.h>
 
@@ -32,8 +39,6 @@ namespace mortified {
             updateTime_(0.0f),
             dt_(1.0f / 60.0f),
             supersample_(supersample),
-            supersampleTexture_(0),
-            supersampleFramebuffer_(0),
             cameraScale_(5.0f)
         { }
         
@@ -58,20 +63,12 @@ namespace mortified {
             std::auto_ptr<SpriteController> characterSpriteController =
             createCharacterSpriteController(sceneGraph_.get(), heroAsCharacterActor);
             sceneGraph_->addSpriteController(characterSpriteController);
-            
-            resize(window_->width(), window_->height());
         }
         
         void destroy()
         {
-            if (supersampleFramebuffer_) {
-                glDeleteFramebuffersEXT(1, &supersampleFramebuffer_);
-                supersampleFramebuffer_ = 0;
-            }
-            if (supersampleTexture_) {
-                glDeleteTextures(1, &supersampleTexture_);
-                supersampleTexture_ = 0;
-            }
+            targetFramebuffer_.reset();
+            targetTexture_.reset();
         }
         
         bool handleEvent(SDL_Event const *event)
@@ -99,20 +96,14 @@ namespace mortified {
         {
             updateCamera();
             if (supersample_) {
-                drawSceneToFramebuffer();
-                drawFramebufferToScreen();
+                drawSceneToTarget();
+                drawTargetToScreen();
             } else {
                 drawScene();
             }
             drawPhysics();
         }
         
-        void resize(int width, int height)
-        {
-            supersampleFramebuffer_ = 0;
-            supersampleTexture_ = 0;
-        }
-
     private:
         Window *window_;
         float updateTime_;
@@ -124,8 +115,8 @@ namespace mortified {
         float cameraScale_;
 
         bool supersample_;
-        GLuint supersampleTexture_;
-        GLuint supersampleFramebuffer_;
+        boost::intrusive_ptr<Texture> targetTexture_;
+        boost::intrusive_ptr<Framebuffer> targetFramebuffer_;
 
         void skipFrames(float time)
         {
@@ -172,7 +163,6 @@ namespace mortified {
         {
             applyCamera();
 
-            glClearColor(0.0, 0.0, 0.0, 0.0);
             glClear(GL_COLOR_BUFFER_BIT);
             glEnable(GL_BLEND);
             glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -182,38 +172,32 @@ namespace mortified {
             glDisable(GL_BLEND);
         }
         
-        void drawSceneToFramebuffer()
+        void drawSceneToTarget()
         {
-            if (supersampleTexture_ == 0) {
-                glGenTextures(1, &supersampleTexture_);
-                glBindTexture(GL_TEXTURE_2D, supersampleTexture_);
-                glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER,
-                                GL_LINEAR);
-                glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER,
-                                GL_LINEAR);
-                glTexImage2D(GL_TEXTURE_2D, 0, 4, window_->width() * 2,
-                             window_->height() * 2, 0, GL_RGBA, GL_UNSIGNED_BYTE,
-                             0);
+            if (!targetTexture_ ||
+                targetTexture_->width() != 2 * window_->width() ||
+                targetTexture_->height() != 2 * window_->height())
+            {
+                boost::shared_ptr<Image> targetImage =
+                    createImage(2 * window_->width(), 2 * window_->height());
+                targetTexture_ = window_->context()->createTexture(targetImage);
+                targetTexture_->minFilter(GL_LINEAR);
+                targetTexture_->magFilter(GL_LINEAR);
+                targetFramebuffer_ = targetTexture_->createFramebuffer();
             }
             
-            if (supersampleFramebuffer_ == 0) {
-                glGenFramebuffersEXT(1, &supersampleFramebuffer_);
-                glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, supersampleFramebuffer_);
-                glFramebufferTexture2DEXT(GL_FRAMEBUFFER_EXT,
-                                          GL_COLOR_ATTACHMENT0_EXT,
-                                          GL_TEXTURE_2D, supersampleTexture_, 0);
-                glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);
-            }
-            
-            glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, supersampleFramebuffer_);
+            targetFramebuffer_->create();
+
             glViewport(0, 0, window_->width() * 2, window_->height() * 2);
+            glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, targetFramebuffer_->name());
+            glClearColor(0.0, 0.0, 0.0, 0.0);
             drawScene();
             glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);
+            glViewport(0, 0, window_->width(), window_->height());
         }
         
-        void drawFramebufferToScreen()
+        void drawTargetToScreen()
         {
-            glViewport(0, 0, window_->width(), window_->height());
             glMatrixMode(GL_PROJECTION);
             glLoadIdentity();
             glOrtho(0.0, double(window_->width() * 2),
@@ -222,7 +206,7 @@ namespace mortified {
             glMatrixMode(GL_MODELVIEW);
             
             glEnable(GL_TEXTURE_2D);
-            glBindTexture(GL_TEXTURE_2D, supersampleTexture_);
+            glBindTexture(GL_TEXTURE_2D, targetTexture_->name());
             glBegin(GL_QUADS);
             {
                 glTexCoord2i(0, 0);

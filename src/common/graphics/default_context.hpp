@@ -8,7 +8,8 @@
 namespace mortified {
     class Context;
 
-    boost::intrusive_ptr<Context> createContext(SDL_Window *window);
+    boost::intrusive_ptr<Context>
+        createContext(SDL_Window *window, bool multisample);
 }
 
 #endif
