@@ -32,7 +32,7 @@ namespace mortified {
     ApplicationSettings::ApplicationSettings() :
         drawPhysics(false),
         editor(false),
-        fullscreen(false),
+        fullscreen(true),
         game(false),
         multisample(false),
         supersample(false)
