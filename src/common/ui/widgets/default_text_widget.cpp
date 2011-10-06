@@ -6,6 +6,7 @@
 #include "default_texture.hpp"
 #include "font.hpp"
 #include "image.hpp"
+#include "image_texture_source.hpp"
 #include "text_widget.hpp"
 #include "texture.hpp"
 #include "widget_base.hpp"
@@ -52,7 +53,7 @@ namespace mortified {
         {
             if (image_.get() == 0 && font_ && !text_.empty()) {
                 image_ = font_->render(text_.c_str());
-                texture_ = context_->createTexture(image_);
+                texture_ = context_->createTexture(createImageTextureSource(image_));
             }
     
             if (image_) {

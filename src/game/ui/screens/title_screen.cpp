@@ -10,6 +10,7 @@
 #include "framebuffer.hpp"
 #include "game_screen.hpp"
 #include "image.hpp"
+#include "image_texture_source.hpp"
 #include "screen.hpp"
 #include "stream.hpp"
 #include "texture.hpp"
@@ -36,12 +37,12 @@ namespace mortified {
 
             logoImage_ = font_->render("Mortified");
             logoImage_->flipVertical();
-            logoTexture_ = window_->context()->createTexture(logoImage_);
+            logoTexture_ = window_->context()->createTexture(createImageTextureSource(logoImage_));
             logoTexture_->minFilter(GL_LINEAR);
             logoTexture_->magFilter(GL_LINEAR);
 
             boost::shared_ptr<Image> targetImage = createImage(128, 128);
-            targetTexture_ = window_->context()->createTexture(targetImage);
+            targetTexture_ = window_->context()->createTexture(createImageTextureSource(targetImage));
             targetFramebuffer_ = targetTexture_->createFramebuffer();
         }
 

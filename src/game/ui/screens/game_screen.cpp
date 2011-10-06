@@ -12,6 +12,7 @@
 #include "framebuffer.hpp"
 #include "game_logic.hpp"
 #include "image.hpp"
+#include "image_texture_source.hpp"
 #include "math.hpp"
 #include "physics_draw.hpp"
 #include "platform_actor.hpp"
@@ -180,7 +181,7 @@ namespace mortified {
             {
                 boost::shared_ptr<Image> targetImage =
                     createImage(2 * window_->width(), 2 * window_->height());
-                targetTexture_ = window_->context()->createTexture(targetImage);
+                targetTexture_ = window_->context()->createTexture(createImageTextureSource(targetImage));
                 targetTexture_->minFilter(GL_LINEAR);
                 targetTexture_->magFilter(GL_LINEAR);
                 targetFramebuffer_ = targetTexture_->createFramebuffer();

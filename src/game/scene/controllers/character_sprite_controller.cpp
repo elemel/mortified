@@ -7,6 +7,7 @@
 #include "default_texture.hpp"
 #include "game_logic.hpp"
 #include "image.hpp"
+#include "image_texture_source.hpp"
 #include "math.hpp"
 #include "scene_graph.hpp"
 #include "sprite.hpp"
@@ -36,7 +37,7 @@ namespace mortified {
                 createStreamFromFile("../../../content/images/wizard/head.png", "rb");
             headImage_ = createImage(headImageStream.get());
             headImage_->flipVertical();
-            headTexture_ = createTexture(0, headImage_);
+            headTexture_ = createTexture(0, createImageTextureSource(headImage_));
             headTexture_->create();
             std::auto_ptr<Sprite> sprite = createSprite(headTexture_.get());
             sprite->scale(0.1f);

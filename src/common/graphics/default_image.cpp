@@ -26,17 +26,6 @@ namespace mortified {
             SDL_FreeSurface(surface_);
         }
 
-        bool exists() const
-        {
-            return true;
-        }
-
-        void create()
-        { }
-
-        void destroy()
-        { }
-
         int width() const
         {
             return surface_->w;
