@@ -1,7 +1,7 @@
 #ifndef MORTIFIED_TEXTURE_HPP
 #define MORTIFIED_TEXTURE_HPP
 
-#include "graphics_resource.hpp"
+#include "graphics_object.hpp"
 
 #include <SDL/SDL_opengl.h>
 
@@ -9,7 +9,7 @@ namespace mortified {
     class Context;
     class Framebuffer;
 
-    class Texture : public virtual GraphicsResource {
+    class Texture : public virtual GraphicsObject {
     public:
         virtual int name() const = 0;
         virtual int width() const = 0;

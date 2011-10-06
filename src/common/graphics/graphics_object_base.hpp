@@ -1,16 +1,16 @@
-#ifndef MORTIFIED_GRAPHICS_RESOURCE_BASE_HPP
-#define MORTIFIED_GRAPHICS_RESOURCE_BASE_HPP
+#ifndef MORTIFIED_GRAPHICS_OBJECT_BASE_HPP
+#define MORTIFIED_GRAPHICS_OBJECT_BASE_HPP
 
-#include "graphics_resource.hpp"
+#include "graphics_object.hpp"
 
 namespace mortified {
-    class GraphicsResourceBase : public virtual GraphicsResource {
+    class GraphicsObjectBase : public virtual GraphicsObject {
     public:
-        GraphicsResourceBase() :
+        GraphicsObjectBase() :
             refCount_(0)
         { }
 
-        ~GraphicsResourceBase()
+        ~GraphicsObjectBase()
         {
             while (!parents_.empty()) {
                 parents_.back().first->removeChild(parents_.back().second);
@@ -114,7 +114,7 @@ namespace mortified {
             return ChildRange(children_.begin(), children_.end());
         }
 
-        ChildIterator addChild(GraphicsResource *child)
+        ChildIterator addChild(GraphicsObject *child)
         {
             return children_.insert(children_.end(), child);
         }
@@ -129,7 +129,7 @@ namespace mortified {
         ParentList parents_;
         ChildList children_;
 
-        ParentIterator addParent(GraphicsResource *parent)
+        ParentIterator addParent(GraphicsObject *parent)
         {
             ParentIterator iterator =
                 parents_.insert(parents_.end(), ParentPair());
