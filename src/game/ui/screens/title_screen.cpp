@@ -5,8 +5,10 @@
 #include "default_image.hpp"
 #include "default_stream.hpp"
 #include "default_texture.hpp"
+#include "editor_screen.hpp"
 #include "font.hpp"
 #include "framebuffer.hpp"
+#include "game_screen.hpp"
 #include "image.hpp"
 #include "screen.hpp"
 #include "stream.hpp"
@@ -15,8 +17,8 @@
 
 #include <cmath>
 #include <boost/shared_ptr.hpp>
+#include <SDL/SDL.h>
 #include <SDL/SDL_opengl.h>
-#include <SDL/SDL_timer.h>
 
 namespace mortified {
     class TitleScreen : public virtual Screen {
@@ -50,6 +52,22 @@ namespace mortified {
 
         bool handleEvent(SDL_Event const *event)
         {
+            if (event->type == SDL_KEYDOWN) {
+                switch (event->key.keysym.sym) {
+                case SDLK_e:
+                    window_->addScreen(createEditorScreen(window_));
+                    return true;
+
+                case SDLK_g:
+                case SDLK_SPACE:
+                    window_->addScreen(createGameScreen(window_, false));
+                    return true;
+
+                case SDLK_q:
+                    window_->removeScreen(this);
+                    return true;
+                }
+            }
             return false;
         }
         
