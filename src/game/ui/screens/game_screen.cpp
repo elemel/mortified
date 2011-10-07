@@ -9,6 +9,7 @@
 #include "default_game_logic.hpp"
 #include "default_image.hpp"
 #include "default_scene_graph.hpp"
+#include "empty_texture_source.hpp"
 #include "framebuffer.hpp"
 #include "game_logic.hpp"
 #include "image.hpp"
@@ -179,9 +180,8 @@ namespace mortified {
                 targetTexture_->width() != 2 * window_->width() ||
                 targetTexture_->height() != 2 * window_->height())
             {
-                boost::shared_ptr<Image> targetImage =
-                    createImage(2 * window_->width(), 2 * window_->height());
-                targetTexture_ = window_->context()->createTexture(createImageTextureSource(targetImage));
+                targetTexture_ = window_->context()->createEmptyTexture(2 * window_->width(),
+                                                                        2 * window_->height());
                 targetTexture_->minFilter(GL_LINEAR);
                 targetTexture_->magFilter(GL_LINEAR);
                 targetFramebuffer_ = targetTexture_->createFramebuffer();
@@ -190,7 +190,8 @@ namespace mortified {
             targetFramebuffer_->create();
 
             glViewport(0, 0, window_->width() * 2, window_->height() * 2);
-            glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, targetFramebuffer_->name());
+            glBindFramebufferEXT(GL_FRAMEBUFFER_EXT,
+                                 targetFramebuffer_->name());
             glClearColor(0.0, 0.0, 0.0, 0.0);
             drawScene();
             glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);
@@ -240,7 +241,8 @@ namespace mortified {
 
         void applyCamera()
         {
-            float aspectRatio = float(window_->width()) / float(window_->height());
+            float aspectRatio = (float(window_->width()) /
+                                 float(window_->height()));
 
             glMatrixMode(GL_PROJECTION);
             glLoadIdentity();

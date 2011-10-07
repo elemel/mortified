@@ -17,6 +17,9 @@ namespace mortified {
 
         virtual boost::intrusive_ptr<Texture>
             createTexture(boost::shared_ptr<TextureSource> source) = 0;
+
+        virtual boost::intrusive_ptr<Texture>
+            createEmptyTexture(int width, int height) = 0;
     };
 }
 

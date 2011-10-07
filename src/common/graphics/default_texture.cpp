@@ -28,6 +28,18 @@ namespace mortified {
             }
         }
 
+        DefaultTexture(Context *context, int width, int height) :
+            name_(0),
+            width_(width),
+            height_(height),
+            minFilter_(GL_NEAREST),
+            magFilter_(GL_NEAREST)
+        {
+            if (context) {
+                addParent(context);
+            }
+        }
+
         ~DefaultTexture()
         {
             if (name_) {
@@ -100,13 +112,18 @@ namespace mortified {
 
         void createImpl()
         {
-            source_->create();
+            if (source_) {
+                source_->create();
+
+                width_ = source_->width();
+                height_ = source_->height();
+            }
+
             glGenTextures(1, &name_);
             glBindTexture(GL_TEXTURE_2D, name_);
-            width_ = source_->width();
-            height_ = source_->height();
             glTexImage2D(GL_TEXTURE_2D, 0, 4, width_, height_, 0,
-                         GL_RGBA, GL_UNSIGNED_BYTE, source_->pixels());
+                         GL_RGBA, GL_UNSIGNED_BYTE,
+                         source_ ? source_->pixels() : 0);
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, minFilter_);
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, magFilter_);
             glBindTexture(GL_TEXTURE_2D, 0);
@@ -128,5 +145,11 @@ namespace mortified {
         createTexture(Context *context, boost::shared_ptr<TextureSource> source)
     {
         return boost::intrusive_ptr<Texture>(new DefaultTexture(context, source));
+    }
+
+    boost::intrusive_ptr<Texture>
+        createEmptyTexture(Context *context, int width, int height)
+    {
+        return boost::intrusive_ptr<Texture>(new DefaultTexture(context, width, height));
     }
 }

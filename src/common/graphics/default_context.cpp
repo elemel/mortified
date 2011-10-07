@@ -48,6 +48,12 @@ namespace mortified {
             return mortified::createTexture(this, source);
         }
 
+        boost::intrusive_ptr<Texture>
+            createEmptyTexture(int width, int height)
+        {
+            return mortified::createEmptyTexture(this, width, height);
+        }
+
     private:
         SDL_Window *window_;
         bool multisample_;

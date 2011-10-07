@@ -12,7 +12,11 @@ namespace mortified {
     class TextureSource;
 
     boost::intrusive_ptr<Texture>
-        createTexture(Context *context, boost::shared_ptr<TextureSource> source);
+        createTexture(Context *context,
+                      boost::shared_ptr<TextureSource> source);
+
+    boost::intrusive_ptr<Texture>
+        createEmptyTexture(Context *context, int width, int height);
 }
 
 #endif

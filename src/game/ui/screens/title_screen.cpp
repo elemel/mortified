@@ -6,6 +6,7 @@
 #include "default_stream.hpp"
 #include "default_texture.hpp"
 #include "editor_screen.hpp"
+#include "empty_texture_source.hpp"
 #include "font.hpp"
 #include "framebuffer.hpp"
 #include "game_screen.hpp"
@@ -41,8 +42,7 @@ namespace mortified {
             logoTexture_->minFilter(GL_LINEAR);
             logoTexture_->magFilter(GL_LINEAR);
 
-            boost::shared_ptr<Image> targetImage = createImage(128, 128);
-            targetTexture_ = window_->context()->createTexture(createImageTextureSource(targetImage));
+            targetTexture_ = window_->context()->createEmptyTexture(128, 128);
             targetFramebuffer_ = targetTexture_->createFramebuffer();
         }
 
