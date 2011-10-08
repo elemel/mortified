@@ -37,7 +37,7 @@ namespace mortified {
                 createStreamFromFile("../../../content/images/wizard/head.png", "rb");
             headImage_ = createImage(headImageStream.get());
             headImage_->flipVertical();
-            headTexture_ = createTexture(0, createImageTextureSource(headImage_));
+            headTexture_ = createTexture(boost::shared_ptr<Context>(), createImageTextureSource(headImage_));
             headTexture_->create();
             std::auto_ptr<Sprite> sprite = createSprite(headTexture_.get());
             sprite->scale(0.1f);
@@ -67,7 +67,7 @@ namespace mortified {
         SceneGraph *sceneGraph_;
         CharacterActor *characterActor_;
         boost::shared_ptr<Image> headImage_;
-        boost::intrusive_ptr<Texture> headTexture_;
+        boost::shared_ptr<Texture> headTexture_;
         Sprite *headSprite_;
     };
 

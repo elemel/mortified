@@ -42,7 +42,7 @@ namespace mortified {
             logoTexture_->minFilter(GL_LINEAR);
             logoTexture_->magFilter(GL_LINEAR);
 
-            targetTexture_ = window_->context()->createEmptyTexture(128, 128);
+            targetTexture_ = window_->context()->createTexture(128, 128);
             targetFramebuffer_ = targetTexture_->createFramebuffer();
         }
 
@@ -88,9 +88,9 @@ namespace mortified {
         Window *window_;
         boost::shared_ptr<Font> font_;
         boost::shared_ptr<Image> logoImage_;
-        boost::intrusive_ptr<Texture> logoTexture_;
-        boost::intrusive_ptr<Texture> targetTexture_;
-        boost::intrusive_ptr<Framebuffer> targetFramebuffer_;
+        boost::shared_ptr<Texture> logoTexture_;
+        boost::shared_ptr<Texture> targetTexture_;
+        boost::shared_ptr<Framebuffer> targetFramebuffer_;
         float angle_;
 
         void drawLogoToTarget()

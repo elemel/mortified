@@ -8,7 +8,7 @@ namespace mortified {
     class Context;
     class Widget;
 
-    std::auto_ptr<Widget> createTextWidget(Context *context);
+    std::auto_ptr<Widget> createTextWidget(boost::shared_ptr<Context> context);
 }
 
 #endif

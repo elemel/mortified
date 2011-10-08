@@ -16,12 +16,12 @@
 #include <iostream>
 #include <stdexcept>
 #include <vector>
-#include <boost/intrusive_ptr.hpp>
+#include <boost/shared_ptr.hpp>
 
 namespace mortified {
     class DefaultLayoutParser : public virtual LayoutParser {
     public:
-        explicit DefaultLayoutParser(Context *context) :
+        explicit DefaultLayoutParser(boost::shared_ptr<Context> context) :
             context_(context)
         { }
         
@@ -63,7 +63,7 @@ namespace mortified {
             } else if (strcmp(element->name(), "row") == 0) {
                 widget = createRowWidget();
             } else if (strcmp(element->name(), "text") == 0) {
-                widget = createTextWidget(context_.get());
+                widget = createTextWidget(context_);
                 if (TextWidget *textWidget = widget->asTextWidget()) {
                     textWidget->text(element->value());
                 }
@@ -92,10 +92,10 @@ namespace mortified {
         }
 
     private:
-        boost::intrusive_ptr<Context> context_;
+        boost::shared_ptr<Context> context_;
     };
 
-    std::auto_ptr<LayoutParser> createLayoutParser(Context *context)
+    std::auto_ptr<LayoutParser> createLayoutParser(boost::shared_ptr<Context> context)
     {
         return std::auto_ptr<LayoutParser>(new DefaultLayoutParser(context));
     }

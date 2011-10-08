@@ -26,7 +26,6 @@
 #include <memory>
 #include <iostream>
 #include <stdexcept>
-#include <boost/intrusive_ptr.hpp>
 #include <boost/shared_ptr.hpp>
 #include <Box2D/Box2D.h>
 #include <SDL/SDL_opengl.h>
@@ -117,8 +116,8 @@ namespace mortified {
         float cameraScale_;
 
         bool supersample_;
-        boost::intrusive_ptr<Texture> targetTexture_;
-        boost::intrusive_ptr<Framebuffer> targetFramebuffer_;
+        boost::shared_ptr<Texture> targetTexture_;
+        boost::shared_ptr<Framebuffer> targetFramebuffer_;
 
         void skipFrames(float time)
         {
@@ -180,8 +179,8 @@ namespace mortified {
                 targetTexture_->width() != 2 * window_->width() ||
                 targetTexture_->height() != 2 * window_->height())
             {
-                targetTexture_ = window_->context()->createEmptyTexture(2 * window_->width(),
-                                                                        2 * window_->height());
+                targetTexture_ = window_->context()->createTexture(2 * window_->width(),
+                                                                   2 * window_->height());
                 targetTexture_->minFilter(GL_LINEAR);
                 targetTexture_->magFilter(GL_LINEAR);
                 targetFramebuffer_ = targetTexture_->createFramebuffer();

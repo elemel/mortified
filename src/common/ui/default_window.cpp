@@ -176,9 +176,9 @@ namespace mortified {
             SDL_GL_SwapWindow(window_);
         }
 
-        Context *context()
+        boost::shared_ptr<Context> context()
         {
-            return context_.get();
+            return context_;
         }
 
     private:
@@ -187,7 +187,7 @@ namespace mortified {
         bool fullscreen_;
         bool multisample_;
         SDL_Window *window_;
-        boost::intrusive_ptr<Context> context_;
+        boost::shared_ptr<Context> context_;
         std::vector<Screen *> screens_;
 
         void removeAllScreens()

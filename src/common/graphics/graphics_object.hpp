@@ -2,7 +2,7 @@
 #define MORTIFIED_GRAPHICS_OBJECT_HPP
 
 #include <list>
-#include <boost/intrusive_ptr.hpp>
+#include <boost/shared_ptr.hpp>
 
 namespace mortified {
     class Context;
@@ -14,7 +14,7 @@ namespace mortified {
         typedef std::list<GraphicsObject *> ChildList;
         typedef std::list<GraphicsObject *>::iterator ChildIterator;
         typedef std::pair<ChildIterator, ChildIterator> ChildRange;
-        typedef boost::intrusive_ptr<GraphicsObject> ParentPtr;
+        typedef boost::shared_ptr<GraphicsObject> ParentPtr;
         typedef std::pair<ParentPtr, ChildIterator> ParentPair;
         typedef std::list<ParentPair> ParentList;
         typedef std::list<ParentPair>::iterator ParentIterator;
@@ -28,9 +28,6 @@ namespace mortified {
         virtual void create() = 0;
         virtual void destroy() = 0;
         virtual void invalidate() = 0;
-
-        virtual void addRef() const = 0;
-        virtual void release() const = 0;
 
         virtual Context *asContext() = 0;
         virtual Context const *asContext() const = 0;
@@ -47,16 +44,6 @@ namespace mortified {
         virtual ChildIterator addChild(GraphicsObject *child) = 0;
         virtual void removeChild(ChildIterator child) = 0;
     };
-
-    inline void intrusive_ptr_add_ref(GraphicsObject const *object)
-    {
-        object->addRef();
-    }
-
-    inline void intrusive_ptr_release(GraphicsObject const *object)
-    {
-        object->release();
-    }
 }
 
 #endif

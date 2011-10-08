@@ -8,7 +8,8 @@ namespace mortified {
     class Context;
     class LayoutParser;
 
-    std::auto_ptr<LayoutParser> createLayoutParser(Context *context);
+    std::auto_ptr<LayoutParser>
+    createLayoutParser(boost::shared_ptr<Context>context);
 }
 
 #endif

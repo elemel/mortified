@@ -5,12 +5,14 @@
 #include "graphics_object_base.hpp"
 #include "texture.hpp"
 
+#include <boost/enable_shared_from_this.hpp>
 #include <SDL/SDL.h>
 #include <SDL/SDL_opengl.h>
 
 namespace mortified {
     class DefaultContext :
         public virtual Context,
+        public virtual boost::enable_shared_from_this<DefaultContext>,
         private virtual GraphicsObjectBase
     {
     public:
@@ -42,16 +44,15 @@ namespace mortified {
             return this;
         }
 
-        boost::intrusive_ptr<Texture>
-            createTexture(boost::shared_ptr<TextureSource> source)
+        boost::shared_ptr<Texture>
+        createTexture(boost::shared_ptr<TextureSource> source)
         {
-            return mortified::createTexture(this, source);
+            return mortified::createTexture(shared_from_this(), source);
         }
 
-        boost::intrusive_ptr<Texture>
-            createEmptyTexture(int width, int height)
+        boost::shared_ptr<Texture> createTexture(int width, int height)
         {
-            return mortified::createEmptyTexture(this, width, height);
+            return mortified::createTexture(shared_from_this(), width, height);
         }
 
     private:
@@ -83,9 +84,9 @@ namespace mortified {
         }
     };
 
-    boost::intrusive_ptr<Context>
-        createContext(SDL_Window *window, bool multisample)
+    boost::shared_ptr<Context>
+    createContext(SDL_Window *window, bool multisample)
     {
-        return new DefaultContext(window, multisample);
+        return boost::shared_ptr<Context>(new DefaultContext(window, multisample));
     }
 }

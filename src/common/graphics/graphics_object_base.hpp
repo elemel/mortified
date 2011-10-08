@@ -129,7 +129,7 @@ namespace mortified {
         ParentList parents_;
         ChildList children_;
 
-        ParentIterator addParent(GraphicsObject *parent)
+        ParentIterator addParent(boost::shared_ptr<GraphicsObject> parent)
         {
             ParentIterator iterator =
                 parents_.insert(parents_.end(), ParentPair());

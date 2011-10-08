@@ -12,7 +12,7 @@ namespace mortified {
         private virtual GraphicsObjectBase
     {
     public:
-        explicit DefaultFramebuffer(Texture *texture) :
+        explicit DefaultFramebuffer(boost::shared_ptr<Texture> texture) :
             texture_(texture),
             name_(0)
         {
@@ -47,7 +47,7 @@ namespace mortified {
         }
 
     private:
-        Texture *texture_;
+        boost::shared_ptr<Texture> texture_;
         GLuint name_;
 
         void createImpl()
@@ -72,8 +72,8 @@ namespace mortified {
         }
     };
     
-    boost::intrusive_ptr<Framebuffer> createFramebuffer(Texture *texture)
+    boost::shared_ptr<Framebuffer> createFramebuffer(boost::shared_ptr<Texture> texture)
     {
-        return new DefaultFramebuffer(texture);
+        return boost::shared_ptr<Framebuffer>(new DefaultFramebuffer(texture));
     }
 }

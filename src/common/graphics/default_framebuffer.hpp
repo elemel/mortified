@@ -1,13 +1,13 @@
 #ifndef MORTIFIED_DEFAULT_FRAMEBUFFER_HPP
 #define MORTIFIED_DEFAULT_FRAMEBUFFER_HPP
 
-#include <boost/intrusive_ptr.hpp>
+#include <boost/shared_ptr.hpp>
 
 namespace mortified {
     class Framebuffer;
     class Texture;
 
-    boost::intrusive_ptr<Framebuffer> createFramebuffer(Texture *texture);
+    boost::shared_ptr<Framebuffer> createFramebuffer(boost::shared_ptr<Texture> texture);
 }
 
 #endif
