@@ -1,6 +1,6 @@
 Makefile
 bin
-mortified.make
-mortified.xcodeproj
-mortified.xcworkspace
 obj
+*.make
+*.xcodeproj
+*.xcworkspace

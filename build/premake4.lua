@@ -25,3 +25,8 @@ solution "mortified"
 
         configuration "macosx"
            links { "OpenGL.framework" }
+
+    project "test"
+        kind "ConsoleApp"
+        language "C++"
+        files { "../test/test.cpp" }
