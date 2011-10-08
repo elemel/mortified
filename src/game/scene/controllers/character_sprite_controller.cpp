@@ -9,7 +9,7 @@
 #include "image.hpp"
 #include "image_texture_source.hpp"
 #include "math.hpp"
-#include "scene_graph.hpp"
+#include "scene.hpp"
 #include "sprite.hpp"
 #include "sprite_controller.hpp"
 #include "stream.hpp"
@@ -24,9 +24,9 @@ namespace mortified {
         public virtual SpriteController
     {
     public:
-        explicit CharacterSpriteController(SceneGraph *graph,
+        explicit CharacterSpriteController(Scene *scene,
                                            CharacterActor *actor) :
-            sceneGraph_(graph),
+            scene_(scene),
             characterActor_(actor),
             headSprite_(0)
         { }
@@ -44,13 +44,13 @@ namespace mortified {
             sprite->angle(-0.1f);
             sprite->alignment(Vector2(0.5f, 0.5f));
             headSprite_ = sprite.get();
-            sceneGraph_->addSprite(sprite);
+            scene_->addSprite(sprite);
         }
 
         void destroy()
         {
             if (headSprite_) {
-                sceneGraph_->removeSprite(headSprite_);
+                scene_->removeSprite(headSprite_);
                 headSprite_ = 0;
             }
             headTexture_.reset();
@@ -64,7 +64,7 @@ namespace mortified {
         }
 
     private:
-        SceneGraph *sceneGraph_;
+        Scene *scene_;
         CharacterActor *characterActor_;
         boost::shared_ptr<Image> headImage_;
         boost::shared_ptr<Texture> headTexture_;
@@ -72,8 +72,8 @@ namespace mortified {
     };
 
     std::auto_ptr<SpriteController>
-        createCharacterSpriteController(SceneGraph *graph, CharacterActor *actor)
+    createCharacterSpriteController(Scene *scene, CharacterActor *actor)
     {
-        return std::auto_ptr<SpriteController>(new CharacterSpriteController(graph, actor));
+        return std::auto_ptr<SpriteController>(new CharacterSpriteController(scene, actor));
     }
 }

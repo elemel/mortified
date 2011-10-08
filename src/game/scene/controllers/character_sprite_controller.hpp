@@ -5,12 +5,11 @@
 
 namespace mortified {
     class CharacterActor;
-    class SceneGraph;
+    class Scene;
     class SpriteController;
 
     std::auto_ptr<SpriteController>
-        createCharacterSpriteController(SceneGraph *graph,
-                                        CharacterActor *actor);
+    createCharacterSpriteController(Scene *scene, CharacterActor *actor);
 }
 
 #endif

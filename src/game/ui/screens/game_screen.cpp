@@ -8,7 +8,7 @@
 #include "default_character_actor.hpp"
 #include "default_game_logic.hpp"
 #include "default_image.hpp"
-#include "default_scene_graph.hpp"
+#include "default_scene.hpp"
 #include "empty_texture_source.hpp"
 #include "framebuffer.hpp"
 #include "game_logic.hpp"
@@ -17,7 +17,7 @@
 #include "math.hpp"
 #include "physics_draw.hpp"
 #include "platform_actor.hpp"
-#include "scene_graph.hpp"
+#include "scene.hpp"
 #include "screen.hpp"
 #include "sprite_controller.hpp"
 #include "texture.hpp"
@@ -47,7 +47,7 @@ namespace mortified {
         {
             gameLogic_ = createGameLogic();
             physicsDraw_.reset(new PhysicsDraw);
-            sceneGraph_ = createSceneGraph();
+            scene_ = createScene();
             
             gameLogic_->addActor(createPlatformActor(gameLogic_.get(), Vector2(0.0f, -2.0f), Vector2(1.0f, 0.1f), 0.1f));
             gameLogic_->addActor(createPlatformActor(gameLogic_.get(), Vector2(4.0f, -2.5f), Vector2(1.0f, 0.1f), -0.2f));
@@ -62,8 +62,8 @@ namespace mortified {
             gameLogic_->hero(heroAsCharacterActor);
             
             std::auto_ptr<SpriteController> characterSpriteController =
-            createCharacterSpriteController(sceneGraph_.get(), heroAsCharacterActor);
-            sceneGraph_->addSpriteController(characterSpriteController);
+            createCharacterSpriteController(scene_.get(), heroAsCharacterActor);
+            scene_->addSpriteController(characterSpriteController);
         }
         
         void destroy()
@@ -90,7 +90,7 @@ namespace mortified {
             skipFrames(time);
             updateControls();
             updateGame(time);
-            sceneGraph_->update();
+            scene_->update();
         }
         
         void draw()
@@ -111,7 +111,7 @@ namespace mortified {
         float dt_;
         std::auto_ptr<GameLogic> gameLogic_;
         std::auto_ptr<b2Draw> physicsDraw_;
-        std::auto_ptr<SceneGraph> sceneGraph_;
+        std::auto_ptr<Scene> scene_;
         Vector2 cameraPosition_;
         float cameraScale_;
 
@@ -168,7 +168,7 @@ namespace mortified {
             glEnable(GL_BLEND);
             glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
             glEnable(GL_TEXTURE_2D);
-            sceneGraph_->draw();
+            scene_->draw();
             glDisable(GL_TEXTURE_2D);
             glDisable(GL_BLEND);
         }

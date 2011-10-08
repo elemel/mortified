@@ -1,6 +1,6 @@
-#include "default_scene_graph.hpp"
+#include "default_scene.hpp"
 
-#include "scene_graph.hpp"
+#include "scene.hpp"
 #include "sprite.hpp"
 #include "sprite_controller.hpp"
 
@@ -9,11 +9,11 @@
 #include <vector>
 
 namespace mortified {
-    class DefaultSceneGraph :
-        public virtual SceneGraph
+    class DefaultScene :
+        public virtual Scene
     {
     public:
-        ~DefaultSceneGraph()
+        ~DefaultScene()
         {
             removeAllSpriteControllers();
             removeAllSprites();
@@ -114,8 +114,8 @@ namespace mortified {
         }
     };
 
-    std::auto_ptr<SceneGraph> createSceneGraph()
+    std::auto_ptr<Scene> createScene()
     {
-        return std::auto_ptr<SceneGraph>(new DefaultSceneGraph);
+        return std::auto_ptr<Scene>(new DefaultScene);
     }
 }

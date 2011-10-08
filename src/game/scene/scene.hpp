@@ -1,5 +1,5 @@
-#ifndef MORTIFIED_SCENE_GRAPH_HPP
-#define MORTIFIED_SCENE_GRAPH_HPP
+#ifndef MORTIFIED_SCENE_HPP
+#define MORTIFIED_SCENE_HPP
 
 #include <memory>
 
@@ -7,9 +7,9 @@ namespace mortified {
     class Sprite;
     class SpriteController;
 
-    class SceneGraph {
+    class Scene {
     public:
-        virtual ~SceneGraph()
+        virtual ~Scene()
         { }
 
         virtual void
