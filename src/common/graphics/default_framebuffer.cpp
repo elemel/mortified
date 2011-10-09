@@ -72,7 +72,8 @@ namespace mortified {
         }
     };
     
-    boost::shared_ptr<Framebuffer> createFramebuffer(boost::shared_ptr<Texture> texture)
+    boost::shared_ptr<Framebuffer>
+    createFramebuffer(boost::shared_ptr<Texture> texture)
     {
         return boost::shared_ptr<Framebuffer>(new DefaultFramebuffer(texture));
     }
