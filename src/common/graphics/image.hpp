@@ -1,8 +1,6 @@
 #ifndef MORTIFIED_IMAGE_HPP
 #define MORTIFIED_IMAGE_HPP
 
-#include "texture_source.hpp"
-
 namespace mortified {
     class Image {
     public:
