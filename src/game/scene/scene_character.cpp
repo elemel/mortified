@@ -1,4 +1,4 @@
-#include "character_sprite_controller.hpp"
+#include "scene_character.hpp"
 
 #include "character_actor.hpp"
 #include "default_image.hpp"
@@ -10,8 +10,8 @@
 #include "image_texture_source.hpp"
 #include "math.hpp"
 #include "scene.hpp"
+#include "scene_object_base.hpp"
 #include "sprite.hpp"
-#include "sprite_controller.hpp"
 #include "stream.hpp"
 #include "texture.hpp"
 
@@ -20,15 +20,14 @@
 #include <SDL/SDL_opengl.h>
 
 namespace mortified {
-    class CharacterSpriteController :
-        public virtual SpriteController
+    class SceneCharacter :
+        public virtual SceneObject,
+        private virtual SceneObjectBase
     {
     public:
-        explicit CharacterSpriteController(Scene *scene,
-                                           CharacterActor *actor) :
+        explicit SceneCharacter(Scene *scene, CharacterActor *actor) :
             scene_(scene),
-            characterActor_(actor),
-            headSprite_(0)
+            characterActor_(actor)
         { }
 
         void create()
@@ -39,24 +38,19 @@ namespace mortified {
             headImage_->flipVertical();
             headTexture_ = createTexture(boost::shared_ptr<Context>(), createImageTextureSource(headImage_));
             headTexture_->create();
-            std::auto_ptr<Sprite> sprite = createSprite(headTexture_.get());
-            sprite->scale(0.1f);
-            sprite->angle(-0.1f);
-            sprite->alignment(Vector2(0.5f, 0.5f));
-            headSprite_ = sprite.get();
-            scene_->addSprite(sprite);
+            headSprite_ = createSprite(headTexture_);
+            headSprite_->scale(0.1f);
+            headSprite_->alignment(Vector2(0.5f, 0.5f));
+            headSpriteIterator_ = scene_->addObject(headSprite_);
         }
 
         void destroy()
         {
-            if (headSprite_) {
-                scene_->removeSprite(headSprite_);
-                headSprite_ = 0;
-            }
+            scene_->removeObject(headSpriteIterator_);
             headTexture_.reset();
         }
 
-        void update()
+        void update(float dt)
         {
             headSprite_->position(characterActor_->position() + Vector2(0.1f, 0.5f));
             headSprite_->angle(0.05f * std::sin(characterActor_->position().x) +
@@ -68,12 +62,13 @@ namespace mortified {
         CharacterActor *characterActor_;
         boost::shared_ptr<Image> headImage_;
         boost::shared_ptr<Texture> headTexture_;
-        Sprite *headSprite_;
+        boost::shared_ptr<Sprite> headSprite_;
+        Scene::ObjectIterator headSpriteIterator_;
     };
 
-    std::auto_ptr<SpriteController>
-    createCharacterSpriteController(Scene *scene, CharacterActor *actor)
+    boost::shared_ptr<SceneObject>
+    createSceneCharacter(Scene *scene, CharacterActor *actor)
     {
-        return std::auto_ptr<SpriteController>(new CharacterSpriteController(scene, actor));
+        return boost::shared_ptr<SceneObject>(new SceneCharacter(scene, actor));
     }
 }

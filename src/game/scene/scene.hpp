@@ -1,26 +1,25 @@
 #ifndef MORTIFIED_SCENE_HPP
 #define MORTIFIED_SCENE_HPP
 
-#include <memory>
+#include <list>
+#include <boost/shared_ptr.hpp>
 
 namespace mortified {
-    class Sprite;
-    class SpriteController;
+    class SceneObject;
 
     class Scene {
     public:
+        typedef boost::shared_ptr<SceneObject> ObjectPtr;
+        typedef std::list<ObjectPtr> ObjectList;
+        typedef ObjectList::iterator ObjectIterator;
+
         virtual ~Scene()
         { }
 
-        virtual void
-            addSpriteController(std::auto_ptr<SpriteController> controller) = 0;
-        virtual std::auto_ptr<SpriteController>
-            removeSpriteController(SpriteController *controller) = 0;
+        virtual ObjectIterator addObject(ObjectPtr object) = 0;
+        virtual void removeObject(ObjectIterator object) = 0;
 
-        virtual void addSprite(std::auto_ptr<Sprite> sprite) = 0;
-        virtual std::auto_ptr<Sprite> removeSprite(Sprite *sprite) = 0;
-
-        virtual void update() = 0;
+        virtual void update(float dt) = 0;
         virtual void draw() = 0;
     };
 }

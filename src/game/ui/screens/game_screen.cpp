@@ -3,7 +3,6 @@
 
 #include "actor.hpp"
 #include "character_actor.hpp"
-#include "character_sprite_controller.hpp"
 #include "context.hpp"
 #include "default_character_actor.hpp"
 #include "default_game_logic.hpp"
@@ -18,8 +17,8 @@
 #include "physics_draw.hpp"
 #include "platform_actor.hpp"
 #include "scene.hpp"
+#include "scene_character.hpp"
 #include "screen.hpp"
-#include "sprite_controller.hpp"
 #include "texture.hpp"
 #include "window.hpp"
 
@@ -56,14 +55,14 @@ namespace mortified {
             gameLogic_->addActor(createPlatformActor(gameLogic_.get(), Vector2(18.0f, -2.5f), Vector2(1.0f, 0.1f), 0.2f));
             
             std::auto_ptr<Actor> heroAsActor =
-            createCharacterActor(gameLogic_.get(), Vector2(0.0f, 2.0f), 0.5f);
+                createCharacterActor(gameLogic_.get(), Vector2(0.0f, 2.0f), 0.5f);
             CharacterActor *heroAsCharacterActor = heroAsActor->asCharacterActor();
             gameLogic_->addActor(heroAsActor);
             gameLogic_->hero(heroAsCharacterActor);
             
-            std::auto_ptr<SpriteController> characterSpriteController =
-            createCharacterSpriteController(scene_.get(), heroAsCharacterActor);
-            scene_->addSpriteController(characterSpriteController);
+            boost::shared_ptr<SceneObject> sceneCharacter =
+                createSceneCharacter(scene_.get(), heroAsCharacterActor);
+            scene_->addObject(sceneCharacter);
         }
         
         void destroy()
@@ -90,7 +89,7 @@ namespace mortified {
             skipFrames(time);
             updateControls();
             updateGame(time);
-            scene_->update();
+            scene_->update(0.0f);
         }
         
         void draw()

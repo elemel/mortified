@@ -1,13 +1,13 @@
 #ifndef MORTIFIED_DEFAULT_SPRITE_HPP
 #define MORTIFIED_DEFAULT_SPRITE_HPP
 
-#include <memory>
+#include <boost/shared_ptr.hpp>
 
 namespace mortified {
     class Sprite;
     class Texture;
 
-    std::auto_ptr<Sprite> createSprite(Texture *texture);
+    boost::shared_ptr<Sprite> createSprite(boost::shared_ptr<Texture> texture);
 }
 
 #endif

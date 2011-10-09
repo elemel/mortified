@@ -2,17 +2,17 @@
 
 #include "color.hpp"
 #include "math.hpp"
+#include "scene_object_base.hpp"
 #include "sprite.hpp"
 #include "texture.hpp"
 
-#include <stdexcept>
-
 namespace mortified {
     class DefaultSprite :
-        public virtual Sprite
+        public virtual Sprite,
+        private virtual SceneObjectBase
     {
     public:
-        explicit DefaultSprite(Texture *texture) :
+        explicit DefaultSprite(boost::shared_ptr<Texture> texture) :
             texture_(texture),
             angle_(0.0f),
             scale_(1.0f)
@@ -93,7 +93,7 @@ namespace mortified {
         }
 
     private:
-        Texture *texture_;
+        boost::shared_ptr<Texture> texture_;
         Vector2 position_;
         float angle_;
         float scale_;
@@ -120,8 +120,8 @@ namespace mortified {
         }
     };
 
-    std::auto_ptr<Sprite> createSprite(Texture *texture)
+    boost::shared_ptr<Sprite> createSprite(boost::shared_ptr<Texture> texture)
     {
-        return std::auto_ptr<Sprite>(new DefaultSprite(texture));
+        return boost::shared_ptr<Sprite>(new DefaultSprite(texture));
     }
 }

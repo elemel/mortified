@@ -1,15 +1,14 @@
 #ifndef MORTIFIED_SPRITE_HPP
 #define MORTIFIED_SPRITE_HPP
 
+#include "scene_object.hpp"
+
 namespace mortified {
     class Color4;
     class Vector2;
 
-    class Sprite {
+    class Sprite : public virtual SceneObject {
     public:
-        virtual ~Sprite()
-        { }
-
         virtual Vector2 position() const = 0;
         virtual void position(Vector2 position) = 0;
 
@@ -24,8 +23,6 @@ namespace mortified {
 
         virtual Color4 color() const = 0;
         virtual void color(Color4 color) = 0;
-
-        virtual void draw() = 0;
     };
 }
 
