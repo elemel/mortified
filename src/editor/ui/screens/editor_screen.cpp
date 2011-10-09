@@ -197,7 +197,7 @@ namespace mortified {
                 }
             }
 
-            return false;
+            return 0;
         }
 
         bool handleWidgetEvent(Widget *widget, SDL_Event const *event)
