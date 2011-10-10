@@ -5,11 +5,11 @@
 
 namespace mortified {
     class Actor;
-    class GameLogic;
+    class Game;
     class Vector2;
 
     std::auto_ptr<Actor>
-        createCharacterActor(GameLogic *logic, Vector2 position, float radius);
+        createCharacterActor(Game *game, Vector2 position, float radius);
 }
 
 #endif

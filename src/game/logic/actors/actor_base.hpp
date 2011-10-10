@@ -6,10 +6,10 @@
 namespace mortified {
     class ActorBase : public virtual Actor {
     public:
-        explicit ActorBase(GameLogic *logic);
+        explicit ActorBase(Game *game);
 
-        GameLogic *gameLogic();
-        GameLogic const *gameLogic() const;
+        Game *game();
+        Game const *game() const;
 
         void create();
         void destroy();
@@ -25,7 +25,7 @@ namespace mortified {
         CharacterActor const *asCharacterActor() const;
 
     protected:
-        GameLogic *gameLogic_;
+        Game *game_;
     };
 }
 

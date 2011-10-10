@@ -5,7 +5,7 @@
 #include "default_sprite.hpp"
 #include "default_stream.hpp"
 #include "default_texture.hpp"
-#include "game_logic.hpp"
+#include "game.hpp"
 #include "image.hpp"
 #include "image_texture_source.hpp"
 #include "math.hpp"
@@ -54,7 +54,7 @@ namespace mortified {
         {
             headSprite_->position(characterActor_->position() + Vector2(0.1f, 0.5f));
             headSprite_->angle(0.05f * std::sin(characterActor_->position().x) +
-                               0.05f * std::sin(3.0f * characterActor_->gameLogic()->time()));
+                               0.05f * std::sin(3.0f * characterActor_->game()->time()));
         }
 
     private:

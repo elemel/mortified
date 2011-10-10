@@ -2,7 +2,7 @@
 
 #include "character_actor.hpp"
 #include "character_state_base.hpp"
-#include "game_logic.hpp"
+#include "game.hpp"
 #include "math.hpp"
 #include "update_handler.hpp"
 
@@ -44,7 +44,7 @@ namespace mortified {
 
             if (!controls->jump ||
                 (characterActor_->jumpTime() + settings->boostDuration <
-                 characterActor_->gameLogic()->time()))
+                 characterActor_->game()->time()))
             {
                 characterActor_->boost(false);
             }

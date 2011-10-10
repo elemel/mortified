@@ -3,7 +3,7 @@
 #include "actor_base.hpp"
 #include "character_actor.hpp"
 #include "character_stand_state.hpp"
-#include "game_logic.hpp"
+#include "game.hpp"
 #include "math.hpp"
 #include "physics_user_data.hpp"
 #include "state.hpp"
@@ -18,7 +18,7 @@ namespace mortified {
         private virtual ActorBase
     {
     public:
-        DefaultCharacterActor(GameLogic *logic, Vector2 position, float radius);
+        DefaultCharacterActor(Game *game, Vector2 position, float radius);
 
         void create();
         void destroy();
@@ -94,11 +94,11 @@ namespace mortified {
         }
     };
 
-    DefaultCharacterActor::DefaultCharacterActor(GameLogic *logic,
+    DefaultCharacterActor::DefaultCharacterActor(Game *game,
                                                  Vector2 position,
                                                  float radius)
     :
-        ActorBase(logic),
+        ActorBase(game),
         position_(position),
         radius_(radius),
 
@@ -126,7 +126,7 @@ namespace mortified {
         mainBodyDef.type = b2_dynamicBody;
         mainBodyDef.position.Set(position_.x, position_.y);
         mainBodyDef.fixedRotation = true;
-        mainBody_ = gameLogic_->world()->CreateBody(&mainBodyDef);
+        mainBody_ = game_->world()->CreateBody(&mainBodyDef);
 
         b2CircleShape mainShape;
         mainShape.m_radius = radius_;
@@ -140,7 +140,7 @@ namespace mortified {
         b2BodyDef wheelBodyDef;
         wheelBodyDef.type = b2_dynamicBody;
         wheelBodyDef.position = wheelPosition;
-        wheelBody_ = gameLogic_->world()->CreateBody(&wheelBodyDef);
+        wheelBody_ = game_->world()->CreateBody(&wheelBodyDef);
 
         b2CircleShape wheelShape;
         wheelShape.m_radius = wheelRadius();
@@ -161,7 +161,7 @@ namespace mortified {
         b2RevoluteJointDef wheelJointDef;
         wheelJointDef.Initialize(mainBody_, wheelBody_, wheelPosition);
         wheelJointDef.maxMotorTorque = 5.0f;
-        wheelJoint_ = static_cast<b2RevoluteJoint *>(gameLogic_->world()->CreateJoint(&wheelJointDef));
+        wheelJoint_ = static_cast<b2RevoluteJoint *>(game_->world()->CreateJoint(&wheelJointDef));
 
         state_ = createCharacterStandState(this);
         state_->enter();
@@ -172,14 +172,14 @@ namespace mortified {
         state_->leave();
         state_.reset();
 
-        gameLogic_->world()->DestroyJoint(wheelJoint_);
+        game_->world()->DestroyJoint(wheelJoint_);
         wheelJoint_ = 0;
 
-        gameLogic_->world()->DestroyBody(wheelBody_);
+        game_->world()->DestroyBody(wheelBody_);
         wheelBody_ = 0;
         floorSensorFixture_ = 0;
 
-        gameLogic_->world()->DestroyBody(mainBody_);
+        game_->world()->DestroyBody(mainBody_);
         mainBody_ = 0;
     }
 
@@ -303,9 +303,9 @@ namespace mortified {
     }
 
     std::auto_ptr<Actor>
-        createCharacterActor(GameLogic *logic, Vector2 position, float radius)
+        createCharacterActor(Game *game, Vector2 position, float radius)
     {
-        return std::auto_ptr<Actor>(new DefaultCharacterActor(logic, position,
+        return std::auto_ptr<Actor>(new DefaultCharacterActor(game, position,
                                                               radius));
     }
 }

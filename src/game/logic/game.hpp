@@ -1,5 +1,5 @@
-#ifndef MORTIFIED_GAME_LOGIC_HPP
-#define MORTIFIED_GAME_LOGIC_HPP
+#ifndef MORTIFIED_GAME_HPP
+#define MORTIFIED_GAME_HPP
 
 #include <Box2D/Box2D.h>
 
@@ -9,9 +9,9 @@ namespace mortified {
     class Actor;
     class CharacterActor;
 
-    class GameLogic {
+    class Game {
     public:
-        virtual ~GameLogic()
+        virtual ~Game()
         { }
 
         virtual float time() const = 0;

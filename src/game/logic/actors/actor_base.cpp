@@ -5,18 +5,18 @@
 #include <iostream>
 
 namespace mortified {
-    ActorBase::ActorBase(GameLogic *logic) :
-        gameLogic_(logic)
+    ActorBase::ActorBase(Game *game) :
+        game_(game)
     { }
 
-    GameLogic *ActorBase::gameLogic()
+    Game *ActorBase::game()
     {
-        return gameLogic_;
+        return game_;
     }
 
-    GameLogic const *ActorBase::gameLogic() const
+    Game const *ActorBase::game() const
     {
-        return gameLogic_;
+        return game_;
     }
 
     void ActorBase::create()

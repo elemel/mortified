@@ -1,7 +1,7 @@
 #include "ball_actor.hpp"
 
 #include "actor_base.hpp"
-#include "game_logic.hpp"
+#include "game.hpp"
 #include "math.hpp"
 
 #include <iostream>
@@ -10,7 +10,7 @@
 namespace mortified {
     class BallActor : public virtual ActorBase {
     public:
-        BallActor(GameLogic *logic, Vector2 position, float radius);
+        BallActor(Game *game, Vector2 position, float radius);
 
         void create();
         void destroy();
@@ -21,8 +21,8 @@ namespace mortified {
         b2Body *body_;
     };
 
-    BallActor::BallActor(GameLogic *logic, Vector2 position, float radius) :
-        ActorBase(logic),
+    BallActor::BallActor(Game *game, Vector2 position, float radius) :
+        ActorBase(game),
         position_(position),
         radius_(radius),
         body_(0)
@@ -33,7 +33,7 @@ namespace mortified {
         b2BodyDef bodyDef;
         bodyDef.type = b2_dynamicBody;
         bodyDef.position.Set(position_.x, position_.y);
-        body_ = gameLogic_->world()->CreateBody(&bodyDef);
+        body_ = game_->world()->CreateBody(&bodyDef);
 
         b2CircleShape circleShape;
         circleShape.m_radius = radius_;
@@ -46,13 +46,13 @@ namespace mortified {
 
     void BallActor::destroy()
     {
-        gameLogic_->world()->DestroyBody(body_);
+        game_->world()->DestroyBody(body_);
         body_ = 0;
     }
 
     std::auto_ptr<Actor>
-        createBallActor(GameLogic *logic, Vector2 position, float radius)
+        createBallActor(Game *game, Vector2 position, float radius)
     {
-        return std::auto_ptr<Actor>(new BallActor(logic, position, radius));
+        return std::auto_ptr<Actor>(new BallActor(game, position, radius));
     }
 }

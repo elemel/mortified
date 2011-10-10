@@ -1,7 +1,7 @@
-#include "default_game_logic.hpp"
+#include "default_game.hpp"
 
 #include "actor.hpp"
-#include "game_logic.hpp"
+#include "game.hpp"
 #include "physics_contact_listener.hpp"
 
 #include <cassert>
@@ -10,9 +10,9 @@
 #include <Box2D/Box2D.h>
 
 namespace mortified {
-    class DefaultGameLogic : public GameLogic {
+    class DefaultGame : public virtual Game {
     public:
-        DefaultGameLogic() :
+        DefaultGame() :
             time_(0.0f),
             hero_(0)
         {
@@ -22,7 +22,7 @@ namespace mortified {
             world_->SetContactListener(contactListener_.get());
         }
 
-        ~DefaultGameLogic()
+        ~DefaultGame()
         {
             while (!actors_.empty()) {
                 assert(actors_.back());
@@ -104,8 +104,8 @@ namespace mortified {
         CharacterActor *hero_;
     };
 
-    std::auto_ptr<GameLogic> createGameLogic()
+    std::auto_ptr<Game> createGame()
     {
-        return std::auto_ptr<GameLogic>(new DefaultGameLogic);
+        return std::auto_ptr<Game>(new DefaultGame);
     }
 }

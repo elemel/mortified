@@ -5,7 +5,7 @@
 
 namespace mortified {
     class CharacterActor;
-    class GameLogic;
+    class Game;
     class Vector2;
 
     class Actor {
@@ -13,8 +13,8 @@ namespace mortified {
         virtual ~Actor()
         { }
 
-        virtual GameLogic *gameLogic() = 0;
-        virtual GameLogic const *gameLogic() const = 0;
+        virtual Game *game() = 0;
+        virtual Game const *game() const = 0;
 
         virtual void create() = 0;
         virtual void destroy() = 0;

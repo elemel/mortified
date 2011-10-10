@@ -2,7 +2,7 @@
 
 #include "character_actor.hpp"
 #include "character_state_base.hpp"
-#include "game_logic.hpp"
+#include "game.hpp"
 #include "math.hpp"
 
 namespace mortified {
@@ -20,7 +20,7 @@ namespace mortified {
             Vector2 velocity = characterActor_->velocity();
             velocity.y = characterActor_->settings()->jumpVelocity;
             characterActor_->velocity(velocity);
-            characterActor_->jumpTime(characterActor_->gameLogic()->time());
+            characterActor_->jumpTime(characterActor_->game()->time());
             characterActor_->boost(true);
         }
 

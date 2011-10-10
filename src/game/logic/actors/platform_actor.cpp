@@ -2,7 +2,7 @@
 
 #include "actor.hpp"
 #include "actor_base.hpp"
-#include "game_logic.hpp"
+#include "game.hpp"
 #include "math.hpp"
 
 #include <iostream>
@@ -11,8 +11,7 @@
 namespace mortified {
     class PlatformActor : public virtual Actor, private virtual ActorBase {
     public:
-        PlatformActor(GameLogic *logic, Vector2 position, Vector2 size,
-                      float angle);
+        PlatformActor(Game *game, Vector2 position, Vector2 size, float angle);
 
         void create();
         void destroy();
@@ -24,9 +23,9 @@ namespace mortified {
         b2Body *body_;
     };
 
-    PlatformActor::PlatformActor(GameLogic *logic, Vector2 position,
+    PlatformActor::PlatformActor(Game *game, Vector2 position,
                                  Vector2 size, float angle) :
-        ActorBase(logic),
+        ActorBase(game),
         position_(position),
         size_(size),
         angle_(angle),
@@ -38,7 +37,7 @@ namespace mortified {
         b2BodyDef bodyDef;
         bodyDef.position.Set(position_.x, position_.y);
         bodyDef.angle = angle_;
-        body_ = gameLogic_->world()->CreateBody(&bodyDef);
+        body_ = game_->world()->CreateBody(&bodyDef);
 
         b2PolygonShape polygonShape;
         polygonShape.SetAsBox(size_.x, size_.y);
@@ -50,15 +49,15 @@ namespace mortified {
 
     void PlatformActor::destroy()
     {
-        gameLogic_->world()->DestroyBody(body_);
+        game_->world()->DestroyBody(body_);
         body_ = 0;
     }
 
     std::auto_ptr<Actor>
-        createPlatformActor(GameLogic *logic, Vector2 position, Vector2 size,
+        createPlatformActor(Game *game, Vector2 position, Vector2 size,
                             float angle)
     {
-        return std::auto_ptr<Actor>(new PlatformActor(logic, position, size,
+        return std::auto_ptr<Actor>(new PlatformActor(game, position, size,
                                                       angle));
     }
 }
