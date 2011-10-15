@@ -96,12 +96,33 @@ namespace mortified {
             hero_ = hero;
         }
 
+        ObjectRange objects()
+        {
+            return ObjectRange(objects_.begin(), objects_.end());
+        }
+
+        ConstObjectRange objects() const
+        {
+            return ConstObjectRange(objects_.begin(), objects_.end());
+        }
+        
+        ObjectIterator addObject(ObjectPtr object)
+        {
+            return objects_.insert(objects_.end(), object);
+        }
+
+        void removeObject(ObjectIterator object)
+        {
+            objects_.erase(object);
+        }
+
     private:
         float time_;
         std::auto_ptr<b2World> world_;
         std::auto_ptr<PhysicsContactListener> contactListener_;
         std::vector<Actor *> actors_;
         CharacterActor *hero_;
+        ObjectList objects_;
     };
 
     std::auto_ptr<Game> createGame()

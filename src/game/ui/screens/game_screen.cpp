@@ -6,11 +6,14 @@
 #include "context.hpp"
 #include "default_character_actor.hpp"
 #include "default_game.hpp"
+#include "default_game_object.hpp"
 #include "default_image.hpp"
 #include "default_scene.hpp"
+#include "default_stream.hpp"
 #include "empty_texture_source.hpp"
 #include "framebuffer.hpp"
 #include "game.hpp"
+#include "game_object.hpp"
 #include "image.hpp"
 #include "image_texture_source.hpp"
 #include "math.hpp"
@@ -19,20 +22,20 @@
 #include "scene.hpp"
 #include "scene_character.hpp"
 #include "screen.hpp"
+#include "stream.hpp"
 #include "texture.hpp"
 #include "window.hpp"
 
 #include <memory>
 #include <iostream>
 #include <stdexcept>
+#include <rapidxml.hpp>
 #include <boost/shared_ptr.hpp>
 #include <Box2D/Box2D.h>
 #include <SDL/SDL_opengl.h>
 
 namespace mortified {
-    class GameScreen :
-        public virtual Screen
-    {
+    class GameScreen : public virtual Screen {
     public:
         GameScreen(Window *window, bool supersample) :
             window_(window),
@@ -63,6 +66,8 @@ namespace mortified {
             boost::shared_ptr<SceneObject> sceneCharacter =
                 createSceneCharacter(scene_.get(), heroAsCharacterActor);
             scene_->addObject(sceneCharacter);
+
+            testLoadGameObject();
         }
         
         void destroy()
@@ -249,6 +254,23 @@ namespace mortified {
                     cameraPosition_.y - cameraScale_,
                     cameraPosition_.y + cameraScale_, -1.0f, 1.0f);
             glMatrixMode(GL_MODELVIEW);
+        }
+
+        void testLoadGameObject()
+        {
+            std::auto_ptr<Stream> stream =
+                createStreamFromFile("../../../content/levels/sandbox.xml", "rb");
+
+            int size = stream->seek(0, RW_SEEK_END);
+            stream->seek(0, RW_SEEK_SET);
+            std::vector<char> buffer(size + 1);
+            stream->read(&buffer[0], size);
+            buffer.back() = 0;
+
+            rapidxml::xml_document<> document;
+            document.parse<0>(&buffer[0]);
+            boost::shared_ptr<GameObject> object = createGameObject(game_.get());
+            object->load(document.first_node()->first_node());
         }
     };
 

@@ -9,7 +9,7 @@ namespace mortified {
     class Vector2;
 
     std::auto_ptr<Actor>
-        createCharacterActor(Game *game, Vector2 position, float radius);
+    createCharacterActor(Game *game, Vector2 position, float radius);
 }
 
 #endif
