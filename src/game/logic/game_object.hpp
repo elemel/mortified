@@ -27,7 +27,7 @@ namespace mortified {
         virtual Game const *game() const = 0;
 
         virtual void load(rapidxml::xml_node<> *node) = 0;
-        virtual void save(rapidxml::xml_node<> *node) = 0;
+        virtual void save(rapidxml::xml_node<> *parent) = 0;
 
         virtual ComponentRange components() = 0;
         virtual ConstComponentRange components() const = 0;

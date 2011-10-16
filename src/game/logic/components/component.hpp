@@ -11,7 +11,7 @@ namespace mortified {
 
         virtual const char *type() const = 0;
         virtual void load(rapidxml::xml_node<> *node) = 0;
-        virtual void save(rapidxml::xml_node<> *node) = 0;
+        virtual void save(rapidxml::xml_node<> *parent) = 0;
 
         virtual void update(float dt) = 0;
     };

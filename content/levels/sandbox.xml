@@ -7,18 +7,8 @@
     </position>
     <physics-component>
       <body>
+        <name>block</name>
         <type>dynamic</type>
-        <fixture>
-          <density>1</density>
-          <sensor>true</sensor>
-          <circle>
-            <center>
-              <x>2</x>
-              <y>0</y>
-            </center>
-            <radius>0.5</radius>
-          </circle>
-        </fixture>
         <fixture>
           <density>1</density>
           <polygon>
@@ -41,6 +31,24 @@
           </polygon>
         </fixture>
       </body>
+      <body>
+        <name>wheel</name>
+        <type>dynamic</type>
+        <fixture>
+          <density>1</density>
+          <circle>
+            <center>
+              <x>2</x>
+              <y>0</y>
+            </center>
+            <radius>0.5</radius>
+          </circle>
+        </fixture>
+      </body>
+      <revolute-joint>
+        <body-a>block</body-a>
+        <body-b>wheel</body-b>
+      </revolute-joint>
     </physics-component>
     <skeleton-component>
       <bone/>

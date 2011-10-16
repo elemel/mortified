@@ -37,12 +37,23 @@ namespace mortified {
                         addComponent(component);
                     }
                 }
-                std::cerr << child->name() << " " << child->value() << std::endl;
             }
         }
 
-        void save(rapidxml::xml_node<> *node)
-        { }
+        void save(rapidxml::xml_node<> *parent)
+        {
+            rapidxml::xml_document<> *document = parent->document();
+            rapidxml::xml_node<> *node =
+                document->allocate_node(rapidxml::node_element,
+                                        document->allocate_string("game-object"));
+            parent->append_node(node);
+
+            for (ComponentIterator i = components_.begin();
+                 i != components_.end(); ++i)
+            {
+                (*i)->save(node);
+            }
+        }
 
         ComponentRange components()
         {

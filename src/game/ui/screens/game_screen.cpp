@@ -30,6 +30,7 @@
 #include <iostream>
 #include <stdexcept>
 #include <rapidxml.hpp>
+#include <rapidxml_print.hpp>
 #include <boost/shared_ptr.hpp>
 #include <Box2D/Box2D.h>
 #include <SDL/SDL_opengl.h>
@@ -271,6 +272,14 @@ namespace mortified {
             document.parse<0>(&buffer[0]);
             boost::shared_ptr<GameObject> object = createGameObject(game_.get());
             object->load(document.first_node()->first_node());
+
+            document.clear();
+            rapidxml::xml_node<> *node =
+                document.allocate_node(rapidxml::node_element,
+                                       document.allocate_string("level"));
+            document.append_node(node);
+            object->save(node);
+            std::cerr << document;
         }
     };
 
