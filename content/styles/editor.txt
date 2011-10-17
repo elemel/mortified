@@ -25,10 +25,10 @@ status-bar {
     border: 0, 1, 0, 0;
 }
 
-object-tree {
+object-list {
     border: 0, 0, 1, 0;
 }
 
-property-list {
+component-list {
     border: 1, 0, 0, 0;
 }

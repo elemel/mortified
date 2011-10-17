@@ -1,10 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<level>
-  <game-object>
-    <position>
-      <x>0</x>
-      <y>0</y>
-    </position>
+<document>
+  <object>
+    <transform-component>
+      <position>
+        <x>0</x>
+        <y>0</y>
+      </position>
+    </transform-component>
     <physics-component>
       <body>
         <name>block</name>
@@ -56,5 +58,5 @@
     <graphics-component>
       <sprite/>
     </graphics-component>
-  </game-object>
-</level>
+  </object>
+</document>

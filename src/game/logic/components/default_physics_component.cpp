@@ -175,17 +175,17 @@ namespace mortified {
                  child; child = child->next_sibling())
             {
                 if (child->type() == rapidxml::node_element) {
+                    if (std::strcmp(child->name(), "sensor") == 0) {
+                        def->isSensor = loadBool(child);
+                    }
+                    if (std::strcmp(child->name(), "density") == 0) {
+                        def->density = loadFloat(child);
+                    }
                     if (std::strcmp(child->name(), "friction") == 0) {
                         def->friction = loadFloat(child);
                     }
                     if (std::strcmp(child->name(), "restitution") == 0) {
                         def->restitution = loadFloat(child);
-                    }
-                    if (std::strcmp(child->name(), "density") == 0) {
-                        def->density = loadFloat(child);
-                    }
-                    if (std::strcmp(child->name(), "sensor") == 0) {
-                        def->isSensor = loadBool(child);
                     }
                 }
             }
@@ -380,6 +380,51 @@ namespace mortified {
             saveBodyType(node, "type", body->GetType());
             saveBool(node, "active", body->IsActive());
             saveFloat(node, "gravity-scale", body->GetGravityScale());
+            saveFixtures(node, body);
+        }
+
+        void saveFixtures(rapidxml::xml_node<> *parent, b2Body *body)
+        {
+            for (b2Fixture *fixture = body->GetFixtureList(); fixture;
+                 fixture = fixture->GetNext())
+            {
+                saveFixture(parent, fixture);
+            }
+        }
+
+        void saveFixture(rapidxml::xml_node<> *parent, b2Fixture *fixture)
+        {
+            rapidxml::xml_node<> *node = saveGroup(parent, "fixture");
+            saveBool(node, "sensor", fixture->IsSensor());
+            saveFloat(node, "density", fixture->GetDensity());
+            saveFloat(node, "friction", fixture->GetFriction());
+            saveFloat(node, "restitution", fixture->GetRestitution());
+            saveShape(node, fixture->GetShape());
+        }
+
+        void saveShape(rapidxml::xml_node<> *parent, b2Shape *shape)
+        {
+            if (shape->GetType() == b2Shape::e_circle) {
+                saveCircleShape(parent, static_cast<b2CircleShape *>(shape));
+            }
+            if (shape->GetType() == b2Shape::e_polygon) {
+                savePolygonShape(parent, static_cast<b2PolygonShape *>(shape));
+            }
+        }
+        
+        void saveCircleShape(rapidxml::xml_node<> *parent, b2CircleShape *shape)
+        {
+            rapidxml::xml_node<> *node = saveGroup(parent, "circle");
+            saveVec2(node, "center", shape->m_p);
+            saveFloat(node, "radius", shape->m_radius);
+        }
+
+        void savePolygonShape(rapidxml::xml_node<> *parent, b2PolygonShape *shape)
+        {
+            rapidxml::xml_node<> *node = saveGroup(parent, "polygon");
+            for (int32 i = 0; i < shape->m_vertexCount; ++i) {
+                saveVec2(node, "vertex", shape->m_vertices[i]);
+            }
         }
 
         rapidxml::xml_node<> *

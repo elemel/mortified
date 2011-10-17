@@ -45,7 +45,7 @@ namespace mortified {
             rapidxml::xml_document<> *document = parent->document();
             rapidxml::xml_node<> *node =
                 document->allocate_node(rapidxml::node_element,
-                                        document->allocate_string("game-object"));
+                                        document->allocate_string("object"));
             parent->append_node(node);
 
             for (ComponentIterator i = components_.begin();

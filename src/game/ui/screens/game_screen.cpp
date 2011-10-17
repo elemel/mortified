@@ -276,7 +276,7 @@ namespace mortified {
             document.clear();
             rapidxml::xml_node<> *node =
                 document.allocate_node(rapidxml::node_element,
-                                       document.allocate_string("level"));
+                                       document.allocate_string("document"));
             document.append_node(node);
             object->save(node);
             std::cerr << document;

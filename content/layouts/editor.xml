@@ -6,9 +6,9 @@
       <text name="edit-menu">Edit</label>
     </row>
     <row name="main">
-      <text name="object-tree">Objects</label>
+      <text name="object-list">Objects</label>
       <canvas name="scene"/>
-      <text name="property-list">Properties</label>
+      <text name="component-list">Components</label>
     </row>
     <text name="status-bar">Status</label>
   </column>
