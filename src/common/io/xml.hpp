@@ -37,8 +37,8 @@ namespace mortified {
         rapidxml::xml_document<> *document = parent->document();
         rapidxml::xml_node<> *node =
             document->allocate_node(rapidxml::node_element,
-                                    document->allocate_string(name),
-                                    document->allocate_string(value));
+                                    name ? document->allocate_string(name) : 0,
+                                    value ? document->allocate_string(value) : 0);
         parent->append_node(node);
     }
     

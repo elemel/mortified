@@ -40,6 +40,7 @@ namespace mortified {
         void save(rapidxml::xml_node<> *parent)
         {
             saveBodies(parent);
+            saveJoints(parent);
         }
         
         void update(float dt)
@@ -80,6 +81,7 @@ namespace mortified {
             loadBodyData(&name, &def, node);
             b2Body *body = gameObject_->game()->world()->CreateBody(&def);
             bodies_.push_back(BodyData(this, body, name));
+            setBodyData(body, &bodies_.back());
             loadFixtures(body, node);
         }
 
@@ -285,7 +287,7 @@ namespace mortified {
                 }
             }
 
-            if (bodyA && bodyB) {
+            if (bodyA && bodyB && bodyA != bodyB) {
                 std::string name;
                 b2RevoluteJointDef def;
                 def.Initialize(bodyA, bodyB, anchor);
@@ -293,6 +295,9 @@ namespace mortified {
                      child; child = child->next_sibling())
                 {
                     if (child->type() == rapidxml::node_element) {
+                        if (std::strcmp(child->name(), "name") == 0) {
+                            name = child->value();
+                        }
                         if (std::strcmp(child->name(), "collide-connected") == 0) {
                             def.collideConnected = loadBool(child);
                         }
@@ -318,6 +323,7 @@ namespace mortified {
                 }
                 b2Joint *joint = gameObject_->game()->world()->CreateJoint(&def);
                 joints_.push_back(JointData(this, joint, name));
+                setJointData(joint, &joints_.back());
             }
         }
 
@@ -429,6 +435,44 @@ namespace mortified {
                 saveVec2(node, "vertex", shape->m_vertices[i]);
             }
         }
+        
+        void saveJoints(rapidxml::xml_node<> *parent)
+        {
+            for (JointIterator i = joints_.begin(); i != joints_.end(); ++i) {
+                saveJoint(parent, i->name.c_str(), i->joint);
+            }
+        }
+        
+        void saveJoint(rapidxml::xml_node<> *parent, char const *name,
+                       b2Joint *joint)
+        {
+            if (joint->GetType() == e_revoluteJoint) {
+                saveRevoluteJoint(parent, name,
+                                  static_cast<b2RevoluteJoint *>(joint));
+            }
+        }
+
+        void saveRevoluteJoint(rapidxml::xml_node<> *parent, char const *name,
+                               b2RevoluteJoint *joint)
+        {
+            BodyData *bodyDataA = getBodyData(joint->GetBodyA());
+            BodyData *bodyDataB = getBodyData(joint->GetBodyB());
+            if (bodyDataA && bodyDataB) {
+                b2Vec2 anchor = 0.5 * (joint->GetAnchorA() + joint->GetAnchorB());
+                rapidxml::xml_node<> *node = saveGroup(parent, "revolute-joint");
+                saveString(node, "name", name);
+                saveString(node, "body-a", bodyDataA->name.c_str());
+                saveString(node, "body-b", bodyDataB->name.c_str());
+                saveVec2(node, "anchor", anchor);
+                saveBool(node, "collide-connected", joint->GetCollideConnected());
+                saveBool(node, "limit-enabled", joint->IsLimitEnabled());
+                saveFloat(node, "lower-limit", joint->GetLowerLimit());
+                saveFloat(node, "upper-limit", joint->GetUpperLimit());
+                saveBool(node, "motor-enabled", joint->IsMotorEnabled());
+                saveFloat(node, "motor-speed", joint->GetMotorSpeed());
+                // saveFloat(node, "max-motor-torque", joint->GetMaxMotorTorque());
+            }
+        }
 
         void saveVec2(rapidxml::xml_node<> *parent, char const *name,
                       b2Vec2 vec)
@@ -436,6 +480,26 @@ namespace mortified {
             rapidxml::xml_node<> *node = saveGroup(parent, name);
             saveFloat(node, "x", vec.x);
             saveFloat(node, "y", vec.y);
+        }
+
+        BodyData *getBodyData(b2Body *body)
+        {
+            return reinterpret_cast<BodyData *>(body->GetUserData());
+        }
+
+        void setBodyData(b2Body *body, BodyData *data)
+        {
+            body->SetUserData(data);
+        }
+
+        JointData *getJointData(b2Joint *joint)
+        {
+            return reinterpret_cast<JointData *>(joint->GetUserData());
+        }
+        
+        void setJointData(b2Joint *joint, JointData *data)
+        {
+            joint->SetUserData(data);
         }
     };
 

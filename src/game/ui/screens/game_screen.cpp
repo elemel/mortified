@@ -271,12 +271,25 @@ namespace mortified {
 
             rapidxml::xml_document<> document;
             document.parse<0>(&buffer[0]);
-            boost::shared_ptr<GameObject> object = createGameObject(game_.get());
-            object->load(document.first_node()->first_node());
+            for (rapidxml::xml_node<> *node = document.first_node()->first_node();
+                 node; node = node->next_sibling())
+            {
+                if (node->type() == rapidxml::node_element &&
+                    strcmp(node->name(), "object") == 0)
+                {
+                    boost::shared_ptr<GameObject> object = createGameObject(game_.get());
+                    object->load(node);
+                    game_->addObject(object);
+                }
+            }
 
             document.clear();
             rapidxml::xml_node<> *node = saveGroup(&document, "document");
-            object->save(node);
+            for (Game::ObjectRange r = game_->objects(); r.first != r.second;
+                 ++r.first)
+            {
+                (*r.first)->save(node);
+            }
             std::cerr << document;
         }
     };

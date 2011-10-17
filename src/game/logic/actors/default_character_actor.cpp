@@ -5,7 +5,6 @@
 #include "character_stand_state.hpp"
 #include "game.hpp"
 #include "math.hpp"
-#include "physics_user_data.hpp"
 #include "state.hpp"
 #include "update_handler.hpp"
 
@@ -156,7 +155,6 @@ namespace mortified {
         floorSensorFixtureDef.shape = &floorSensorShape;
         floorSensorFixtureDef.isSensor = true;
         floorSensorFixture_ = wheelBody_->CreateFixture(&floorSensorFixtureDef);
-        setUserData(floorSensorFixture_, this);
 
         b2RevoluteJointDef wheelJointDef;
         wheelJointDef.Initialize(mainBody_, wheelBody_, wheelPosition);
