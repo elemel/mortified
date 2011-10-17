@@ -4,6 +4,7 @@
 #include "default_physics_component.hpp"
 #include "game_object.hpp"
 #include "physics_component.hpp"
+#include "xml.hpp"
 
 #include <cstring>
 
@@ -42,12 +43,7 @@ namespace mortified {
 
         void save(rapidxml::xml_node<> *parent)
         {
-            rapidxml::xml_document<> *document = parent->document();
-            rapidxml::xml_node<> *node =
-                document->allocate_node(rapidxml::node_element,
-                                        document->allocate_string("object"));
-            parent->append_node(node);
-
+            rapidxml::xml_node<> *node = saveGroup(parent, "object");
             for (ComponentIterator i = components_.begin();
                  i != components_.end(); ++i)
             {

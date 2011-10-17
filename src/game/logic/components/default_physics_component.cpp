@@ -3,6 +3,7 @@
 #include "game.hpp"
 #include "game_object.hpp"
 #include "physics_component.hpp"
+#include "xml.hpp"
 
 #include <cstdlib>
 
@@ -320,22 +321,6 @@ namespace mortified {
             }
         }
 
-        bool loadBool(rapidxml::xml_node<> *node)
-        {
-            if (std::strcmp(node->value(), "false") == 0) {
-                return false;
-            }
-            if (std::strcmp(node->value(), "true") == 0) {
-                return true;
-            }
-            return false;
-        }
-
-        float loadFloat(rapidxml::xml_node<> *node)
-        {
-            return float(std::atof(node->value()));
-        }
-
         b2Vec2 loadVec2(rapidxml::xml_node<> *node)
         {
             b2Vec2 vec;
@@ -383,6 +368,24 @@ namespace mortified {
             saveFixtures(node, body);
         }
 
+        void saveBodyType(rapidxml::xml_node<> *parent, char const *name,
+                          b2BodyType type)
+        {
+            switch (type) {
+                case b2_staticBody:
+                    saveString(parent, name, "static");
+                    break;
+                    
+                case b2_kinematicBody:
+                    saveString(parent, name, "kinematic");
+                    break;
+                    
+                case b2_dynamicBody:
+                    saveString(parent, name, "dynamic");
+                    break;
+            }
+        }
+
         void saveFixtures(rapidxml::xml_node<> *parent, b2Body *body)
         {
             for (b2Fixture *fixture = body->GetFixtureList(); fixture;
@@ -427,64 +430,12 @@ namespace mortified {
             }
         }
 
-        rapidxml::xml_node<> *
-        saveGroup(rapidxml::xml_node<> *parent, char const *name)
-        {
-            rapidxml::xml_document<> *document = parent->document();
-            rapidxml::xml_node<> *node =
-                document->allocate_node(rapidxml::node_element,
-                                        document->allocate_string(name));
-            parent->append_node(node);
-            return node;
-        }
-
-        void saveString(rapidxml::xml_node<> *parent, char const *name,
-                        char const *value)
-        {
-            rapidxml::xml_document<> *document = parent->document();
-            rapidxml::xml_node<> *node =
-                document->allocate_node(rapidxml::node_element,
-                                        document->allocate_string(name),
-                                        document->allocate_string(value));
-            parent->append_node(node);
-        }
-
-        void saveBool(rapidxml::xml_node<> *parent, char const *name, bool b)
-        {
-            saveString(parent, name, b ? "true" : "false");
-        }
-
-        void saveFloat(rapidxml::xml_node<> *parent, char const *name, float f)
-        {
-            char buffer[32];
-            sprintf(buffer, "%g", f);
-            saveString(parent, name, buffer);
-        }
-
         void saveVec2(rapidxml::xml_node<> *parent, char const *name,
                       b2Vec2 vec)
         {
             rapidxml::xml_node<> *node = saveGroup(parent, name);
             saveFloat(node, "x", vec.x);
             saveFloat(node, "y", vec.y);
-        }
-
-        void saveBodyType(rapidxml::xml_node<> *parent, char const *name,
-                          b2BodyType type)
-        {
-            switch (type) {
-            case b2_staticBody:
-                saveString(parent, name, "static");
-                break;
-
-            case b2_kinematicBody:
-                saveString(parent, name, "kinematic");
-                break;
-
-            case b2_dynamicBody:
-                saveString(parent, name, "dynamic");
-                break;
-            }
         }
     };
 

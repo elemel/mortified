@@ -25,6 +25,7 @@
 #include "stream.hpp"
 #include "texture.hpp"
 #include "window.hpp"
+#include "xml.hpp"
 
 #include <memory>
 #include <iostream>
@@ -274,10 +275,7 @@ namespace mortified {
             object->load(document.first_node()->first_node());
 
             document.clear();
-            rapidxml::xml_node<> *node =
-                document.allocate_node(rapidxml::node_element,
-                                       document.allocate_string("document"));
-            document.append_node(node);
+            rapidxml::xml_node<> *node = saveGroup(&document, "document");
             object->save(node);
             std::cerr << document;
         }
