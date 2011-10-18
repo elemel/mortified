@@ -39,8 +39,9 @@ namespace mortified {
 
         void save(rapidxml::xml_node<> *parent)
         {
-            saveBodies(parent);
-            saveJoints(parent);
+            rapidxml::xml_node<> *node = saveGroup(parent, "physics-component");
+            saveBodies(node);
+            saveJoints(node);
         }
         
         void update(float dt)
