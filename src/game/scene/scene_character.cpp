@@ -33,7 +33,7 @@ namespace mortified {
         void create()
         {
             std::auto_ptr<Stream> headImageStream =
-                createStreamFromFile("../../../content/images/wizard/head.png", "rb");
+                createStreamFromFile("../../../content/images/mario-head.png", "rb");
             headImage_ = createImage(headImageStream.get());
             headImage_->flipVertical();
             headTexture_ = createTexture(boost::shared_ptr<Context>(), createImageTextureSource(headImage_));

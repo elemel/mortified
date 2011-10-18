@@ -261,7 +261,7 @@ namespace mortified {
         void testLoadGameObject()
         {
             std::auto_ptr<Stream> stream =
-                createStreamFromFile("../../../content/levels/sandbox.xml", "rb");
+                createStreamFromFile("../../../content/objects/wizard.xml", "rb");
 
             int size = stream->seek(0, RW_SEEK_END);
             stream->seek(0, RW_SEEK_SET);
