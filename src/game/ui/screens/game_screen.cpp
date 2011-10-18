@@ -284,7 +284,7 @@ namespace mortified {
             }
 
             document.clear();
-            rapidxml::xml_node<> *node = saveGroup(&document, "document");
+            rapidxml::xml_node<> *node = saveGroup(&document, "group");
             for (Game::ObjectRange r = game_->objects(); r.first != r.second;
                  ++r.first)
             {
