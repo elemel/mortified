@@ -15,7 +15,8 @@ namespace mortified {
         explicit DefaultSprite(boost::shared_ptr<Texture> texture) :
             texture_(texture),
             angle_(0.0f),
-            scale_(1.0f)
+            scale_(1.0f),
+            dirtyVertices_(true)
         { }
 
         Vector2 position() const
@@ -26,6 +27,7 @@ namespace mortified {
         void position(Vector2 position)
         {
             position_ = position;
+            dirtyVertices_ = true;
         }
 
         float angle() const
@@ -36,16 +38,18 @@ namespace mortified {
         void angle(float angle)
         {
             angle_ = angle;
+            dirtyVertices_ = true;
         }
 
-        float scale() const
+        Vector2 scale() const
         {
             return scale_;
         }
 
-        void scale(float scale)
+        void scale(Vector2 scale)
         {
             scale_ = scale;
+            dirtyVertices_ = true;
         }
 
         Vector2 alignment() const
@@ -56,6 +60,7 @@ namespace mortified {
         void alignment(Vector2 alignment)
         {
             alignment_ = alignment;
+            dirtyVertices_ = true;
         }
 
         Color4 color() const
@@ -73,6 +78,7 @@ namespace mortified {
             updateVertices();
 
             glColor4ub(color_.red, color_.green, color_.blue, color_.alpha);
+            glEnable(GL_TEXTURE_2D);
             glBindTexture(GL_TEXTURE_2D, texture_->name());
             glBegin(GL_QUADS);
             {
@@ -90,33 +96,39 @@ namespace mortified {
             }
             glEnd();
             glBindTexture(GL_TEXTURE_2D, 0);
+            glDisable(GL_TEXTURE_2D);
         }
 
     private:
         boost::shared_ptr<Texture> texture_;
         Vector2 position_;
         float angle_;
-        float scale_;
+        Vector2 scale_;
         Vector2 alignment_;
         Color4 color_;
         Vector2 vertices_[4];
+        bool dirtyVertices_;
 
         void updateVertices()
         {
-            int width = texture_->width();
-            int height = texture_->height();
+            if (dirtyVertices_) {
+                Vector2 size(float(texture_->width()),
+                             float(texture_->height()));
+                
+                Matrix3 m;
+                m.translate(position_);
+                m.rotate(angle_);
+                m.scale(scale_);
+                m.translate(Vector2(-alignment_.x * size.x,
+                                    -alignment_.y * size.y));
+                
+                vertices_[0] = m * Vector2(0.0f, 0.0f);
+                vertices_[1] = m * Vector2(size.x, 0.0f);
+                vertices_[2] = m * Vector2(size.x, size.y);
+                vertices_[3] = m * Vector2(0.0f, size.y);
 
-            Matrix3 m;
-            m.translate(position_);
-            m.rotate(angle_);
-            m.scale(scale_);
-            m.translate(Vector2(-alignment_.x * float(width),
-                                -alignment_.y * float(height)));
-
-            vertices_[0] = m * Vector2(0.0f, 0.0f);
-            vertices_[1] = m * Vector2(float(width), 0.0f);
-            vertices_[2] = m * Vector2(float(width), float(height));
-            vertices_[3] = m * Vector2(0.0f, float(height));
+                dirtyVertices_ = false;
+            }
         }
     };
 

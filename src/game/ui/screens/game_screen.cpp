@@ -20,7 +20,6 @@
 #include "physics_draw.hpp"
 #include "platform_actor.hpp"
 #include "scene.hpp"
-#include "scene_character.hpp"
 #include "screen.hpp"
 #include "stream.hpp"
 #include "texture.hpp"
@@ -65,10 +64,6 @@ namespace mortified {
             game_->addActor(heroAsActor);
             game_->hero(heroAsCharacterActor);
             
-            boost::shared_ptr<SceneObject> sceneCharacter =
-                createSceneCharacter(scene_.get(), heroAsCharacterActor);
-            scene_->addObject(sceneCharacter);
-
             testLoadGameObject();
         }
         

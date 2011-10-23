@@ -26,11 +26,6 @@ namespace mortified {
             }
         }
 
-        const char *type() const
-        {
-            return "physics";
-        }
-
         void load(rapidxml::xml_node<> *node)
         {
             loadBodies(node);

@@ -1,8 +1,10 @@
 #include "default_game_object.hpp"
 
 #include "component.hpp"
+#include "default_graphics_component.hpp"
 #include "default_physics_component.hpp"
 #include "game_object.hpp"
+#include "graphics_component.hpp"
 #include "physics_component.hpp"
 #include "xml.hpp"
 
@@ -32,6 +34,11 @@ namespace mortified {
                  child; child = child->next_sibling())
             {
                 if (child->type() == rapidxml::node_element) {
+                    if (std::strcmp(child->name(), "graphics-component") == 0) {
+                        ComponentPtr component = createGraphicsComponent(this);
+                        component->load(child);
+                        addComponent(component);
+                    }
                     if (std::strcmp(child->name(), "physics-component") == 0) {
                         ComponentPtr component = createPhysicsComponent(this);
                         component->load(child);

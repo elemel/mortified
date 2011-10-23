@@ -6,11 +6,6 @@
 namespace mortified {
     class SceneObjectBase : public virtual SceneObject {
     public:
-        void create()
-        { }
-        void destroy()
-        { }
-        
         void update(float dt)
         { }
         

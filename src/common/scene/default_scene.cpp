@@ -14,14 +14,11 @@ namespace mortified {
     public:
         ObjectIterator addObject(ObjectPtr object)
         {
-            ObjectIterator result = objects_.insert(objects_.end(), object);
-            object->create();
-            return result;
+            return objects_.insert(objects_.end(), object);
         }
 
         void removeObject(ObjectIterator object)
         {
-            (*object)->destroy();
             objects_.erase(object);
         }
 

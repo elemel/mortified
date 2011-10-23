@@ -1,18 +1,16 @@
 #include "editor_screen.hpp"
 
 #include "canvas_widget.hpp"
-#include "default_editor_scene.hpp"
 #include "default_font.hpp"
 #include "default_layout_parser.hpp"
-#include "default_polygon_editor_scene_object.hpp"
+#include "default_scene.hpp"
 #include "default_stream.hpp"
 #include "default_style_parser.hpp"
-#include "editor_scene.hpp"
-#include "editor_scene_object.hpp"
 #include "font.hpp"
 #include "geometry.hpp"
 #include "layout_parser.hpp"
-#include "polygon_editor_scene_object.hpp"
+#include "scene.hpp"
+#include "scene_object.hpp"
 #include "screen.hpp"
 #include "stream.hpp"
 #include "style_parser.hpp"
@@ -38,20 +36,7 @@ namespace mortified {
 
         void create()
         {
-            scene_ = createEditorScene();
-            std::auto_ptr<EditorSceneObject> object =
-                createPolygonEditorSceneObject();
-            EditorScene::ObjectIterator iterator = scene_->addObject(object);
-            if (PolygonEditorSceneObject *polygonObject =
-                dynamic_cast<PolygonEditorSceneObject *>(*iterator))
-            {
-                Polygon2 *polygon = polygonObject->polygon();
-                polygon->vertices.push_back(Vector2(0.0f, 0.0f));
-                polygon->vertices.push_back(Vector2(20.0f, 0.0f));
-                polygon->vertices.push_back(Vector2(20.0f, 20.0f));
-                polygon->vertices.push_back(Vector2(0.0f, 20.0f));
-            }
-
+            scene_ = createScene();
             createWidgets();
             createHandlers();
         }
@@ -114,7 +99,7 @@ namespace mortified {
         Window *window_;
         int width_;
         int height_;
-        std::auto_ptr<EditorScene> scene_;
+        std::auto_ptr<Scene> scene_;
         std::auto_ptr<Widget> rootWidget_;
         boost::shared_ptr<Font> font_;
 

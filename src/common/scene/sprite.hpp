@@ -12,11 +12,11 @@ namespace mortified {
         virtual Vector2 position() const = 0;
         virtual void position(Vector2 position) = 0;
 
-        virtual float scale() const = 0;
-        virtual void scale(float scale) = 0;
-
         virtual float angle() const = 0;
         virtual void angle(float angle) = 0;
+        
+        virtual Vector2 scale() const = 0;
+        virtual void scale(Vector2 scale) = 0;
 
         virtual Vector2 alignment() const = 0;
         virtual void alignment(Vector2 alignment) = 0;
