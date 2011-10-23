@@ -8,7 +8,6 @@
 #include "default_game.hpp"
 #include "default_game_object.hpp"
 #include "default_image.hpp"
-#include "default_scene.hpp"
 #include "default_stream.hpp"
 #include "empty_texture_source.hpp"
 #include "framebuffer.hpp"
@@ -50,7 +49,6 @@ namespace mortified {
         {
             game_ = createGame();
             physicsDraw_.reset(new PhysicsDraw);
-            scene_ = createScene();
             
             game_->addActor(createPlatformActor(game_.get(), Vector2(0.0f, -2.0f), Vector2(1.0f, 0.1f), 0.1f));
             game_->addActor(createPlatformActor(game_.get(), Vector2(4.0f, -2.5f), Vector2(1.0f, 0.1f), -0.2f));
@@ -91,7 +89,6 @@ namespace mortified {
             skipFrames(time);
             updateControls();
             updateGame(time);
-            scene_->update(0.0f);
         }
         
         void draw()
@@ -112,7 +109,6 @@ namespace mortified {
         float dt_;
         std::auto_ptr<Game> game_;
         std::auto_ptr<b2Draw> physicsDraw_;
-        std::auto_ptr<Scene> scene_;
         Vector2 cameraPosition_;
         float cameraScale_;
 
@@ -163,15 +159,17 @@ namespace mortified {
         
         void drawScene()
         {
-            applyCamera();
-
-            glClear(GL_COLOR_BUFFER_BIT);
-            glEnable(GL_BLEND);
-            glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-            glEnable(GL_TEXTURE_2D);
-            scene_->draw();
-            glDisable(GL_TEXTURE_2D);
-            glDisable(GL_BLEND);
+            if (Scene *scene = game_->scene()) {
+                applyCamera();
+                
+                glClear(GL_COLOR_BUFFER_BIT);
+                glEnable(GL_BLEND);
+                glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+                glEnable(GL_TEXTURE_2D);
+                scene->draw();
+                glDisable(GL_TEXTURE_2D);
+                glDisable(GL_BLEND);
+            }
         }
         
         void drawSceneToTarget()

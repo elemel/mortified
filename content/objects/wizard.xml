@@ -75,7 +75,31 @@
     </animation-component>
     <graphics-component>
       <sprite>
+        <image>mario-body</image>
+        <alignment>
+          <x>0.5</x>
+          <y>0.5</y>
+        </alignment>
+        <scale>
+          <x>0.1</x>
+          <y>0.1</y>
+        </scale>
+      </sprite>
+      <sprite>
         <image>mario-head</image>
+        <alignment>
+          <x>0.4</x>
+          <y>0.1</y>
+        </alignment>
+        <position>
+          <x>0</x>
+          <y>0.4</y>
+        </position>
+        <angle>0.2</angle>
+        <scale>
+          <x>0.1</x>
+          <y>0.1</y>
+        </scale>
       </sprite>
     </graphics-component>
   </object>

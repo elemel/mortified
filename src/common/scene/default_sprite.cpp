@@ -112,9 +112,9 @@ namespace mortified {
         void updateVertices()
         {
             if (dirtyVertices_) {
+                texture_->create();
                 Vector2 size(float(texture_->width()),
                              float(texture_->height()));
-                
                 Matrix3 m;
                 m.translate(position_);
                 m.rotate(angle_);

@@ -1,8 +1,10 @@
 #include "default_game.hpp"
 
 #include "actor.hpp"
+#include "default_scene.hpp"
 #include "game.hpp"
 #include "physics_contact_listener.hpp"
+#include "scene.hpp"
 
 #include <cassert>
 #include <iostream>
@@ -20,6 +22,7 @@ namespace mortified {
             world_.reset(new b2World(gravity, true));
             contactListener_.reset(new PhysicsContactListener);
             world_->SetContactListener(contactListener_.get());
+            scene_ = createScene();
         }
 
         ~DefaultGame()
@@ -38,6 +41,11 @@ namespace mortified {
         b2World *world()
         {
             return world_.get();
+        }
+        
+        Scene *scene()
+        {
+            return scene_.get();
         }
 
         void update(float dt)
@@ -120,6 +128,7 @@ namespace mortified {
         float time_;
         std::auto_ptr<b2World> world_;
         std::auto_ptr<PhysicsContactListener> contactListener_;
+        std::auto_ptr<Scene> scene_;
         std::vector<Actor *> actors_;
         CharacterActor *hero_;
         ObjectList objects_;

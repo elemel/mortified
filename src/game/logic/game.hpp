@@ -12,6 +12,7 @@ namespace mortified {
     class Actor;
     class CharacterActor;
     class GameObject;
+    class Scene;
 
     class Game {
     public:
@@ -29,6 +30,7 @@ namespace mortified {
         virtual float time() const = 0;
 
         virtual b2World *world() = 0;
+        virtual Scene *scene() = 0;
 
         virtual void update(float dt) = 0;
 
