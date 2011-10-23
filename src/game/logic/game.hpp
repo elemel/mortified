@@ -12,6 +12,7 @@ namespace mortified {
     class Actor;
     class CharacterActor;
     class GameObject;
+    class GraphicsService;
     class Scene;
 
     class Game {
@@ -30,7 +31,6 @@ namespace mortified {
         virtual float time() const = 0;
 
         virtual b2World *world() = 0;
-        virtual Scene *scene() = 0;
 
         virtual void update(float dt) = 0;
 
@@ -45,6 +45,9 @@ namespace mortified {
 
         virtual ObjectIterator addObject(ObjectPtr object) = 0;
         virtual void removeObject(ObjectIterator object) = 0;
+
+        virtual GraphicsService *graphicsService() = 0;
+        virtual GraphicsService const *graphicsService() const = 0;
     };
 }
 

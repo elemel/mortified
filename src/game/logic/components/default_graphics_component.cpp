@@ -7,6 +7,7 @@
 #include "game.hpp"
 #include "game_object.hpp"
 #include "graphics_component.hpp"
+#include "graphics_service.hpp"
 #include "image.hpp"
 #include "image_texture_source.hpp"
 #include "math.hpp"
@@ -102,7 +103,7 @@ namespace mortified {
                 sprite->position(position);
                 sprite->angle(angle);
                 sprite->scale(scale);
-                object_->game()->scene()->addObject(sprite);
+                object_->game()->graphicsService()->scene()->addObject(sprite);
             }
         }
 

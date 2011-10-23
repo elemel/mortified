@@ -1,6 +1,7 @@
 #include "default_game.hpp"
 
 #include "actor.hpp"
+#include "default_graphics_service.hpp"
 #include "default_scene.hpp"
 #include "game.hpp"
 #include "physics_contact_listener.hpp"
@@ -16,13 +17,13 @@ namespace mortified {
     public:
         DefaultGame() :
             time_(0.0f),
-            hero_(0)
+            hero_(0),
+            graphicsService_(createGraphicsService())
         {
             b2Vec2 gravity(0.0f, -15.0f);
             world_.reset(new b2World(gravity, true));
             contactListener_.reset(new PhysicsContactListener);
             world_->SetContactListener(contactListener_.get());
-            scene_ = createScene();
         }
 
         ~DefaultGame()
@@ -43,9 +44,14 @@ namespace mortified {
             return world_.get();
         }
         
-        Scene *scene()
+        GraphicsService *graphicsService()
         {
-            return scene_.get();
+            return graphicsService_.get();
+        }
+        
+        GraphicsService const *graphicsService() const
+        {
+            return graphicsService_.get();
         }
 
         void update(float dt)
@@ -128,7 +134,7 @@ namespace mortified {
         float time_;
         std::auto_ptr<b2World> world_;
         std::auto_ptr<PhysicsContactListener> contactListener_;
-        std::auto_ptr<Scene> scene_;
+        std::auto_ptr<GraphicsService> graphicsService_;
         std::vector<Actor *> actors_;
         CharacterActor *hero_;
         ObjectList objects_;

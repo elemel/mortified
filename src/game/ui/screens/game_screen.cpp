@@ -13,6 +13,7 @@
 #include "framebuffer.hpp"
 #include "game.hpp"
 #include "game_object.hpp"
+#include "graphics_service.hpp"
 #include "image.hpp"
 #include "image_texture_source.hpp"
 #include "math.hpp"
@@ -159,17 +160,12 @@ namespace mortified {
         
         void drawScene()
         {
-            if (Scene *scene = game_->scene()) {
-                applyCamera();
-                
-                glClear(GL_COLOR_BUFFER_BIT);
-                glEnable(GL_BLEND);
-                glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-                glEnable(GL_TEXTURE_2D);
-                scene->draw();
-                glDisable(GL_TEXTURE_2D);
-                glDisable(GL_BLEND);
-            }
+            applyCamera();
+            glClear(GL_COLOR_BUFFER_BIT);
+            glEnable(GL_BLEND);
+            glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+            game_->graphicsService()->scene()->draw();
+            glDisable(GL_BLEND);
         }
         
         void drawSceneToTarget()
