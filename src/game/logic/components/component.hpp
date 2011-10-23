@@ -11,8 +11,6 @@ namespace mortified {
 
         virtual void load(rapidxml::xml_node<> *node) = 0;
         virtual void save(rapidxml::xml_node<> *parent) = 0;
-
-        virtual void update(float dt) = 0;
     };
 }
 

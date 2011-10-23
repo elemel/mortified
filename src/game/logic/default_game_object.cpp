@@ -34,15 +34,13 @@ namespace mortified {
                  child; child = child->next_sibling())
             {
                 if (child->type() == rapidxml::node_element) {
-                    if (std::strcmp(child->name(), "graphics-component") == 0) {
-                        ComponentPtr component = createGraphicsComponent(this);
-                        component->load(child);
-                        addComponent(component);
-                    }
                     if (std::strcmp(child->name(), "physics-component") == 0) {
-                        ComponentPtr component = createPhysicsComponent(this);
-                        component->load(child);
-                        addComponent(component);
+                        physicsComponent_ = createPhysicsComponent(this);
+                        physicsComponent_->load(child);
+                    }
+                    if (std::strcmp(child->name(), "graphics-component") == 0) {
+                        graphicsComponent_ = createGraphicsComponent(this);
+                        graphicsComponent_->load(child);
                     }
                 }
             }
@@ -51,46 +49,39 @@ namespace mortified {
         void save(rapidxml::xml_node<> *parent)
         {
             rapidxml::xml_node<> *node = saveGroup(parent, "object");
-            for (ComponentIterator i = components_.begin();
-                 i != components_.end(); ++i)
-            {
-                (*i)->save(node);
+            if (physicsComponent_.get()) {
+                physicsComponent_->save(node);
+            }
+            if (graphicsComponent_.get()) {
+                graphicsComponent_->save(node);
             }
         }
 
-        ComponentRange components()
+        PhysicsComponent *physicsComponent()
         {
-            return ComponentRange(components_.begin(), components_.end());
-        }
-
-        ConstComponentRange components() const
-        {
-            return ConstComponentRange(components_.begin(), components_.end());
+            return physicsComponent_.get();
         }
         
-        ComponentIterator addComponent(ComponentPtr component)
+        PhysicsComponent const *physicsComponent() const
         {
-            return components_.insert(components_.end(), component);
+            return physicsComponent_.get();
+        }
+        
+        GraphicsComponent *graphicsComponent()
+        {
+            return graphicsComponent_.get();
         }
 
-        void removeComponent(ComponentIterator component)
+        GraphicsComponent const *graphicsComponent() const
         {
-            components_.erase(component);
+            return graphicsComponent_.get();
         }
-
-        void update(float dt)
-        {
-            for (ComponentIterator i = components_.begin();
-                 i != components_.end(); ++i)
-            {
-                (*i)->update(dt);
-            }
-        }
-
+        
     private:
         Game *game_;
         Matrix3 transform_;
-        ComponentList components_;
+        std::auto_ptr<PhysicsComponent> physicsComponent_;
+        std::auto_ptr<GraphicsComponent> graphicsComponent_;
     };
     
     boost::shared_ptr<GameObject>

@@ -35,9 +35,6 @@ namespace mortified {
             saveSprites(node);
         }
         
-        void update(float dt)
-        { }
-        
         void draw()
         { }
 
@@ -64,6 +61,7 @@ namespace mortified {
             Vector2 position;
             float angle = 0.0f;
             Vector2 scale(1.0f);
+            const char *bodyName = 0;
             for (rapidxml::xml_node<> *child = node->first_node();
                  child; child = child->next_sibling())
             {
@@ -82,6 +80,9 @@ namespace mortified {
                     }
                     if (std::strcmp(child->name(), "scale") == 0) {
                         scale = loadVector2(child);
+                    }
+                    if (std::strcmp(child->name(), "body-name") == 0) {
+                        bodyName = child->value();
                     }
                 }
             }
@@ -127,9 +128,9 @@ namespace mortified {
         { }
     };
 
-    boost::shared_ptr<GraphicsComponent>
+    std::auto_ptr<GraphicsComponent>
     createGraphicsComponent(GameObject *object)
     {
-        return boost::shared_ptr<GraphicsComponent>(new DefaultGraphicsComponent(object));
+        return std::auto_ptr<GraphicsComponent>(new DefaultGraphicsComponent(object));
     }
 }

@@ -17,7 +17,7 @@
     </control-component>
     <physics-component>
       <body>
-        <name>main</name>
+        <name>body</name>
         <type>dynamic</type>
         <fixed-rotation>true</fixed-rotation>
         <fixture>
@@ -56,7 +56,7 @@
         </fixture>
       </body>
       <revolute-joint>
-        <body-a-name>main</body-a-name>
+        <body-a-name>body</body-a-name>
         <body-b-name>wheel</body-b-name>
         <anchor>
           <x>0</x>
@@ -84,6 +84,7 @@
           <x>0.1</x>
           <y>0.1</y>
         </scale>
+        <body-name>body</body-name>
       </sprite>
       <sprite>
         <image-name>mario-head</image-name>
@@ -100,6 +101,7 @@
           <x>0.1</x>
           <y>0.1</y>
         </scale>
+        <body-name>body</body-name>
       </sprite>
     </graphics-component>
   </object>

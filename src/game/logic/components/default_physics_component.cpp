@@ -39,9 +39,6 @@ namespace mortified {
             saveJoints(node);
         }
         
-        void update(float dt)
-        { }
-
     private:
         GameObject *gameObject_;
         BodyList bodies_;
@@ -499,9 +496,8 @@ namespace mortified {
         }
     };
 
-    boost::shared_ptr<PhysicsComponent>
-    createPhysicsComponent(GameObject *object)
+    std::auto_ptr<PhysicsComponent> createPhysicsComponent(GameObject *object)
     {
-        return boost::shared_ptr<PhysicsComponent>(new DefaultPhysicsComponent(object));
+        return std::auto_ptr<PhysicsComponent>(new DefaultPhysicsComponent(object));
     }
 }
