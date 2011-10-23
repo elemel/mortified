@@ -68,7 +68,7 @@ namespace mortified {
                  child; child = child->next_sibling())
             {
                 if (child->type() == rapidxml::node_element) {
-                    if (std::strcmp(child->name(), "image") == 0) {
+                    if (std::strcmp(child->name(), "image-name") == 0) {
                         imageName = child->value();
                     }
                     if (std::strcmp(child->name(), "alignment") == 0) {

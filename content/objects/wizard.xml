@@ -56,8 +56,8 @@
         </fixture>
       </body>
       <revolute-joint>
-        <body-a>main</body-a>
-        <body-b>wheel</body-b>
+        <body-a-name>main</body-a-name>
+        <body-b-name>wheel</body-b-name>
         <anchor>
           <x>0</x>
           <y>-0.25</y>
@@ -75,7 +75,7 @@
     </animation-component>
     <graphics-component>
       <sprite>
-        <image>mario-body</image>
+        <image-name>mario-body</image-name>
         <alignment>
           <x>0.5</x>
           <y>0.5</y>
@@ -86,7 +86,7 @@
         </scale>
       </sprite>
       <sprite>
-        <image>mario-head</image>
+        <image-name>mario-head</image-name>
         <alignment>
           <x>0.4</x>
           <y>0.1</y>

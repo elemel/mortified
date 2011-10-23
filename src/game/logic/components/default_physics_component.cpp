@@ -271,10 +271,10 @@ namespace mortified {
                  child; child = child->next_sibling())
             {
                 if (child->type() == rapidxml::node_element) {
-                    if (std::strcmp(child->name(), "body-a") == 0) {
+                    if (std::strcmp(child->name(), "body-a-name") == 0) {
                         bodyA = findBody(child->value());
                     }
-                    if (std::strcmp(child->name(), "body-b") == 0) {
+                    if (std::strcmp(child->name(), "body-b-name") == 0) {
                         bodyB = findBody(child->value());
                     }
                     if (std::strcmp(child->name(), "anchor") == 0) {
