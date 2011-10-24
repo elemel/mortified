@@ -1,10 +1,7 @@
 
 #include "game_screen.hpp"
 
-#include "actor.hpp"
-#include "character_actor.hpp"
 #include "context.hpp"
-#include "default_character_actor.hpp"
 #include "default_game.hpp"
 #include "default_game_object.hpp"
 #include "default_image.hpp"
@@ -18,7 +15,7 @@
 #include "image_texture_source.hpp"
 #include "math.hpp"
 #include "physics_draw.hpp"
-#include "platform_actor.hpp"
+#include "physics_service.hpp"
 #include "scene.hpp"
 #include "screen.hpp"
 #include "stream.hpp"
@@ -49,20 +46,7 @@ namespace mortified {
         void create()
         {
             game_ = createGame();
-            physicsDraw_.reset(new PhysicsDraw);
-            
-            game_->addActor(createPlatformActor(game_.get(), Vector2(0.0f, -2.0f), Vector2(1.0f, 0.1f), 0.1f));
-            game_->addActor(createPlatformActor(game_.get(), Vector2(4.0f, -2.5f), Vector2(1.0f, 0.1f), -0.2f));
-            game_->addActor(createPlatformActor(game_.get(), Vector2(9.0f, -2.0f), Vector2(1.0f, 0.1f), 0.0f));
-            game_->addActor(createPlatformActor(game_.get(), Vector2(13.0f, -1.5f), Vector2(1.0f, 0.1f), -0.1f));
-            game_->addActor(createPlatformActor(game_.get(), Vector2(18.0f, -2.5f), Vector2(1.0f, 0.1f), 0.2f));
-            
-            std::auto_ptr<Actor> heroAsActor =
-                createCharacterActor(game_.get(), Vector2(0.0f, 2.0f), 0.5f);
-            CharacterActor *heroAsCharacterActor = heroAsActor->asCharacterActor();
-            game_->addActor(heroAsActor);
-            game_->hero(heroAsCharacterActor);
-            
+            physicsDraw_.reset(new PhysicsDraw);            
             testLoadGameObject();
         }
         
@@ -88,13 +72,11 @@ namespace mortified {
         {
             float time = 0.001f * SDL_GetTicks();
             skipFrames(time);
-            updateControls();
             updateGame(time);
         }
         
         void draw()
         {
-            updateCamera();
             if (supersample_) {
                 drawSceneToTarget();
                 drawTargetToScreen();
@@ -127,34 +109,11 @@ namespace mortified {
             assert(time - updateTime_ <= 10.0f * dt_);
         }
         
-        void updateControls()
-        {
-            if (CharacterActor *hero = game_->hero()) {
-                Uint8 *state = SDL_GetKeyboardState(NULL);
-                CharacterControls controls;
-                controls.up = state[SDL_SCANCODE_W] | state[SDL_SCANCODE_UP];
-                controls.left = state[SDL_SCANCODE_A] | state[SDL_SCANCODE_LEFT];
-                controls.down = state[SDL_SCANCODE_S] | state[SDL_SCANCODE_DOWN];
-                controls.right = state[SDL_SCANCODE_D] | state[SDL_SCANCODE_RIGHT];
-                controls.jump = state[SDL_SCANCODE_SPACE];
-                hero->controls(&controls);
-            }
-        }
-        
         void updateGame(float time)
         {
             while (time - updateTime_ >= dt_) {
                 updateTime_ += dt_;
                 game_->update(dt_);
-            }
-        }
-        
-        void updateCamera()
-        {
-            if (CharacterActor *hero = game_->hero()) {
-                Vector2 offset = cameraPosition_ - hero->position();
-                offset.clampLength(2.0f);
-                cameraPosition_ = hero->position() + offset;
             }
         }
         
@@ -221,16 +180,14 @@ namespace mortified {
         
         void drawPhysics()
         {
-            if (b2World *world = game_->world()) {
-                applyCamera();
-                
-                glColor3ub(0, 255, 0);
-                b2Transform transform;
-                transform.SetIdentity();
-                physicsDraw_->DrawTransform(transform);
-                world->SetDebugDraw(physicsDraw_.get());
-                world->DrawDebugData();
-            }
+            applyCamera();
+            glColor3ub(0, 255, 0);
+            b2Transform transform;
+            transform.SetIdentity();
+            physicsDraw_->DrawTransform(transform);
+            b2World *world = game_->physicsService()->world();
+            world->SetDebugDraw(physicsDraw_.get());
+            world->DrawDebugData();
         }
 
         void applyCamera()

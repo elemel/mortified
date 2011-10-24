@@ -1,11 +1,10 @@
 #include "default_game.hpp"
 
-#include "actor.hpp"
 #include "default_graphics_service.hpp"
-#include "default_scene.hpp"
+#include "default_physics_service.hpp"
 #include "game.hpp"
-#include "physics_contact_listener.hpp"
-#include "scene.hpp"
+#include "graphics_service.hpp"
+#include "physics_service.hpp"
 
 #include <cassert>
 #include <iostream>
@@ -17,33 +16,25 @@ namespace mortified {
     public:
         DefaultGame() :
             time_(0.0f),
-            hero_(0),
+            physicsService_(createPhysicsService()),
             graphicsService_(createGraphicsService())
-        {
-            b2Vec2 gravity(0.0f, -15.0f);
-            world_.reset(new b2World(gravity, true));
-            contactListener_.reset(new PhysicsContactListener);
-            world_->SetContactListener(contactListener_.get());
-        }
-
-        ~DefaultGame()
-        {
-            while (!actors_.empty()) {
-                assert(actors_.back());
-                removeActor(actors_.back());
-            }
-        }
+        { }
 
         float time() const
         {
             return time_;
         }
 
-        b2World *world()
+        PhysicsService *physicsService()
         {
-            return world_.get();
+            return physicsService_.get();
         }
         
+        PhysicsService const *physicsService() const
+        {
+            return physicsService_.get();
+        }
+
         GraphicsService *graphicsService()
         {
             return graphicsService_.get();
@@ -57,57 +48,8 @@ namespace mortified {
         void update(float dt)
         {
             time_ += dt;
-
-            for (std::size_t i = 0; i < actors_.size(); ++i) {
-                if (actors_[i]) {
-                    actors_[i]->update(dt);
-                }
-            }
-
-            world_->Step(dt, 10, 10);
-
-            std::size_t j = 0;
-            for (std::size_t i = 0; i < actors_.size(); ++i) {
-                if (actors_[i]) {
-                    actors_[j++] = actors_[i];
-                }
-            }
-            actors_.resize(j);
-        }
-
-        void addActor(std::auto_ptr<Actor> actor)
-        {
-            assert(actor.get());
-            actors_.push_back(actor.release());
-            actors_.back()->create();
-        }
-
-        std::auto_ptr<Actor> removeActor(Actor *actor)
-        {
-            assert(actor);
-            for (std::size_t i = actors_.size(); i > 0; --i) {
-                if (actors_[i - 1] == actor) {
-                    actors_[i - 1] = 0;
-                    while (!actors_.empty() && actors_.back() == 0) {
-                        actors_.pop_back();
-                    }
-
-                    std::auto_ptr<Actor> result(actor);
-                    result->destroy();
-                    return result;
-                }
-            }
-            return std::auto_ptr<Actor>();
-        }
-
-        CharacterActor *hero()
-        {
-            return hero_;
-        }
-
-        void hero(CharacterActor *hero)
-        {
-            hero_ = hero;
+            physicsService_->update(dt);
+            graphicsService_->update(dt);
         }
 
         ObjectRange objects()
@@ -132,11 +74,8 @@ namespace mortified {
 
     private:
         float time_;
-        std::auto_ptr<b2World> world_;
-        std::auto_ptr<PhysicsContactListener> contactListener_;
+        std::auto_ptr<PhysicsService> physicsService_;
         std::auto_ptr<GraphicsService> graphicsService_;
-        std::vector<Actor *> actors_;
-        CharacterActor *hero_;
         ObjectList objects_;
     };
 

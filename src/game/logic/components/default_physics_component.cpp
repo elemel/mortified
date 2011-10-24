@@ -3,6 +3,7 @@
 #include "game.hpp"
 #include "game_object.hpp"
 #include "physics_component.hpp"
+#include "physics_service.hpp"
 #include "xml.hpp"
 
 #include <cstdlib>
@@ -17,11 +18,11 @@ namespace mortified {
         ~DefaultPhysicsComponent()
         {
             while (!joints_.empty()) {
-                gameObject_->game()->world()->DestroyJoint(joints_.back().joint);
+                gameObject_->game()->physicsService()->world()->DestroyJoint(joints_.back().joint);
                 joints_.pop_back();
             }
             while (!bodies_.empty()) {
-                gameObject_->game()->world()->DestroyBody(bodies_.back().body);
+                gameObject_->game()->physicsService()->world()->DestroyBody(bodies_.back().body);
                 bodies_.pop_back();
             }
         }
@@ -72,7 +73,7 @@ namespace mortified {
             std::string name;
             b2BodyDef def;
             loadBodyData(&name, &def, node);
-            b2Body *body = gameObject_->game()->world()->CreateBody(&def);
+            b2Body *body = gameObject_->game()->physicsService()->world()->CreateBody(&def);
             bodies_.push_back(BodyData(this, body, name));
             setBodyData(body, &bodies_.back());
             loadFixtures(body, node);
@@ -314,7 +315,7 @@ namespace mortified {
                         }
                     }
                 }
-                b2Joint *joint = gameObject_->game()->world()->CreateJoint(&def);
+                b2Joint *joint = gameObject_->game()->physicsService()->world()->CreateJoint(&def);
                 joints_.push_back(JointData(this, joint, name));
                 setJointData(joint, &joints_.back());
             }

@@ -9,11 +9,9 @@
 #include <boost/shared_ptr.hpp>
 
 namespace mortified {
-    class Actor;
-    class CharacterActor;
     class GameObject;
     class GraphicsService;
-    class Scene;
+    class PhysicsService;
 
     class Game {
     public:
@@ -30,24 +28,19 @@ namespace mortified {
 
         virtual float time() const = 0;
 
-        virtual b2World *world() = 0;
-
         virtual void update(float dt) = 0;
 
-        virtual void addActor(std::auto_ptr<Actor> actor) = 0;
-        virtual std::auto_ptr<Actor> removeActor(Actor *actor) = 0;
-
-        virtual CharacterActor *hero() = 0;
-        virtual void hero(CharacterActor *hero) = 0;
-
+        virtual PhysicsService *physicsService() = 0;
+        virtual PhysicsService const *physicsService() const = 0;
+        
+        virtual GraphicsService *graphicsService() = 0;
+        virtual GraphicsService const *graphicsService() const = 0;
+        
         virtual ObjectRange objects() = 0;
         virtual ConstObjectRange objects() const = 0;
 
         virtual ObjectIterator addObject(ObjectPtr object) = 0;
         virtual void removeObject(ObjectIterator object) = 0;
-
-        virtual GraphicsService *graphicsService() = 0;
-        virtual GraphicsService const *graphicsService() const = 0;
     };
 }
 
