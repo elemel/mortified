@@ -47,7 +47,8 @@ namespace mortified {
         {
             game_ = createGame();
             physicsDraw_.reset(new PhysicsDraw);            
-            testLoadGameObject();
+            loadGame("../../../content/objects/wizard.xml");
+            loadGame("../../../content/objects/level.xml");
         }
         
         void destroy()
@@ -204,10 +205,9 @@ namespace mortified {
             glMatrixMode(GL_MODELVIEW);
         }
 
-        void testLoadGameObject()
+        void loadGame(char const *file)
         {
-            std::auto_ptr<Stream> stream =
-                createStreamFromFile("../../../content/objects/wizard.xml", "rb");
+            std::auto_ptr<Stream> stream = createStreamFromFile(file, "rb");
 
             int size = stream->seek(0, RW_SEEK_END);
             stream->seek(0, RW_SEEK_SET);
@@ -228,8 +228,11 @@ namespace mortified {
                     game_->addObject(object);
                 }
             }
-
-            document.clear();
+        }
+        
+        void saveGame()
+        {
+            rapidxml::xml_document<> document;
             rapidxml::xml_node<> *node = saveGroup(&document, "group");
             for (Game::ObjectRange r = game_->objects(); r.first != r.second;
                  ++r.first)

@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<group>
+  <object>
+    <physics-component>
+      <body>
+        <name>body</name>
+        <type>static</type>
+        <position>
+          <x>0</x>
+          <y>-3</y>
+        </position>
+        <fixture>
+          <polygon>
+            <vertex>
+              <x>-1</x>
+              <y>-0.1</y>
+            </vertex>
+            <vertex>
+              <x>1</x>
+              <y>-0.1</y>
+            </vertex>
+            <vertex>
+              <x>1</x>
+              <y>0.1</y>
+            </vertex>
+            <vertex>
+              <x>-1</x>
+              <y>0.1</y>
+            </vertex>
+          </polygon>
+        </fixture>
+      </body>
+    </physics-component>
+  </object>
+</group>

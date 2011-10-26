@@ -61,7 +61,7 @@ namespace mortified {
 
                 case SDLK_g:
                 case SDLK_SPACE:
-                    window_->addScreen(createGameScreen(window_, false));
+                    window_->addScreen(createGameScreen(window_, true));
                     return true;
 
                 case SDLK_q:
