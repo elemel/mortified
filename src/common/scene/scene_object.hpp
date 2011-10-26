@@ -7,8 +7,6 @@ namespace mortified {
         virtual ~SceneObject()
         { }
         
-        virtual void update(float dt) = 0;
-
         virtual void draw() = 0;
     };
 }

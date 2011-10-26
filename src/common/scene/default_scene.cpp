@@ -8,9 +8,7 @@
 #include <vector>
 
 namespace mortified {
-    class DefaultScene :
-        public virtual Scene
-    {
+    class DefaultScene : public virtual Scene {
     public:
         ObjectIterator addObject(ObjectPtr object)
         {
@@ -20,14 +18,6 @@ namespace mortified {
         void removeObject(ObjectIterator object)
         {
             objects_.erase(object);
-        }
-
-        void update(float dt)
-        {
-            for (ObjectIterator i = objects_.begin(); i != objects_.end(); ++i)
-            {
-                (*i)->update(dt);
-            }
         }
 
         void draw()

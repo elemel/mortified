@@ -6,9 +6,6 @@
 namespace mortified {
     class SceneObjectBase : public virtual SceneObject {
     public:
-        void update(float dt)
-        { }
-        
         void draw()
         { }
     };
