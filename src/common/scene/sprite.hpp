@@ -1,6 +1,8 @@
 #ifndef MORTIFIED_SPRITE_HPP
 #define MORTIFIED_SPRITE_HPP
 
+#include "color.hpp"
+#include "math.hpp"
 #include "scene_object.hpp"
 
 namespace mortified {

@@ -9,6 +9,7 @@
           <x>0</x>
           <y>-3</y>
         </position>
+        <angle>-0.1</angle>
         <fixture>
           <polygon>
             <vertex>

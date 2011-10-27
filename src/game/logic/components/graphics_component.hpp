@@ -4,10 +4,7 @@
 #include "component.hpp"
 
 namespace mortified {
-    class GraphicsComponent : public virtual Component {
-    public:
-        virtual void draw() = 0;
-    };
+    class GraphicsComponent : public virtual Component { };
 }
 
 #endif

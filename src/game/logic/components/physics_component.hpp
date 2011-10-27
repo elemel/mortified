@@ -43,6 +43,8 @@ namespace mortified {
 
         typedef std::list<JointData> JointList;
         typedef JointList::iterator JointIterator;
+
+        virtual b2Body *findBody(char const *name) = 0;
     };
 }
 

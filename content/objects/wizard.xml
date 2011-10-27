@@ -19,7 +19,7 @@
       <body>
         <name>body</name>
         <type>dynamic</type>
-        <fixed-rotation>true</fixed-rotation>
+        <fixed-rotation>false</fixed-rotation>
         <fixture>
           <density>1</density>
           <circle>

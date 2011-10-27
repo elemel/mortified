@@ -11,12 +11,15 @@
 #include "image.hpp"
 #include "image_texture_source.hpp"
 #include "math.hpp"
+#include "physics_component.hpp"
 #include "scene.hpp"
 #include "sprite.hpp"
 #include "stream.hpp"
 #include "texture.hpp"
 #include "texture_source.hpp"
 #include "xml.hpp"
+
+#include <boost/bind.hpp>
 
 namespace mortified {
     class DefaultGraphicsComponent : public virtual GraphicsComponent {
@@ -63,6 +66,7 @@ namespace mortified {
             float angle = 0.0f;
             Vector2 scale(1.0f);
             const char *bodyName = 0;
+            PhysicsComponent *physicsComponent = object_->physicsComponent();
             for (rapidxml::xml_node<> *child = node->first_node();
                  child; child = child->next_sibling())
             {
@@ -92,7 +96,8 @@ namespace mortified {
                 file += "../../../content/images/";
                 file += imageName;
                 file += ".png";
-                std::auto_ptr<Stream> stream = createStreamFromFile(file.c_str(), "rb");
+                std::auto_ptr<Stream> stream =
+                    createStreamFromFile(file.c_str(), "rb");
                 boost::shared_ptr<Image> image = createImage(stream.get());
                 image->flipVertical();
                 boost::shared_ptr<Texture> texture =
@@ -104,6 +109,13 @@ namespace mortified {
                 sprite->angle(angle);
                 sprite->scale(scale);
                 object_->game()->graphicsService()->scene()->addObject(sprite);
+
+                if (bodyName && physicsComponent) {
+                    b2Body *body = physicsComponent->findBody(bodyName);
+                    if (body) {
+                        attachSpriteToBody(sprite.get(), body);
+                    }
+                }
             }
         }
 
@@ -127,6 +139,28 @@ namespace mortified {
 
         void saveSprites(rapidxml::xml_node<> *parent)
         { }
+
+        void attachSpriteToBody(Sprite *sprite, b2Body *body)
+        {
+            Vector2 position = sprite->position();
+            b2Vec2 localPosition = b2MulT(body->GetTransform(),
+                                          b2Vec2(position.x,
+                                                 position.y));
+            float localAngle = sprite->angle() - body->GetAngle();
+            GraphicsService::UpdateHandler handler =
+            boost::bind(&DefaultGraphicsComponent::updateSpriteFromBody,
+                        this, sprite, body, localPosition, localAngle, _1);
+            object_->game()->graphicsService()->addUpdateHandler(handler);
+        }
+
+        void updateSpriteFromBody(Sprite *sprite, b2Body *body,
+                                  b2Vec2 localPosition, float localAngle,
+                                  float dt)
+        {
+            b2Vec2 position = b2Mul(body->GetTransform(), localPosition);
+            sprite->position(Vector2(position.x, position.y));
+            sprite->angle(body->GetAngle() + localAngle);
+        }
     };
 
     std::auto_ptr<GraphicsComponent>

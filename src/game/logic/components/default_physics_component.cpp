@@ -39,11 +39,6 @@ namespace mortified {
             saveBodies(node);
             saveJoints(node);
         }
-        
-    private:
-        GameObject *gameObject_;
-        BodyList bodies_;
-        JointList joints_;
 
         b2Body *findBody(char const *name)
         {
@@ -54,6 +49,11 @@ namespace mortified {
             }
             return 0;
         }
+
+    private:
+        GameObject *gameObject_;
+        BodyList bodies_;
+        JointList joints_;
 
         void loadBodies(rapidxml::xml_node<> *node)
         {
