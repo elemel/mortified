@@ -60,19 +60,19 @@ namespace mortified {
 
         void loadSprite(rapidxml::xml_node<> *node)
         {
-            const char *imageName = 0;
+            const char *imageRef = 0;
             Vector2 alignment;
             Vector2 position;
             float angle = 0.0f;
             Vector2 scale(1.0f);
-            const char *bodyName = 0;
+            const char *bodyRef = 0;
             PhysicsComponent *physicsComponent = object_->physicsComponent();
             for (rapidxml::xml_node<> *child = node->first_node();
                  child; child = child->next_sibling())
             {
                 if (child->type() == rapidxml::node_element) {
-                    if (std::strcmp(child->name(), "image-name") == 0) {
-                        imageName = child->value();
+                    if (std::strcmp(child->name(), "image-ref") == 0) {
+                        imageRef = child->value();
                     }
                     if (std::strcmp(child->name(), "alignment") == 0) {
                         alignment = loadVector2(child);
@@ -86,15 +86,15 @@ namespace mortified {
                     if (std::strcmp(child->name(), "scale") == 0) {
                         scale = loadVector2(child);
                     }
-                    if (std::strcmp(child->name(), "body-name") == 0) {
-                        bodyName = child->value();
+                    if (std::strcmp(child->name(), "body-ref") == 0) {
+                        bodyRef = child->value();
                     }
                 }
             }
-            if (imageName) {
+            if (imageRef) {
                 std::string file;
                 file += "../../../content/images/";
-                file += imageName;
+                file += imageRef;
                 file += ".png";
                 std::auto_ptr<Stream> stream =
                     createStreamFromFile(file.c_str(), "rb");
@@ -110,8 +110,8 @@ namespace mortified {
                 sprite->scale(scale);
                 object_->game()->graphicsService()->scene()->addObject(sprite);
 
-                if (bodyName && physicsComponent) {
-                    b2Body *body = physicsComponent->findBody(bodyName);
+                if (bodyRef && physicsComponent) {
+                    b2Body *body = physicsComponent->findBody(bodyRef);
                     if (body) {
                         attachSpriteToBody(sprite.get(), body);
                     }

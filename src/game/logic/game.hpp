@@ -6,6 +6,7 @@
 #include <list>
 #include <memory>
 #include <utility>
+#include <rapidxml.hpp>
 #include <boost/shared_ptr.hpp>
 
 namespace mortified {
@@ -25,6 +26,9 @@ namespace mortified {
         
         virtual ~Game()
         { }
+
+        virtual void load(char const *file) = 0;
+        virtual void save(char const *file) = 0;
 
         virtual float time() const = 0;
 

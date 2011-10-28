@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<group>
+<module>
   <object>
     <name>wizard</name>
     <input-component>
@@ -56,8 +56,8 @@
         </fixture>
       </body>
       <revolute-joint>
-        <body-a-name>body</body-a-name>
-        <body-b-name>wheel</body-b-name>
+        <body-a-ref>body</body-a-ref>
+        <body-b-ref>wheel</body-b-ref>
         <anchor>
           <x>0</x>
           <y>-0.25</y>
@@ -75,7 +75,7 @@
     </animation-component>
     <graphics-component>
       <sprite>
-        <image-name>mario-body</image-name>
+        <image-ref>mario-body</image-ref>
         <alignment>
           <x>0.5</x>
           <y>0.5</y>
@@ -84,10 +84,10 @@
           <x>0.1</x>
           <y>0.1</y>
         </scale>
-        <body-name>body</body-name>
+        <body-ref>body</body-ref>
       </sprite>
       <sprite>
-        <image-name>mario-head</image-name>
+        <image-ref>mario-head</image-ref>
         <alignment>
           <x>0.4</x>
           <y>0.1</y>
@@ -101,8 +101,8 @@
           <x>0.1</x>
           <y>0.1</y>
         </scale>
-        <body-name>body</body-name>
+        <body-ref>body</body-ref>
       </sprite>
     </graphics-component>
   </object>
-</group>
+</module>

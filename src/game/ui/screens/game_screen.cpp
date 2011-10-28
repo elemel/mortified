@@ -45,10 +45,9 @@ namespace mortified {
         
         void create()
         {
+            physicsDraw_.reset(new PhysicsDraw);
             game_ = createGame();
-            physicsDraw_.reset(new PhysicsDraw);            
-            loadGame("../../../content/objects/wizard.xml");
-            loadGame("../../../content/objects/level.xml");
+            game_->load("../../../content/modules/level.xml");
         }
         
         void destroy()
@@ -203,43 +202,6 @@ namespace mortified {
                     cameraPosition_.y - cameraScale_,
                     cameraPosition_.y + cameraScale_, -1.0f, 1.0f);
             glMatrixMode(GL_MODELVIEW);
-        }
-
-        void loadGame(char const *file)
-        {
-            std::auto_ptr<Stream> stream = createStreamFromFile(file, "rb");
-
-            int size = stream->seek(0, RW_SEEK_END);
-            stream->seek(0, RW_SEEK_SET);
-            std::vector<char> buffer(size + 1);
-            stream->read(&buffer[0], size);
-            buffer.back() = 0;
-
-            rapidxml::xml_document<> document;
-            document.parse<0>(&buffer[0]);
-            for (rapidxml::xml_node<> *node = document.first_node()->first_node();
-                 node; node = node->next_sibling())
-            {
-                if (node->type() == rapidxml::node_element &&
-                    strcmp(node->name(), "object") == 0)
-                {
-                    boost::shared_ptr<GameObject> object = createGameObject(game_.get());
-                    object->load(node);
-                    game_->addObject(object);
-                }
-            }
-        }
-        
-        void saveGame()
-        {
-            rapidxml::xml_document<> document;
-            rapidxml::xml_node<> *node = saveGroup(&document, "group");
-            for (Game::ObjectRange r = game_->objects(); r.first != r.second;
-                 ++r.first)
-            {
-                (*r.first)->save(node);
-            }
-            std::cerr << document;
         }
     };
 
