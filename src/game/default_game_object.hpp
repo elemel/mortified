@@ -9,7 +9,6 @@ namespace mortified {
     class Game;
     class GameObject;
 
-    boost::shared_ptr<GameObject>
-    createGameObject(Game *game, Matrix3 transform = Matrix3());
+    boost::shared_ptr<GameObject> createGameObject(Game *game);
 }
 #endif

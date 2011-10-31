@@ -50,6 +50,15 @@ namespace mortified {
             return 0;
         }
 
+        b2RevoluteJoint *findRevoluteJoint(char const *name)
+        {
+            b2Joint *joint = findJoint(name);
+            if (joint && joint->GetType() == e_revoluteJoint) {
+                return static_cast<b2RevoluteJoint *>(joint);
+            }
+            return 0;
+        }
+
     private:
         GameObject *gameObject_;
         BodyList bodies_;
@@ -494,6 +503,16 @@ namespace mortified {
         void setJointData(b2Joint *joint, JointData *data)
         {
             joint->SetUserData(data);
+        }
+
+        b2Joint *findJoint(char const *name)
+        {
+            for (JointIterator i = joints_.begin(); i != joints_.end(); ++i) {
+                if (i->name == name) {
+                    return i->joint;
+                }
+            }
+            return 0;
         }
     };
 

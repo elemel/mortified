@@ -19,7 +19,7 @@ namespace mortified {
         DefaultPhysicsService()
         {
             b2Vec2 gravity(0.0f, -15.0f);
-            world_.reset(new b2World(gravity, true));
+            world_.reset(new b2World(gravity));
             contactListener_.reset(new DefaultContactListener);
             world_->SetContactListener(contactListener_.get());
         }        

@@ -8,6 +8,7 @@
 
 namespace mortified {
     class Game;
+    class ControlComponent;
     class GraphicsComponent;
     class PhysicsComponent;
     
@@ -21,6 +22,9 @@ namespace mortified {
 
         virtual void load(rapidxml::xml_node<> *node) = 0;
         virtual void save(rapidxml::xml_node<> *parent) = 0;
+
+        virtual ControlComponent *controlComponent() = 0;
+        virtual ControlComponent const *controlComponent() const = 0;
 
         virtual PhysicsComponent *physicsComponent() = 0;
         virtual PhysicsComponent const *physicsComponent() const = 0;

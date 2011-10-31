@@ -1,5 +1,7 @@
 #include "default_game.hpp"
 
+#include "control_service.hpp"
+#include "default_control_service.hpp"
 #include "default_game_object.hpp"
 #include "default_graphics_service.hpp"
 #include "default_physics_service.hpp"
@@ -21,6 +23,7 @@ namespace mortified {
     public:
         DefaultGame() :
             time_(0.0f),
+            controlService_(createControlService()),
             physicsService_(createPhysicsService()),
             graphicsService_(createGraphicsService())
         { }
@@ -63,6 +66,16 @@ namespace mortified {
             return time_;
         }
 
+        ControlService *controlService()
+        {
+            return controlService_.get();
+        }
+        
+        ControlService const *controlService() const
+        {
+            return controlService_.get();
+        }
+
         PhysicsService *physicsService()
         {
             return physicsService_.get();
@@ -86,6 +99,7 @@ namespace mortified {
         void update(float dt)
         {
             time_ += dt;
+            controlService_->update(dt);
             physicsService_->update(dt);
             graphicsService_->update(dt);
         }
@@ -112,6 +126,7 @@ namespace mortified {
 
     private:
         float time_;
+        std::auto_ptr<ControlService> controlService_;
         std::auto_ptr<PhysicsService> physicsService_;
         std::auto_ptr<GraphicsService> graphicsService_;
         ObjectList objects_;

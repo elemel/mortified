@@ -2,24 +2,16 @@
 <module>
   <object>
     <name>wizard</name>
-    <input-component>
-      <bool-input>
-        <name>jump</name>
-      </bool-input>
-      <bool-input>
-        <name>left</name>
-      </bool-input>
-      <bool-input>
-        <name>right</name>
-      </bool-input>
-    </input-component>
     <control-component>
+      <state-machine>
+        <state-ref>character-stand</state-ref>
+      </state-machine>
     </control-component>
     <physics-component>
       <body>
         <name>body</name>
         <type>dynamic</type>
-        <fixed-rotation>false</fixed-rotation>
+        <fixed-rotation>true</fixed-rotation>
         <fixture>
           <density>1</density>
           <circle>
@@ -56,6 +48,7 @@
         </fixture>
       </body>
       <revolute-joint>
+        <name>motor</name>
         <body-a-ref>body</body-a-ref>
         <body-b-ref>wheel</body-b-ref>
         <anchor>
@@ -64,15 +57,6 @@
         </anchor>
       </revolute-joint>
     </physics-component>
-    <collision-component>
-    </collision-component>
-    <skeleton-component>
-      <bone>
-        <name>back</name>
-      </bone>
-    </skeleton-component>
-    <animation-component>
-    </animation-component>
     <graphics-component>
       <sprite>
         <image-ref>mario-body</image-ref>

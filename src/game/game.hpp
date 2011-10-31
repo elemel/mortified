@@ -10,6 +10,7 @@
 #include <boost/shared_ptr.hpp>
 
 namespace mortified {
+    class ControlService;
     class GameObject;
     class GraphicsService;
     class PhysicsService;
@@ -33,6 +34,9 @@ namespace mortified {
         virtual float time() const = 0;
 
         virtual void update(float dt) = 0;
+
+        virtual ControlService *controlService() = 0;
+        virtual ControlService const *controlService() const = 0;
 
         virtual PhysicsService *physicsService() = 0;
         virtual PhysicsService const *physicsService() const = 0;

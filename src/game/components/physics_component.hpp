@@ -45,6 +45,7 @@ namespace mortified {
         typedef JointList::iterator JointIterator;
 
         virtual b2Body *findBody(char const *name) = 0;
+        virtual b2RevoluteJoint *findRevoluteJoint(char const *name) = 0;
     };
 }
 
