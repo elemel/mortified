@@ -106,8 +106,8 @@ namespace mortified {
         
     private:
         Game *game_;
-        std::auto_ptr<ControlComponent> controlComponent_;
         std::auto_ptr<PhysicsComponent> physicsComponent_;
+        std::auto_ptr<ControlComponent> controlComponent_;
         std::auto_ptr<GraphicsComponent> graphicsComponent_;
     };
     
