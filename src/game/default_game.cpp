@@ -5,11 +5,13 @@
 #include "default_game_object.hpp"
 #include "default_graphics_service.hpp"
 #include "default_physics_service.hpp"
+#include "default_property_service.hpp"
 #include "default_stream.hpp"
 #include "game.hpp"
 #include "game_object.hpp"
 #include "graphics_service.hpp"
 #include "physics_service.hpp"
+#include "property_service.hpp"
 #include "stream.hpp"
 #include "xml.hpp"
 
@@ -23,6 +25,7 @@ namespace mortified {
     public:
         DefaultGame() :
             time_(0.0f),
+            propertyService_(createPropertyService()),
             controlService_(createControlService()),
             physicsService_(createPhysicsService()),
             graphicsService_(createGraphicsService())
@@ -65,6 +68,16 @@ namespace mortified {
         {
             return time_;
         }
+
+        PropertyService *propertyService()
+        {
+            return propertyService_.get();
+        }
+
+        PropertyService const *propertyService() const
+        {
+            return propertyService_.get();
+        }        
 
         ControlService *controlService()
         {
@@ -126,6 +139,7 @@ namespace mortified {
 
     private:
         float time_;
+        std::auto_ptr<PropertyService> propertyService_;
         std::auto_ptr<ControlService> controlService_;
         std::auto_ptr<PhysicsService> physicsService_;
         std::auto_ptr<GraphicsService> graphicsService_;

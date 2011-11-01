@@ -4,13 +4,13 @@
 #include <list>
 #include <utility>
 #include <rapidxml.hpp>
-#include <boost/shared_ptr.hpp>
 
 namespace mortified {
     class Game;
     class ControlComponent;
     class GraphicsComponent;
     class PhysicsComponent;
+    class PropertyComponent;
     
     class GameObject {
     public:
@@ -22,6 +22,9 @@ namespace mortified {
 
         virtual void load(rapidxml::xml_node<> *node) = 0;
         virtual void save(rapidxml::xml_node<> *parent) = 0;
+
+        virtual PropertyComponent *propertyComponent() = 0;
+        virtual PropertyComponent const *propertyComponent() const = 0;
 
         virtual ControlComponent *controlComponent() = 0;
         virtual ControlComponent const *controlComponent() const = 0;

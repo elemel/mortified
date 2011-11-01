@@ -2,6 +2,20 @@
 <module>
   <object>
     <name>wizard</name>
+    <property-component>
+      <property>
+        <name>left-input</name>
+        <value>false</value>
+      </property>
+      <property>
+        <name>right-input</name>
+        <value>false</value>
+      </property>
+      <property>
+        <name>jump-input</name>
+        <value>false</value>
+      </property>
+    </property-component>
     <control-component>
       <state-machine>
         <state-ref>character-stand</state-ref>

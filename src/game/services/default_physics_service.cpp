@@ -18,6 +18,7 @@ namespace mortified {
     public:
         DefaultPhysicsService()
         {
+            // TODO: Load physics config from XML.
             b2Vec2 gravity(0.0f, -15.0f);
             world_.reset(new b2World(gravity));
             contactListener_.reset(new DefaultContactListener);

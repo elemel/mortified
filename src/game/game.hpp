@@ -14,6 +14,7 @@ namespace mortified {
     class GameObject;
     class GraphicsService;
     class PhysicsService;
+    class PropertyService;
 
     class Game {
     public:
@@ -34,6 +35,9 @@ namespace mortified {
         virtual float time() const = 0;
 
         virtual void update(float dt) = 0;
+
+        virtual PropertyService *propertyService() = 0;
+        virtual PropertyService const *propertyService() const = 0;
 
         virtual ControlService *controlService() = 0;
         virtual ControlService const *controlService() const = 0;

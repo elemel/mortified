@@ -5,9 +5,11 @@
 #include "default_control_component.hpp"
 #include "default_graphics_component.hpp"
 #include "default_physics_component.hpp"
+#include "default_property_component.hpp"
 #include "game_object.hpp"
 #include "graphics_component.hpp"
 #include "physics_component.hpp"
+#include "property_component.hpp"
 #include "xml.hpp"
 
 #include <cstring>
@@ -31,6 +33,7 @@ namespace mortified {
 
         void load(rapidxml::xml_node<> *node)
         {
+            rapidxml::xml_node<> *propertyNode = 0;
             rapidxml::xml_node<> *controlNode = 0;
             rapidxml::xml_node<> *physicsNode = 0;
             rapidxml::xml_node<> *graphicsNode = 0;
@@ -38,6 +41,9 @@ namespace mortified {
                  child; child = child->next_sibling())
             {
                 if (child->type() == rapidxml::node_element) {
+                    if (std::strcmp(child->name(), "property-component") == 0) {
+                        propertyNode = child;
+                    }
                     if (std::strcmp(child->name(), "control-component") == 0) {
                         controlNode = child;
                     }
@@ -48,6 +54,10 @@ namespace mortified {
                         graphicsNode = child;
                     }
                 }
+            }
+            if (propertyNode) {
+                propertyComponent_ = createPropertyComponent(this);
+                propertyComponent_->load(propertyNode);
             }
             if (physicsNode) {
                 physicsComponent_ = createPhysicsComponent(this);
@@ -72,6 +82,16 @@ namespace mortified {
             if (graphicsComponent_.get()) {
                 graphicsComponent_->save(node);
             }
+        }
+
+        PropertyComponent *propertyComponent()
+        {
+            return propertyComponent_.get();
+        }
+        
+        PropertyComponent const *propertyComponent() const
+        {
+            return propertyComponent_.get();
         }
 
         ControlComponent *controlComponent()
@@ -106,6 +126,7 @@ namespace mortified {
         
     private:
         Game *game_;
+        std::auto_ptr<PropertyComponent> propertyComponent_;
         std::auto_ptr<PhysicsComponent> physicsComponent_;
         std::auto_ptr<ControlComponent> controlComponent_;
         std::auto_ptr<GraphicsComponent> graphicsComponent_;
