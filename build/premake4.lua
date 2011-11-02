@@ -7,7 +7,8 @@ solution "mortified"
         files { "../src/**.hpp", "../src/**.cpp" }
         includedirs {
             "../src/**", "../ext/boost/include", "../ext/Box2D/include",
-            "../ext/rapidxml/include", "../ext/SDL/include"
+            "../ext/elemel/include", "../ext/rapidxml/include",
+            "../ext/SDL/include"
         }
         libdirs { "../ext/Box2D/lib", "../ext/SDL/lib" }
         links { "Box2D", "SDL", "SDL_image", "SDL_ttf" }

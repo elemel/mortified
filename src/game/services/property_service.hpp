@@ -3,12 +3,15 @@
 
 #include "service.hpp"
 
-namespace mortified {
-    class Type;
+#include <elemel/string_ptr.hpp>
+#include <elemel/type.hpp>
 
+namespace mortified {
     class PropertyService : public virtual Service {
     public:
-        virtual Type validateProperty(char const *name) const = 0;
+        typedef std::pair<char const *, elemel::type> PropertyPair;
+
+        virtual PropertyPair findProperty(char const *name) const = 0;
     };
 }
 

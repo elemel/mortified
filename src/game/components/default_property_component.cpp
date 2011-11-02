@@ -4,20 +4,21 @@
 #include "actor.hpp"
 #include "property_component.hpp"
 #include "property_service.hpp"
-#include "type.hpp"
 #include "xml.hpp"
 
-#include <map>
 #include <stdexcept>
+#include <vector>
 #include <boost/variant.hpp>
+#include <elemel/type.hpp>
 
 namespace mortified {
     class DefaultPropertyComponent : public virtual PropertyComponent {
     public:
-        typedef boost::variant<boost::blank, bool, int, float, std::string>
+        typedef boost::variant<boost::blank, bool, int, float, elemel::string_ptr>
             PropertyValue;
-        typedef std::map<std::string, PropertyValue> PropertyMap;
-        typedef PropertyMap::iterator PropertyIterator;
+        typedef std::pair<char const *, PropertyValue> PropertyPair;
+        typedef std::vector<PropertyPair> PropertyVector;
+        typedef PropertyVector::iterator PropertyIterator;
 
         explicit DefaultPropertyComponent(Actor *actor) :
             actor_(actor),
@@ -47,15 +48,15 @@ namespace mortified {
             return bind<float>(name);
         }
 
-        std::string *bindString(char const *name)
+        elemel::string_ptr *bindString(char const *name)
         {
-            return bind<std::string>(name);
+            return bind<elemel::string_ptr>(name);
         }
 
     private:
         Actor *actor_;
         PropertyService *propertyService_;
-        PropertyMap properties_;
+        PropertyVector properties_;
 
         void loadProperties(rapidxml::xml_node<> *node)
         {
@@ -87,30 +88,43 @@ namespace mortified {
                 }
             }
             if (name && valueNode) {
-                Type type = propertyService_->validateProperty(name);
-                if (type == typeid(bool)) {
-                    properties_[name] = loadBool(valueNode);
+                PropertyService::PropertyPair def = propertyService_->findProperty(name);
+                if (def.first == 0) {
+                    throw std::runtime_error(std::string("No property named \"") + name + "\".");
                 }
-                if (type == typeid(int)) {
-                    properties_[name] = loadInt(valueNode);
+                PropertyValue value;
+                if (def.second == typeid(bool)) {
+                    value = loadBool(valueNode);
                 }
-                if (type == typeid(float)) {
-                    properties_[name] = loadFloat(valueNode);
+                if (def.second == typeid(int)) {
+                    value = loadInt(valueNode);
                 }
-                if (type == typeid(std::string)) {
-                    properties_[name] = std::string(valueNode->value());
+                if (def.second == typeid(float)) {
+                    value = loadFloat(valueNode);
                 }
+                if (def.second == typeid(elemel::string_ptr)) {
+                    value = elemel::string_ptr(valueNode->value());
+                }
+                properties_.push_back(PropertyPair(name, value));
             }
         }
 
         template <typename T>
         T *bind(char const *name)
         {
-            PropertyIterator i = properties_.find(name);
-            if (i == properties_.end()) {
+            PropertyIterator found = properties_.end();
+            for (PropertyIterator i = properties_.begin();
+                 i != properties_.end(); ++i)
+            {
+                if (std::strcmp(i->first, name) == 0) {
+                    found = i;
+                    break;
+                }
+            }
+            if (found == properties_.end()) {
                 throw std::runtime_error(std::string("No property named \"") + name + "\".");
             }
-            T *result = boost::get<T>(&i->second);
+            T *result = boost::get<T>(&found->second);
             if (result == 0) {
                 throw std::runtime_error(std::string("Wrong type for property \"") + name + "\".");
             }

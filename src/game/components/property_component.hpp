@@ -3,7 +3,7 @@
 
 #include "component.hpp"
 
-#include <string>
+#include <elemel/string_ptr.hpp>
 
 namespace mortified {
     class PropertyComponent : public virtual Component {
@@ -11,7 +11,7 @@ namespace mortified {
         virtual bool *bindBool(char const *name) = 0;
         virtual int *bindInt(char const *name) = 0;
         virtual float *bindFloat(char const *name) = 0;
-        virtual std::string *bindString(char const *name) = 0;
+        virtual elemel::string_ptr *bindString(char const *name) = 0;
     };
 }
 

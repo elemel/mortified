@@ -1,32 +1,41 @@
 #include "default_property_service.hpp"
 
 #include "property_service.hpp"
-#include "type.hpp"
 
+#include <map>
 #include <stdexcept>
 #include <string>
+#include <elemel/const_string.hpp>
 
 namespace mortified {
     class DefaultPropertyService : public virtual PropertyService {
     public:
+        typedef std::map<elemel::const_string, elemel::type> PropertyMap;
+        typedef PropertyMap::const_iterator ConstPropertyIterator;
+
+        DefaultPropertyService()
+        {
+            // TODO: Load config from XML.
+            properties_["left-input"] = typeid(bool);
+            properties_["right-input"] = typeid(bool);
+            properties_["jump-input"] = typeid(bool);
+        }
+
         void update(float dt)
         { }
 
-        Type validateProperty(char const *name) const
+        PropertyPair findProperty(char const *name) const
         {
-            // TODO: Load property config from XML.
-            if (std::strcmp(name, "left-input") == 0) {
-                return typeid(bool);
+            elemel::const_string key(name, elemel::by_ref);
+            ConstPropertyIterator i = properties_.find(key);
+            if (i == properties_.end()) {
+                return PropertyPair(0, elemel::type());
             }
-            if (std::strcmp(name, "right-input") == 0) {
-                return typeid(bool);
-            }
-            if (std::strcmp(name, "jump-input") == 0) {
-                return typeid(bool);
-            }
-            throw std::runtime_error(std::string("Invalid property name \"") +
-                                     name + "\".");
+            return PropertyPair(i->first.data(), i->second);
         }
+
+    private:
+        PropertyMap properties_;
     };
     
     std::auto_ptr<PropertyService> createPropertyService()
