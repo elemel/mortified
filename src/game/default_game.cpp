@@ -2,13 +2,13 @@
 
 #include "control_service.hpp"
 #include "default_control_service.hpp"
-#include "default_game_object.hpp"
+#include "default_actor.hpp"
 #include "default_graphics_service.hpp"
 #include "default_physics_service.hpp"
 #include "default_property_service.hpp"
 #include "default_stream.hpp"
 #include "game.hpp"
-#include "game_object.hpp"
+#include "actor.hpp"
 #include "graphics_service.hpp"
 #include "physics_service.hpp"
 #include "property_service.hpp"
@@ -58,7 +58,7 @@ namespace mortified {
         {
             rapidxml::xml_document<> document;
             rapidxml::xml_node<> *node = saveGroup(&document, "group");
-            for (ObjectIterator i = objects_.begin(); i != objects_.end(); ++i)
+            for (ActorIterator i = actors_.begin(); i != actors_.end(); ++i)
             {
                 (*i)->save(node);
             }
@@ -117,24 +117,24 @@ namespace mortified {
             graphicsService_->update(dt);
         }
 
-        ObjectRange objects()
+        ActorRange actors()
         {
-            return ObjectRange(objects_.begin(), objects_.end());
+            return ActorRange(actors_.begin(), actors_.end());
         }
 
-        ConstObjectRange objects() const
+        ConstActorRange actors() const
         {
-            return ConstObjectRange(objects_.begin(), objects_.end());
+            return ConstActorRange(actors_.begin(), actors_.end());
         }
         
-        ObjectIterator addObject(ObjectPtr object)
+        ActorIterator addActor(ActorPtr actor)
         {
-            return objects_.insert(objects_.end(), object);
+            return actors_.insert(actors_.end(), actor);
         }
 
-        void removeObject(ObjectIterator object)
+        void removeActor(ActorIterator actor)
         {
-            objects_.erase(object);
+            actors_.erase(actor);
         }
 
     private:
@@ -143,7 +143,7 @@ namespace mortified {
         std::auto_ptr<ControlService> controlService_;
         std::auto_ptr<PhysicsService> physicsService_;
         std::auto_ptr<GraphicsService> graphicsService_;
-        ObjectList objects_;
+        ActorList actors_;
 
         void loadGroup(rapidxml::xml_node<> *node)
         {
@@ -161,11 +161,10 @@ namespace mortified {
                         file += ".xml";
                         load(file.c_str());
                     }
-                    if (strcmp(child->name(), "object") == 0) {
-                        boost::shared_ptr<GameObject> object =
-                        createGameObject(this);
-                        object->load(child);
-                        addObject(object);
+                    if (strcmp(child->name(), "actor") == 0) {
+                        ActorPtr actor = createActor(this);
+                        actor->load(child);
+                        addActor(actor);
                     }
                 }
             }

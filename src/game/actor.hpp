@@ -1,5 +1,5 @@
-#ifndef MORTIFIED_GAME_OBJECT_HPP
-#define MORTIFIED_GAME_OBJECT_HPP
+#ifndef MORTIFIED_ACTOR_HPP
+#define MORTIFIED_ACTOR_HPP
 
 #include <list>
 #include <utility>
@@ -12,9 +12,9 @@ namespace mortified {
     class PhysicsComponent;
     class PropertyComponent;
     
-    class GameObject {
+    class Actor {
     public:
-        virtual ~GameObject()
+        virtual ~Actor()
         { }
         
         virtual Game *game() = 0;

@@ -1,7 +1,7 @@
 #include "default_property_component.hpp"
 
 #include "game.hpp"
-#include "game_object.hpp"
+#include "actor.hpp"
 #include "property_component.hpp"
 #include "property_service.hpp"
 #include "type.hpp"
@@ -19,9 +19,9 @@ namespace mortified {
         typedef std::map<std::string, PropertyValue> PropertyMap;
         typedef PropertyMap::iterator PropertyIterator;
 
-        explicit DefaultPropertyComponent(GameObject *object) :
-            object_(object),
-            propertyService_(object->game()->propertyService())
+        explicit DefaultPropertyComponent(Actor *actor) :
+            actor_(actor),
+            propertyService_(actor->game()->propertyService())
         { }
 
         void load(rapidxml::xml_node<> *node)
@@ -53,7 +53,7 @@ namespace mortified {
         }
 
     private:
-        GameObject *object_;
+        Actor *actor_;
         PropertyService *propertyService_;
         PropertyMap properties_;
 
@@ -118,8 +118,8 @@ namespace mortified {
         }
     };
 
-    std::auto_ptr<PropertyComponent> createPropertyComponent(GameObject *object)
+    std::auto_ptr<PropertyComponent> createPropertyComponent(Actor *actor)
     {
-        return std::auto_ptr<PropertyComponent>(new DefaultPropertyComponent(object));
+        return std::auto_ptr<PropertyComponent>(new DefaultPropertyComponent(actor));
     }
 }

@@ -7,9 +7,6 @@
 #include <boost/function.hpp>
 
 namespace mortified {
-    class GameObject;
-    class Scene;
-    
     class ControlService : public virtual Service {
     public:
         typedef boost::function<void (float)> UpdateHandler;

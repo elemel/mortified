@@ -1,4 +1,4 @@
-#include "default_game_object.hpp"
+#include "default_actor.hpp"
 
 #include "component.hpp"
 #include "control_component.hpp"
@@ -6,7 +6,7 @@
 #include "default_graphics_component.hpp"
 #include "default_physics_component.hpp"
 #include "default_property_component.hpp"
-#include "game_object.hpp"
+#include "actor.hpp"
 #include "graphics_component.hpp"
 #include "physics_component.hpp"
 #include "property_component.hpp"
@@ -15,9 +15,9 @@
 #include <cstring>
 
 namespace mortified {
-    class DefaultGameObject : public virtual GameObject {
+    class DefaultActor : public virtual Actor {
     public:
-        explicit DefaultGameObject(Game *game) :
+        explicit DefaultActor(Game *game) :
             game_(game)
         { }
 
@@ -132,9 +132,8 @@ namespace mortified {
         std::auto_ptr<GraphicsComponent> graphicsComponent_;
     };
     
-    boost::shared_ptr<GameObject>
-    createGameObject(Game *game)
+    boost::shared_ptr<Actor> createActor(Game *game)
     {
-        return boost::shared_ptr<GameObject>(new DefaultGameObject(game));
+        return boost::shared_ptr<Actor>(new DefaultActor(game));
     }
 }

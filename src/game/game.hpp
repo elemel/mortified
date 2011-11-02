@@ -10,21 +10,21 @@
 #include <boost/shared_ptr.hpp>
 
 namespace mortified {
+    class Actor;
     class ControlService;
-    class GameObject;
     class GraphicsService;
     class PhysicsService;
     class PropertyService;
 
     class Game {
     public:
-        typedef boost::shared_ptr<GameObject> ObjectPtr;
-        typedef std::list<ObjectPtr> ObjectList;
-        typedef ObjectList::iterator ObjectIterator;
-        typedef ObjectList::const_iterator ConstObjectIterator;
-        typedef std::pair<ObjectIterator, ObjectIterator> ObjectRange;
-        typedef std::pair<ConstObjectIterator, ConstObjectIterator>
-            ConstObjectRange;
+        typedef boost::shared_ptr<Actor> ActorPtr;
+        typedef std::list<ActorPtr> ActorList;
+        typedef ActorList::iterator ActorIterator;
+        typedef ActorList::const_iterator ConstActorIterator;
+        typedef std::pair<ActorIterator, ActorIterator> ActorRange;
+        typedef std::pair<ConstActorIterator, ConstActorIterator>
+            ConstActorRange;
         
         virtual ~Game()
         { }
@@ -48,11 +48,11 @@ namespace mortified {
         virtual GraphicsService *graphicsService() = 0;
         virtual GraphicsService const *graphicsService() const = 0;
         
-        virtual ObjectRange objects() = 0;
-        virtual ConstObjectRange objects() const = 0;
+        virtual ActorRange actors() = 0;
+        virtual ConstActorRange actors() const = 0;
 
-        virtual ObjectIterator addObject(ObjectPtr object) = 0;
-        virtual void removeObject(ObjectIterator object) = 0;
+        virtual ActorIterator addActor(ActorPtr actor) = 0;
+        virtual void removeActor(ActorIterator actor) = 0;
     };
 }
 

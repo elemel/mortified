@@ -4,10 +4,10 @@
 #include <memory>
 
 namespace mortified {
-    class GameObject;
+    class Actor;
     class PhysicsComponent;
 
-    std::auto_ptr<PhysicsComponent> createPhysicsComponent(GameObject *object);
+    std::auto_ptr<PhysicsComponent> createPhysicsComponent(Actor *actor);
 }
 
 #endif

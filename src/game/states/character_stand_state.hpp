@@ -4,10 +4,10 @@
 #include <memory>
 
 namespace mortified {
-    class GameObject;
+    class Actor;
     class State;
 
-    std::auto_ptr<State> createCharacterStandState(GameObject *object);
+    std::auto_ptr<State> createCharacterStandState(Actor *actor);
 }
 
 #endif

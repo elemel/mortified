@@ -5,7 +5,7 @@
 #include "default_stream.hpp"
 #include "default_texture.hpp"
 #include "game.hpp"
-#include "game_object.hpp"
+#include "actor.hpp"
 #include "graphics_component.hpp"
 #include "graphics_service.hpp"
 #include "image.hpp"
@@ -24,8 +24,9 @@
 namespace mortified {
     class DefaultGraphicsComponent : public virtual GraphicsComponent {
     public:
-        explicit DefaultGraphicsComponent(GameObject *object) :
-            object_(object)
+        explicit DefaultGraphicsComponent(Actor *actor) :
+            actor_(actor),
+            graphicsService_(actor->game()->graphicsService())
         { }
 
         void load(rapidxml::xml_node<> *node)
@@ -43,7 +44,8 @@ namespace mortified {
         { }
 
     private:
-        GameObject *object_;
+        Actor *actor_;
+        GraphicsService *graphicsService_;
 
         void loadSprites(rapidxml::xml_node<> *node)
         {
@@ -66,7 +68,7 @@ namespace mortified {
             float angle = 0.0f;
             Vector2 scale(1.0f);
             const char *bodyRef = 0;
-            PhysicsComponent *physicsComponent = object_->physicsComponent();
+            PhysicsComponent *physicsComponent = actor_->physicsComponent();
             for (rapidxml::xml_node<> *child = node->first_node();
                  child; child = child->next_sibling())
             {
@@ -108,7 +110,7 @@ namespace mortified {
                 sprite->position(position);
                 sprite->angle(angle);
                 sprite->scale(scale);
-                object_->game()->graphicsService()->scene()->addObject(sprite);
+                graphicsService_->scene()->addObject(sprite);
 
                 if (bodyRef && physicsComponent) {
                     b2Body *body = physicsComponent->findBody(bodyRef);
@@ -150,7 +152,7 @@ namespace mortified {
             GraphicsService::UpdateHandler handler =
             boost::bind(&DefaultGraphicsComponent::updateSpriteFromBody,
                         this, sprite, body, localPosition, localAngle, _1);
-            object_->game()->graphicsService()->addUpdateHandler(handler);
+            graphicsService_->addUpdateHandler(handler);
         }
 
         void updateSpriteFromBody(Sprite *sprite, b2Body *body,
@@ -163,9 +165,8 @@ namespace mortified {
         }
     };
 
-    std::auto_ptr<GraphicsComponent>
-    createGraphicsComponent(GameObject *object)
+    std::auto_ptr<GraphicsComponent> createGraphicsComponent(Actor *actor)
     {
-        return std::auto_ptr<GraphicsComponent>(new DefaultGraphicsComponent(object));
+        return std::auto_ptr<GraphicsComponent>(new DefaultGraphicsComponent(actor));
     }
 }

@@ -1,7 +1,7 @@
 #include "default_physics_component.hpp"
 
 #include "game.hpp"
-#include "game_object.hpp"
+#include "actor.hpp"
 #include "physics_component.hpp"
 #include "physics_service.hpp"
 #include "xml.hpp"
@@ -11,18 +11,19 @@
 namespace mortified {
     class DefaultPhysicsComponent : public virtual PhysicsComponent {
     public:
-        explicit DefaultPhysicsComponent(GameObject *object) :
-            gameObject_(object)
+        explicit DefaultPhysicsComponent(Actor *actor) :
+            actor_(actor),
+            physicsService_(actor->game()->physicsService())
         { }
         
         ~DefaultPhysicsComponent()
         {
             while (!joints_.empty()) {
-                gameObject_->game()->physicsService()->world()->DestroyJoint(joints_.back().joint);
+                physicsService_->world()->DestroyJoint(joints_.back().joint);
                 joints_.pop_back();
             }
             while (!bodies_.empty()) {
-                gameObject_->game()->physicsService()->world()->DestroyBody(bodies_.back().body);
+                physicsService_->world()->DestroyBody(bodies_.back().body);
                 bodies_.pop_back();
             }
         }
@@ -60,7 +61,8 @@ namespace mortified {
         }
 
     private:
-        GameObject *gameObject_;
+        Actor *actor_;
+        PhysicsService *physicsService_;
         BodyList bodies_;
         JointList joints_;
 
@@ -82,7 +84,7 @@ namespace mortified {
             std::string name;
             b2BodyDef def;
             loadBodyData(&name, &def, node);
-            b2Body *body = gameObject_->game()->physicsService()->world()->CreateBody(&def);
+            b2Body *body = physicsService_->world()->CreateBody(&def);
             bodies_.push_back(BodyData(this, body, name));
             setBodyData(body, &bodies_.back());
             loadFixtures(body, node);
@@ -324,7 +326,7 @@ namespace mortified {
                         }
                     }
                 }
-                b2Joint *joint = gameObject_->game()->physicsService()->world()->CreateJoint(&def);
+                b2Joint *joint = physicsService_->world()->CreateJoint(&def);
                 joints_.push_back(JointData(this, joint, name));
                 setJointData(joint, &joints_.back());
             }
@@ -516,8 +518,8 @@ namespace mortified {
         }
     };
 
-    std::auto_ptr<PhysicsComponent> createPhysicsComponent(GameObject *object)
+    std::auto_ptr<PhysicsComponent> createPhysicsComponent(Actor *actor)
     {
-        return std::auto_ptr<PhysicsComponent>(new DefaultPhysicsComponent(object));
+        return std::auto_ptr<PhysicsComponent>(new DefaultPhysicsComponent(actor));
     }
 }

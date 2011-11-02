@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <module>
-  <object>
+  <actor>
     <physics-component>
       <body>
         <name>body</name>
@@ -32,6 +32,6 @@
         </fixture>
       </body>
     </physics-component>
-  </object>
+  </actor>
   <module-ref>wizard</module-ref>
 </module>

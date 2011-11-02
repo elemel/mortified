@@ -1,15 +1,15 @@
 #include "character_stand_state.hpp"
 
-#include "game_object.hpp"
+#include "actor.hpp"
 #include "physics_component.hpp"
 #include "state.hpp"
 
 namespace mortified {
     class CharacterStandState : public virtual State {
     public:
-        explicit CharacterStandState(GameObject *object) :
-            object_(object),
-            physicsComponent_(object->physicsComponent())
+        explicit CharacterStandState(Actor *actor) :
+            actor_(actor),
+            physicsComponent_(actor->physicsComponent())
         { }
 
         void enter()
@@ -34,12 +34,12 @@ namespace mortified {
         }
 
     private:
-        GameObject *object_;
+        Actor *actor_;
         PhysicsComponent *physicsComponent_;
     };
 
-    std::auto_ptr<State> createCharacterStandState(GameObject *object)
+    std::auto_ptr<State> createCharacterStandState(Actor *actor)
     {
-        return std::auto_ptr<State>(new CharacterStandState(object));
+        return std::auto_ptr<State>(new CharacterStandState(actor));
     }
 }

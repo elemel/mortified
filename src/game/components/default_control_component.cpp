@@ -4,7 +4,7 @@
 #include "control_component.hpp"
 #include "control_service.hpp"
 #include "game.hpp"
-#include "game_object.hpp"
+#include "actor.hpp"
 #include "state.hpp"
 #include "xml.hpp"
 
@@ -28,9 +28,9 @@ namespace mortified {
         typedef std::list<StateData> StateList;
         typedef StateList::iterator StateIterator;
 
-        explicit DefaultControlComponent(GameObject *object) :
-            object_(object),
-            controlService_(object->game()->controlService())
+        explicit DefaultControlComponent(Actor *actor) :
+            actor_(actor),
+            controlService_(actor->game()->controlService())
         { }
 
         ~DefaultControlComponent()
@@ -54,7 +54,7 @@ namespace mortified {
         }
 
     private:
-        GameObject *object_;
+        Actor *actor_;
         ControlService *controlService_;
         StateList states_;
 
@@ -112,15 +112,15 @@ namespace mortified {
         std::auto_ptr<State> createState(char const *name)
         {
             if (std::strcmp(name, "character-stand") == 0) {
-                return createCharacterStandState(object_);
+                return createCharacterStandState(actor_);
             }
             throw std::runtime_error(std::string("Failed to create state \"") +
                                      name + "\".");
         }        
     };
 
-    std::auto_ptr<ControlComponent> createControlComponent(GameObject *object)
+    std::auto_ptr<ControlComponent> createControlComponent(Actor *actor)
     {
-        return std::auto_ptr<ControlComponent>(new DefaultControlComponent(object));
+        return std::auto_ptr<ControlComponent>(new DefaultControlComponent(actor));
     }
 }

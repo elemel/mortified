@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <module>
-  <object>
+  <actor>
     <name>wizard</name>
     <property-component>
       <property>
@@ -102,5 +102,5 @@
         <body-ref>body</body-ref>
       </sprite>
     </graphics-component>
-  </object>
+  </actor>
 </module>
