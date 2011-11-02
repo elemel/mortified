@@ -1,5 +1,5 @@
-#ifndef MORTIFIED_GRAPHICS_OBJECT_HPP
-#define MORTIFIED_GRAPHICS_OBJECT_HPP
+#ifndef MORTIFIED_GRAPHICS_RESOURCE_HPP
+#define MORTIFIED_GRAPHICS_RESOURCE_HPP
 
 #include <list>
 #include <boost/shared_ptr.hpp>
@@ -9,18 +9,18 @@ namespace mortified {
     class Framebuffer;
     class Texture;
 
-    class GraphicsObject {
+    class GraphicsResource {
     public:
-        typedef std::list<GraphicsObject *> ChildList;
-        typedef std::list<GraphicsObject *>::iterator ChildIterator;
+        typedef std::list<GraphicsResource *> ChildList;
+        typedef std::list<GraphicsResource *>::iterator ChildIterator;
         typedef std::pair<ChildIterator, ChildIterator> ChildRange;
-        typedef boost::shared_ptr<GraphicsObject> ParentPtr;
+        typedef boost::shared_ptr<GraphicsResource> ParentPtr;
         typedef std::pair<ParentPtr, ChildIterator> ParentPair;
         typedef std::list<ParentPair> ParentList;
         typedef std::list<ParentPair>::iterator ParentIterator;
         typedef std::pair<ParentIterator, ParentIterator> ParentRange;
         
-        virtual ~GraphicsObject()
+        virtual ~GraphicsResource()
         { }
 
         virtual bool exists() const = 0;
@@ -41,7 +41,7 @@ namespace mortified {
         virtual ParentRange parents() = 0;
         virtual ChildRange children() = 0;
 
-        virtual ChildIterator addChild(GraphicsObject *child) = 0;
+        virtual ChildIterator addChild(GraphicsResource *child) = 0;
         virtual void removeChild(ChildIterator child) = 0;
     };
 }

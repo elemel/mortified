@@ -2,7 +2,7 @@
 
 #include "context.hpp"
 #include "default_texture.hpp"
-#include "graphics_object_base.hpp"
+#include "graphics_resource_base.hpp"
 #include "texture.hpp"
 
 #include <boost/enable_shared_from_this.hpp>
@@ -13,7 +13,7 @@ namespace mortified {
     class DefaultContext :
         public virtual Context,
         public virtual boost::enable_shared_from_this<DefaultContext>,
-        private virtual GraphicsObjectBase
+        private virtual GraphicsResourceBase
     {
     public:
         explicit DefaultContext(SDL_Window *window, bool multisample) :

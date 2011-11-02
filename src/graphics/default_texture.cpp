@@ -3,7 +3,7 @@
 #include "context.hpp"
 #include "framebuffer.hpp"
 #include "default_framebuffer.hpp"
-#include "graphics_object_base.hpp"
+#include "graphics_resource_base.hpp"
 #include "texture.hpp"
 #include "texture_source.hpp"
 
@@ -14,7 +14,7 @@ namespace mortified {
     class DefaultTexture :
         public virtual Texture,
         public virtual boost::enable_shared_from_this<DefaultTexture>,
-        private virtual GraphicsObjectBase
+        private virtual GraphicsResourceBase
     {
     public:
         DefaultTexture(boost::shared_ptr<Context> context,

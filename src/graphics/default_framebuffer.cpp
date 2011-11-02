@@ -1,7 +1,7 @@
 #include "default_framebuffer.hpp"
 
 #include "framebuffer.hpp"
-#include "graphics_object_base.hpp"
+#include "graphics_resource_base.hpp"
 #include "texture.hpp"
 
 #include <SDL/SDL_opengl.h>
@@ -9,7 +9,7 @@
 namespace mortified {
     class DefaultFramebuffer :
         public virtual Framebuffer,
-        private virtual GraphicsObjectBase
+        private virtual GraphicsResourceBase
     {
     public:
         explicit DefaultFramebuffer(boost::shared_ptr<Texture> texture) :
