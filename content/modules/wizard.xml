@@ -70,6 +70,7 @@
           <x>0</x>
           <y>-0.25</y>
         </anchor>
+        <max-motor-torque>10</max-motor-torque>
       </revolute-joint>
     </physics-component>
     <graphics-component>

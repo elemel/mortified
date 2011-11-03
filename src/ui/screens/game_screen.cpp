@@ -27,8 +27,6 @@
 #include <memory>
 #include <iostream>
 #include <stdexcept>
-#include <rapidxml.hpp>
-#include <rapidxml_print.hpp>
 #include <boost/shared_ptr.hpp>
 #include <Box2D/Box2D.h>
 #include <SDL/SDL_opengl.h>
@@ -53,6 +51,7 @@ namespace mortified {
         
         void destroy()
         {
+            game_->save("../../../content/modules/save.xml");
             targetFramebuffer_.reset();
             targetTexture_.reset();
         }

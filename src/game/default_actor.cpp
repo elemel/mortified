@@ -84,7 +84,13 @@ namespace mortified {
 
         void save(rapidxml::xml_node<> *parent)
         {
-            rapidxml::xml_node<> *node = saveGroup(parent, "object");
+            rapidxml::xml_node<> *node = saveGroup(parent, "actor");
+            if (propertyComponent_.get()) {
+                propertyComponent_->save(node);
+            }
+            if (controlComponent_.get()) {
+                controlComponent_->save(node);
+            }
             if (physicsComponent_.get()) {
                 physicsComponent_->save(node);
             }

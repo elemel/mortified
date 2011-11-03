@@ -16,8 +16,11 @@
 #include "xml.hpp"
 
 #include <cassert>
+#include <fstream>
 #include <iostream>
 #include <vector>
+#include <rapidxml.hpp>
+#include <rapidxml_print.hpp>
 #include <Box2D/Box2D.h>
 
 namespace mortified {
@@ -62,6 +65,8 @@ namespace mortified {
             {
                 (*i)->save(node);
             }
+            std::ofstream out(file);
+            out << document;
         }
 
         float time() const

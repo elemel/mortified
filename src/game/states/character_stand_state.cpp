@@ -34,7 +34,6 @@ namespace mortified {
         void enter()
         {
             motorJoint_->EnableMotor(true);
-            motorJoint_->SetMaxMotorTorque(50.0);
         }
 
         void leave()

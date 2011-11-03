@@ -475,7 +475,7 @@ namespace mortified {
                 saveFloat(node, "upper-limit", joint->GetUpperLimit());
                 saveBool(node, "motor-enabled", joint->IsMotorEnabled());
                 saveFloat(node, "motor-speed", joint->GetMotorSpeed());
-                // saveFloat(node, "max-motor-torque", joint->GetMaxMotorTorque());
+                saveFloat(node, "max-motor-torque", joint->GetMaxMotorTorque());
             }
         }
 

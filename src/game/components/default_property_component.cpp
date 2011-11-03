@@ -31,7 +31,10 @@ namespace mortified {
         }
 
         void save(rapidxml::xml_node<> *parent)
-        { }
+        {
+            rapidxml::xml_node<> *node = saveGroup(parent, "property-component");
+            saveProperties(node);
+        }
 
         bool *findBool(char const *name)
         {
@@ -106,6 +109,37 @@ namespace mortified {
                     value = elemel::string_ptr(valueNode->value());
                 }
                 properties_.push_back(PropertyPair(def.first, value));
+            }
+        }
+
+        void saveProperties(rapidxml::xml_node<> *parent)
+        {
+            for (PropertyIterator i = properties_.begin();
+                 i != properties_.end(); ++i)
+            {
+                rapidxml::xml_node<> *node = saveGroup(parent, "property");
+                saveProperty(node, &*i);
+            }
+        }
+
+        void saveProperty(rapidxml::xml_node<> *parent, PropertyPair const *property)
+        {
+            saveString(parent, "name", property->first);
+            bool const *b = boost::get<bool>(&property->second);
+            int const *i = boost::get<int>(&property->second);
+            float const *f = boost::get<float>(&property->second);
+            elemel::string_ptr const *s = boost::get<elemel::string_ptr>(&property->second);
+            if (b) {
+                saveBool(parent, "value", *b);
+            }
+            if (i) {
+                saveInt(parent, "value", *i);
+            }
+            if (f) {
+                saveFloat(parent, "value", *f);
+            }
+            if (s) {
+                saveString(parent, "value", s->data());
             }
         }
 
