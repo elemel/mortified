@@ -137,6 +137,17 @@ namespace mortified {
             actors_.erase(actor);
         }
 
+        ActorPtr findActor(char const *name)
+        {
+            for (ActorIterator i = actors_.begin(); i != actors_.end(); ++i) {
+                char const *actorName = (*i)->name();
+                if (actorName && std::strcmp(actorName, name) == 0) {
+                    return *i;
+                }
+            }
+            return ActorPtr();
+        }
+
     private:
         float time_;
         std::auto_ptr<PropertyService> propertyService_;

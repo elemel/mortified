@@ -42,6 +42,7 @@
         <type>dynamic</type>
         <fixture>
           <density>1</density>
+          <friction>5</friction>
           <circle>
             <center>
               <x>0</x>

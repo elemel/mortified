@@ -13,6 +13,7 @@
 #include "xml.hpp"
 
 #include <cstring>
+#include <string>
 
 namespace mortified {
     class DefaultActor : public virtual Actor {
@@ -21,6 +22,11 @@ namespace mortified {
             game_(game)
         { }
 
+        char const *name() const
+        {
+            return name_.empty() ? 0 : name_.c_str();
+        }
+        
         Game *game()
         {
             return game_;
@@ -41,6 +47,9 @@ namespace mortified {
                  child; child = child->next_sibling())
             {
                 if (child->type() == rapidxml::node_element) {
+                    if (std::strcmp(child->name(), "name") == 0) {
+                        name_ = child->value();
+                    }
                     if (std::strcmp(child->name(), "property-component") == 0) {
                         propertyNode = child;
                     }
@@ -125,6 +134,7 @@ namespace mortified {
         }
         
     private:
+        std::string name_;
         Game *game_;
         std::auto_ptr<PropertyComponent> propertyComponent_;
         std::auto_ptr<PhysicsComponent> physicsComponent_;

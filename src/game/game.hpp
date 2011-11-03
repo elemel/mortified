@@ -53,6 +53,8 @@ namespace mortified {
 
         virtual ActorIterator addActor(ActorPtr actor) = 0;
         virtual void removeActor(ActorIterator actor) = 0;
+
+        virtual ActorPtr findActor(char const *name) = 0;
     };
 }
 

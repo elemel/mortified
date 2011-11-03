@@ -16,7 +16,9 @@ namespace mortified {
     public:
         virtual ~Actor()
         { }
-        
+
+        virtual char const *name() const = 0;
+
         virtual Game *game() = 0;
         virtual Game const *game() const = 0;
 

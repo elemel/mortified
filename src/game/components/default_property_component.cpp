@@ -33,24 +33,24 @@ namespace mortified {
         void save(rapidxml::xml_node<> *parent)
         { }
 
-        bool *bindBool(char const *name)
+        bool *findBool(char const *name)
         {
-            return bind<bool>(name);
+            return findAs<bool>(name);
         }
 
-        int *bindInt(char const *name)
+        int *findInt(char const *name)
         {
-            return bind<int>(name);
+            return findAs<int>(name);
         }
 
-        float *bindFloat(char const *name)
+        float *findFloat(char const *name)
         {
-            return bind<float>(name);
+            return findAs<float>(name);
         }
 
-        elemel::string_ptr *bindString(char const *name)
+        elemel::string_ptr *findString(char const *name)
         {
-            return bind<elemel::string_ptr>(name);
+            return findAs<elemel::string_ptr>(name);
         }
 
     private:
@@ -105,30 +105,34 @@ namespace mortified {
                 if (def.second == typeid(elemel::string_ptr)) {
                     value = elemel::string_ptr(valueNode->value());
                 }
-                properties_.push_back(PropertyPair(name, value));
+                properties_.push_back(PropertyPair(def.first, value));
             }
         }
 
         template <typename T>
-        T *bind(char const *name)
+        T *findAs(char const *name)
         {
-            PropertyIterator found = properties_.end();
-            for (PropertyIterator i = properties_.begin();
-                 i != properties_.end(); ++i)
-            {
-                if (std::strcmp(i->first, name) == 0) {
-                    found = i;
-                    break;
-                }
+            PropertyValue *value = find(name);
+            if (value == 0) {
+                return 0;
             }
-            if (found == properties_.end()) {
-                throw std::runtime_error(std::string("No property named \"") + name + "\".");
-            }
-            T *result = boost::get<T>(&found->second);
+            T *result = boost::get<T>(value);
             if (result == 0) {
                 throw std::runtime_error(std::string("Wrong type for property \"") + name + "\".");
             }
             return result;
+        }
+
+        PropertyValue *find(char const *name)
+        {
+            for (PropertyIterator i = properties_.begin();
+                 i != properties_.end(); ++i)
+            {
+                if (std::strcmp(i->first, name) == 0) {
+                    return &i->second;
+                }
+            }
+            return 0;
         }
     };
 

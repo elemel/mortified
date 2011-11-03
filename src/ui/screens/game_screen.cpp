@@ -16,6 +16,7 @@
 #include "math.hpp"
 #include "physics_draw.hpp"
 #include "physics_service.hpp"
+#include "property_component.hpp"
 #include "scene.hpp"
 #include "screen.hpp"
 #include "stream.hpp"
@@ -72,6 +73,7 @@ namespace mortified {
         {
             float time = 0.001f * SDL_GetTicks();
             skipFrames(time);
+            updateInput();
             updateGame(time);
         }
         
@@ -108,7 +110,39 @@ namespace mortified {
             }
             assert(time - updateTime_ <= 10.0f * dt_);
         }
-        
+
+        void updateInput()
+        {
+            Game::ActorPtr actor = game_->findActor("wizard");
+            if (actor) {
+                PropertyComponent *component = actor->propertyComponent();
+                if (component) {
+                    bool *upInput = component->findBool("up-input");
+                    bool *leftInput = component->findBool("left-input");
+                    bool *downInput = component->findBool("down-input");
+                    bool *rightInput = component->findBool("right-input");
+                    bool *jumpInput = component->findBool("jump-input");
+
+                    Uint8 *state = SDL_GetKeyboardState(0);
+                    if (upInput) {
+                        *upInput = bool(state[SDL_SCANCODE_W]) | bool(state[SDL_SCANCODE_UP]);
+                    }
+                    if (leftInput) {
+                        *leftInput = bool(state[SDL_SCANCODE_A]) | bool(state[SDL_SCANCODE_LEFT]);
+                    }
+                    if (downInput) {
+                        *downInput = bool(state[SDL_SCANCODE_S]) | bool(state[SDL_SCANCODE_DOWN]);
+                    }
+                    if (rightInput) {
+                        *rightInput = bool(state[SDL_SCANCODE_D]) | bool(state[SDL_SCANCODE_RIGHT]);
+                    }
+                    if (jumpInput) {
+                        *jumpInput = bool(state[SDL_SCANCODE_SPACE]);
+                    }
+                }
+            }
+        }
+
         void updateGame(float time)
         {
             while (time - updateTime_ >= dt_) {
