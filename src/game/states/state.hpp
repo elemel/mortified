@@ -1,19 +1,19 @@
 #ifndef MORTIFIED_STATE_HPP
 #define MORTIFIED_STATE_HPP
 
-#include <memory>
-
 namespace mortified {
     class State {
     public:
         virtual ~State()
         { }
 
+        virtual char const *name() const = 0;
+
         virtual void enter() = 0;
         virtual void leave() = 0;
 
         virtual void update(float dt) = 0;
-        virtual std::auto_ptr<State> transition() = 0;
+        virtual char const *transition() = 0;
     };
 }
 

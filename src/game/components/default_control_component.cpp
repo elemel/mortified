@@ -1,6 +1,7 @@
 #include "default_control_component.hpp"
 
 #include "character_stand_state.hpp"
+#include "character_walk_state.hpp"
 #include "control_component.hpp"
 #include "control_service.hpp"
 #include "game.hpp"
@@ -96,16 +97,30 @@ namespace mortified {
         }
         
         void saveStateMachines(rapidxml::xml_node<> *parent)
-        { }
-        
+        {
+            for (StateIterator i = states_.begin(); i != states_.end(); ++i) {
+                saveStateMachine(parent, i->state.get());
+            }
+        }
+
+        void saveStateMachine(rapidxml::xml_node<> *parent, State *state)
+        {
+            for (StateIterator i = states_.begin(); i != states_.end(); ++i) {
+                rapidxml::xml_node<> *node = saveGroup(parent, "state-machine");
+                saveString(node, "state-ref", state->name());
+            }
+        }
+
         void updateStateMachine(StateData *data, float dt)
         {
             data->state->update(dt);
-            StatePtr newState = StatePtr(data->state->transition());
-            if (newState) {
+            char const *name = data->state->transition();
+            if (name) {
+                StatePtr newState(createState(name));
                 data->state->leave();
                 data->state = newState;
                 data->state->enter();
+                std::cerr << name << std::endl;
             }
         }
 
@@ -113,6 +128,9 @@ namespace mortified {
         {
             if (std::strcmp(name, "character-stand") == 0) {
                 return createCharacterStandState(actor_);
+            }
+            if (std::strcmp(name, "character-walk") == 0) {
+                return createCharacterWalkState(actor_);
             }
             throw std::runtime_error(std::string("Failed to create state \"") +
                                      name + "\".");

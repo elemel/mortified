@@ -1,4 +1,4 @@
-#include "character_stand_state.hpp"
+#include "character_walk_state.hpp"
 
 #include "actor.hpp"
 #include "physics_component.hpp"
@@ -10,9 +10,9 @@
 #include <stdexcept>
 
 namespace mortified {
-    class CharacterStandState : public virtual State {
+    class CharacterWalkState : public virtual State {
     public:
-        explicit CharacterStandState(Actor *actor) :
+        explicit CharacterWalkState(Actor *actor) :
             actor_(actor),
             propertyComponent_(wire(actor->propertyComponent())),
             physicsComponent_(wire(actor->physicsComponent())),
@@ -24,13 +24,12 @@ namespace mortified {
 
         virtual char const *name() const
         {
-            return "character-stand";
+            return "character-walk";
         }
 
         void enter()
         {
             motorJoint_->EnableMotor(true);
-            motorJoint_->SetMotorSpeed(0);
         }
 
         void leave()
@@ -39,12 +38,15 @@ namespace mortified {
         }
 
         void update(float dt)
-        { }
+        {
+            float speed = 10.0f * (float(*leftInput_) - float(*rightInput_));
+            motorJoint_->SetMotorSpeed(speed);
+        }
 
         char const *transition()
         {
-            if (*leftInput_ || *rightInput_) {
-                return "character-walk";
+            if (!*leftInput_ && !*rightInput_) {
+                return "character-stand";
             }
             return 0;
         }
@@ -59,8 +61,8 @@ namespace mortified {
         b2RevoluteJoint *motorJoint_;
     };
 
-    std::auto_ptr<State> createCharacterStandState(Actor *actor)
+    std::auto_ptr<State> createCharacterWalkState(Actor *actor)
     {
-        return std::auto_ptr<State>(new CharacterStandState(actor));
+        return std::auto_ptr<State>(new CharacterWalkState(actor));
     }
 }
