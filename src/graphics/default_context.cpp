@@ -5,6 +5,7 @@
 #include "graphics_resource_base.hpp"
 #include "texture.hpp"
 
+#include <iostream>
 #include <boost/enable_shared_from_this.hpp>
 #include <SDL/SDL.h>
 #include <SDL/SDL_opengl.h>

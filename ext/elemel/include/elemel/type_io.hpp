@@ -8,9 +8,9 @@
 #endif // __GNUC__
 
 namespace elemel {
-    template <class C, class T, class A>
-    std::basic_ostream<C, T, A> &
-    operator<<(std::basic_ostream<C, T, A> &out, type const &t)
+    template <class C, class T>
+    std::basic_ostream<C, T> &
+    operator<<(std::basic_ostream<C, T> &out, type const &t)
     {
 #ifdef __GNUC__
         char const *name = t.info().name();
