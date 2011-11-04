@@ -1,19 +1,9 @@
 #include "default_physics_service.hpp"
 
+#include "physics_contact_listener.hpp"
 #include "physics_service.hpp"
 
 namespace mortified {
-    namespace {
-        class DefaultContactListener : public b2ContactListener {
-        public:
-            void BeginContact(b2Contact *contact)
-            { }
-            
-            void EndContact(b2Contact* contact)
-            { }
-        };
-    }
-
     class DefaultPhysicsService : public virtual PhysicsService {
     public:
         DefaultPhysicsService()
@@ -21,7 +11,7 @@ namespace mortified {
             // TODO: Load physics config from XML.
             b2Vec2 gravity(0.0f, -15.0f);
             world_.reset(new b2World(gravity));
-            contactListener_.reset(new DefaultContactListener);
+            contactListener_ = createPhysicsContactListener();
             world_->SetContactListener(contactListener_.get());
         }        
         

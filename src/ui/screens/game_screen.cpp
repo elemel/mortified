@@ -44,7 +44,7 @@ namespace mortified {
         
         void create()
         {
-            physicsDraw_.reset(new PhysicsDraw);
+            physicsDraw_ = createPhysicsDraw();
             game_ = createGame();
             game_->load("../../../content/modules/level.xml");
         }
