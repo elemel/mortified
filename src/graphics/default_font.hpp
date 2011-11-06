@@ -8,6 +8,9 @@ namespace mortified {
     class Stream;
 
     boost::intrusive_ptr<Font> createFont(Stream *stream, int fontSize);
+
+    boost::intrusive_ptr<Font>
+    loadFontFromFile(char const *file, int fontSize);
 }
 
 #endif

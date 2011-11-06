@@ -3,12 +3,12 @@
 
 #include "math.hpp"
 
-#include <boost/shared_ptr.hpp>
+#include <memory>
 
 namespace mortified {
     class Actor;
     class Game;
 
-    boost::shared_ptr<Actor> createActor(Game *game);
+    std::auto_ptr<Actor> createActor(Game *game);
 }
 #endif

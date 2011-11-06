@@ -111,7 +111,7 @@ namespace mortified {
 
         void updateInput()
         {
-            Game::ActorPtr actor = game_->findActor("wizard");
+            Actor *actor = game_->findActor("wizard");
             if (actor) {
                 PropertyComponent *component = actor->propertyComponent();
                 if (component) {

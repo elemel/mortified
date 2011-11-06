@@ -8,6 +8,7 @@
 
 #include <cassert>
 #include <iostream>
+#include <sstream>
 #include <stdexcept>
 
 namespace mortified {
@@ -18,14 +19,24 @@ namespace mortified {
     public:
         explicit DefaultImage(SDL_Surface *surface) :
             surface_(surface)
-        {
-            assert(surface);
-            assert(!SDL_MUSTLOCK(surface));
-        }
+        { }
 
         ~DefaultImage()
         {
             SDL_FreeSurface(surface_);
+        }
+
+        void convert()
+        {
+            SDL_Surface *convertedSurface =
+                SDL_ConvertSurfaceFormat(const_cast<SDL_Surface *>(surface_),
+                                         SDL_PIXELFORMAT_ABGR8888, 0);
+            if (convertedSurface == 0) {
+                throw std::runtime_error(std::string("Failed to convert image to RGBA format: ") +
+                                         SDL_GetError());
+            }
+            SDL_FreeSurface(surface_);
+            surface_ = convertedSurface;
         }
 
         int width() const
@@ -93,64 +104,32 @@ namespace mortified {
         return boost::intrusive_ptr<Image>(new DefaultImage(surface));
     }
 
-    boost::intrusive_ptr<Image> createImage(SDL_Surface const *surface)
+    boost::intrusive_ptr<Image> adoptImage(SDL_Surface *surface)
     {
-        assert(surface);
-        SDL_PixelFormat format;
-        format.palette = 0;
-        format.BitsPerPixel = 32;
-        format.BytesPerPixel = 4;
-        format.Rloss = 0;
-        format.Gloss = 0;
-        format.Bloss = 0;
-        format.Aloss = 0;
-        if (SDL_BYTEORDER == SDL_BIG_ENDIAN) {
-            format.Rshift = 24;
-            format.Gshift = 16;
-            format.Bshift = 8;
-            format.Ashift = 0;
-            format.Rmask = 0xff000000;
-            format.Gmask = 0x00ff0000;
-            format.Bmask = 0x0000ff00;
-            format.Amask = 0x000000ff;
-        } else {
-            format.Rshift = 0;
-            format.Gshift = 8;
-            format.Bshift = 16;
-            format.Ashift = 24;
-            format.Rmask = 0x000000ff;
-            format.Gmask = 0x0000ff00;
-            format.Bmask = 0x00ff0000;
-            format.Amask = 0xff000000;
-        }
-
-        SDL_Surface *convertedSurface =
-            SDL_ConvertSurface(const_cast<SDL_Surface *>(surface), &format,
-                               SDL_SWSURFACE);
-        if (convertedSurface == 0) {
-            throw std::runtime_error(std::string("Failed to convert image to RGBA format: ") +
-                                     SDL_GetError());
-        }
-        return boost::intrusive_ptr<Image>(new DefaultImage(convertedSurface));
+        boost::intrusive_ptr<Image> result(new DefaultImage(surface));
+        result->convert();
+        return result;
     }
 
-    boost::intrusive_ptr<Image> createImage(Stream *stream, char const *type)
+    boost::intrusive_ptr<Image> loadImage(Stream *stream)
     {
-        assert(stream);
-        SDL_Surface *surface = type ?
-            IMG_Load_RW(stream->rwops(), 0) :
-            IMG_LoadTyped_RW(stream->rwops(), 0, const_cast<char *>(type));
+        SDL_Surface *surface = IMG_Load_RW(stream->rwops(), 0);
         if (surface == 0) {
             throw std::runtime_error(std::string("Failed to load image: ") +
                                      SDL_GetError());
         }
-        try {
-            boost::intrusive_ptr<Image> image = createImage(surface);
-            SDL_FreeSurface(surface);
-            return image;
-        } catch (...) {
-            SDL_FreeSurface(surface);
-            throw;
+        return adoptImage(surface);
+    }
+
+    boost::intrusive_ptr<Image> loadImageFromFile(char const *file)
+    {
+        SDL_Surface *surface = IMG_Load(file);
+        if (surface == 0) {
+            std::stringstream message;
+            message << "Failed to load image from file \"" << file << "\":"
+                    << SDL_GetError();            
+            throw std::runtime_error(message.str());
         }
+        return adoptImage(surface);
     }
 }

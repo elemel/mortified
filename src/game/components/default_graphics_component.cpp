@@ -4,7 +4,6 @@
 #include "context.hpp"
 #include "default_image.hpp"
 #include "default_sprite.hpp"
-#include "default_stream.hpp"
 #include "default_texture.hpp"
 #include "game.hpp"
 #include "graphics_component.hpp"
@@ -15,7 +14,6 @@
 #include "physics_component.hpp"
 #include "scene.hpp"
 #include "sprite.hpp"
-#include "stream.hpp"
 #include "texture.hpp"
 #include "texture_source.hpp"
 #include "xml.hpp"
@@ -99,9 +97,7 @@ namespace mortified {
                 file += "../../../content/images/";
                 file += imageRef;
                 file += ".png";
-                std::auto_ptr<Stream> stream =
-                    createStreamFromFile(file.c_str(), "rb");
-                boost::intrusive_ptr<Image> image = createImage(stream.get());
+                boost::intrusive_ptr<Image> image = loadImageFromFile(file.c_str());
                 image->flipVertical();
                 boost::intrusive_ptr<Texture> texture =
                     createTexture(boost::intrusive_ptr<Context>(),

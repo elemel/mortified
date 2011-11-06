@@ -101,7 +101,6 @@ namespace mortified {
         int height_;
         std::auto_ptr<Scene> scene_;
         std::auto_ptr<Widget> rootWidget_;
-        std::auto_ptr<Stream> fontStream_;
         boost::intrusive_ptr<Font> font_;
 
         void createWidgets()
@@ -119,8 +118,7 @@ namespace mortified {
                 styleParser->parse(styleStream.get());
             applyStyles(styleSheet.get(), rootWidget_.get());
 
-            fontStream_ = createStreamFromFile("../../../content/fonts/teen/teen.ttf", "rb");
-            font_ = createFont(fontStream_.get(), 15);
+            font_ = loadFontFromFile("../../../content/fonts/teen/teen.ttf", 15);
             updateFonts(rootWidget_.get());
         }
 

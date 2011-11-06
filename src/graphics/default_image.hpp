@@ -9,8 +9,9 @@ namespace mortified {
     class Stream;
 
     boost::intrusive_ptr<Image> createImage(int width, int height);
-    boost::intrusive_ptr<Image> createImage(SDL_Surface const *surface);
-    boost::intrusive_ptr<Image> createImage(Stream *stream, char const *type = 0);
+    boost::intrusive_ptr<Image> adoptImage(SDL_Surface *surface);
+    boost::intrusive_ptr<Image> loadImage(Stream *stream);
+    boost::intrusive_ptr<Image> loadImageFromFile(char const *file);
 }
 
 #endif

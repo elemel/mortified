@@ -35,14 +35,7 @@ namespace mortified {
                 throw std::runtime_error(std::string("Failed to render text: ") +
                                          TTF_GetError());
             }
-            try {
-                boost::intrusive_ptr<Image> image = createImage(surface);
-                SDL_FreeSurface(surface);
-                return image;
-            } catch (...) {
-                SDL_FreeSurface(surface);
-                throw;
-            }
+            return adoptImage(surface);
         }
 
     private:
@@ -56,6 +49,16 @@ namespace mortified {
         if (font == 0) {
             throw std::runtime_error(std::string("Failed to load font: ") +
                                      TTF_GetError());
+        }
+        return boost::intrusive_ptr<Font>(new DefaultFont(font));
+    }
+
+    boost::intrusive_ptr<Font> loadFontFromFile(char const *file, int fontSize)
+    {
+        TTF_Font *font = TTF_OpenFont(file, fontSize);
+        if (font == 0) {
+            throw std::runtime_error(std::string("Failed to load font from file \"") +
+                                     file + "\": " + TTF_GetError());
         }
         return boost::intrusive_ptr<Font>(new DefaultFont(font));
     }

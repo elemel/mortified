@@ -9,6 +9,8 @@ namespace mortified {
         virtual ~Image()
         { }
 
+        virtual void convert() = 0;
+
         virtual int width() const = 0;
         virtual int height() const = 0;
 

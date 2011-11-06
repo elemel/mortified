@@ -3,7 +3,6 @@
 #include "context.hpp"
 #include "default_font.hpp"
 #include "default_image.hpp"
-#include "default_stream.hpp"
 #include "default_texture.hpp"
 #include "editor_screen.hpp"
 #include "empty_texture_source.hpp"
@@ -13,7 +12,6 @@
 #include "image.hpp"
 #include "image_texture_source.hpp"
 #include "screen.hpp"
-#include "stream.hpp"
 #include "texture.hpp"
 #include "window.hpp"
 
@@ -31,9 +29,7 @@ namespace mortified {
 
         void create()
         {
-            std::auto_ptr<Stream> fontStream =
-                createStreamFromFile("../../../content/fonts/teen/teen.ttf", "rb");
-            font_ = createFont(fontStream.get(), 256);
+            font_ = loadFontFromFile("../../../content/fonts/teen/teen.ttf", 256);
 
             logoImage_ = font_->render("Mortified");
             logoImage_->flipVertical();

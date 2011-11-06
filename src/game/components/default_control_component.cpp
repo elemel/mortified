@@ -10,25 +10,24 @@
 #include "xml.hpp"
 
 #include <iostream>
+#include <vector>
 #include <boost/bind.hpp>
 #include <boost/function.hpp>
-#include <boost/shared_ptr.hpp>
 
 namespace mortified {
     class State;
 
     class DefaultControlComponent : public virtual ControlComponent {
     public:
-        typedef boost::shared_ptr<State> StatePtr;
-
         class StateData {
         public:
-            StatePtr state;
+            State *state;
             ControlService::UpdateHandlerIterator updateHandler;
-        };
 
-        typedef std::list<StateData> StateList;
-        typedef StateList::iterator StateIterator;
+            StateData() :
+                state(0)
+            { }
+        };
 
         explicit DefaultControlComponent(Actor *actor) :
             actor_(actor),
@@ -40,6 +39,7 @@ namespace mortified {
             while (!states_.empty()) {
                 states_.back().state->leave();
                 controlService_->removeUpdateHandler(states_.back().updateHandler);
+                delete states_.back().state;
                 states_.pop_back();
             }
         }
@@ -58,7 +58,7 @@ namespace mortified {
     private:
         Actor *actor_;
         ControlService *controlService_;
-        StateList states_;
+        std::vector<StateData> states_;
 
         void loadStateMachines(rapidxml::xml_node<> *node)
         {
@@ -86,30 +86,28 @@ namespace mortified {
                 }
             }
             if (stateRef) {
-                StatePtr state = StatePtr(createState(stateRef));
+                std::auto_ptr<State> state = createState(stateRef);
                 StateData *data = &*states_.insert(states_.end(), StateData());
-                data->state = state;
+                data->state = state.release();
                 ControlService::UpdateHandler handler =
                     boost::bind(&DefaultControlComponent::updateStateMachine,
                                 this, data, _1);
                 data->updateHandler = controlService_->addUpdateHandler(handler);
-                state->enter();
+                data->state->enter();
             }
         }
         
         void saveStateMachines(rapidxml::xml_node<> *parent)
         {
-            for (StateIterator i = states_.begin(); i != states_.end(); ++i) {
-                saveStateMachine(parent, i->state.get());
+            for (std::size_t i = 0; i < states_.size(); ++i) {
+                saveStateMachine(parent, states_[i].state);
             }
         }
 
         void saveStateMachine(rapidxml::xml_node<> *parent, State *state)
         {
-            for (StateIterator i = states_.begin(); i != states_.end(); ++i) {
-                rapidxml::xml_node<> *node = saveGroup(parent, "state-machine");
-                saveString(node, "state-ref", state->name());
-            }
+            rapidxml::xml_node<> *node = saveGroup(parent, "state-machine");
+            saveString(node, "state-ref", state->name());
         }
 
         void updateStateMachine(StateData *data, float dt)
@@ -117,9 +115,10 @@ namespace mortified {
             data->state->update(dt);
             char const *name = data->state->transition();
             if (name) {
-                StatePtr newState(createState(name));
+                std::auto_ptr<State> newState = createState(name);
                 data->state->leave();
-                data->state = newState;
+                std::auto_ptr<State> oldState(data->state);
+                data->state = newState.release();
                 data->state->enter();
                 std::cerr << name << std::endl;
             }

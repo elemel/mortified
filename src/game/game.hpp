@@ -7,7 +7,6 @@
 #include <memory>
 #include <utility>
 #include <rapidxml.hpp>
-#include <boost/shared_ptr.hpp>
 
 namespace mortified {
     class Actor;
@@ -18,14 +17,6 @@ namespace mortified {
 
     class Game {
     public:
-        typedef boost::shared_ptr<Actor> ActorPtr;
-        typedef std::list<ActorPtr> ActorList;
-        typedef ActorList::iterator ActorIterator;
-        typedef ActorList::const_iterator ConstActorIterator;
-        typedef std::pair<ActorIterator, ActorIterator> ActorRange;
-        typedef std::pair<ConstActorIterator, ConstActorIterator>
-            ConstActorRange;
-        
         virtual ~Game()
         { }
 
@@ -48,13 +39,8 @@ namespace mortified {
         virtual GraphicsService *graphicsService() = 0;
         virtual GraphicsService const *graphicsService() const = 0;
         
-        virtual ActorRange actors() = 0;
-        virtual ConstActorRange actors() const = 0;
-
-        virtual ActorIterator addActor(ActorPtr actor) = 0;
-        virtual void removeActor(ActorIterator actor) = 0;
-
-        virtual ActorPtr findActor(char const *name) = 0;
+        virtual Actor *findActor(char const *name) = 0;
+        virtual Actor const *findActor(char const *name) const = 0;
     };
 }
 

@@ -33,6 +33,14 @@ namespace mortified {
             physicsService_(createPhysicsService()),
             graphicsService_(createGraphicsService())
         { }
+        
+        ~DefaultGame()
+        {
+            while (!actors_.empty()) {
+                delete actors_.back();
+                actors_.pop_back();
+            }
+        }
 
         void load(char const *file)
         {
@@ -61,9 +69,8 @@ namespace mortified {
         {
             rapidxml::xml_document<> document;
             rapidxml::xml_node<> *node = saveGroup(&document, "group");
-            for (ActorIterator i = actors_.begin(); i != actors_.end(); ++i)
-            {
-                (*i)->save(node);
+            for (std::size_t i = 0; i < actors_.size(); ++i) {
+                actors_[i]->save(node);
             }
             std::ofstream out(file);
             out << document;
@@ -122,35 +129,20 @@ namespace mortified {
             graphicsService_->update(dt);
         }
 
-        ActorRange actors()
+        Actor *findActor(char const *name)
         {
-            return ActorRange(actors_.begin(), actors_.end());
-        }
-
-        ConstActorRange actors() const
-        {
-            return ConstActorRange(actors_.begin(), actors_.end());
-        }
-        
-        ActorIterator addActor(ActorPtr actor)
-        {
-            return actors_.insert(actors_.end(), actor);
-        }
-
-        void removeActor(ActorIterator actor)
-        {
-            actors_.erase(actor);
-        }
-
-        ActorPtr findActor(char const *name)
-        {
-            for (ActorIterator i = actors_.begin(); i != actors_.end(); ++i) {
-                char const *actorName = (*i)->name();
+            for (std::size_t i = 0; i < actors_.size(); ++i) {
+                char const *actorName = actors_[i]->name();
                 if (actorName && std::strcmp(actorName, name) == 0) {
-                    return *i;
+                    return actors_[i];
                 }
             }
-            return ActorPtr();
+            return 0;
+        }
+
+        Actor const *findActor(char const *name) const
+        {
+            return const_cast<DefaultGame *>(this)->findActor(name);
         }
 
     private:
@@ -159,7 +151,7 @@ namespace mortified {
         std::auto_ptr<ControlService> controlService_;
         std::auto_ptr<PhysicsService> physicsService_;
         std::auto_ptr<GraphicsService> graphicsService_;
-        ActorList actors_;
+        std::vector<Actor *> actors_;
 
         void loadGroup(rapidxml::xml_node<> *node)
         {
@@ -178,9 +170,9 @@ namespace mortified {
                         load(file.c_str());
                     }
                     if (strcmp(child->name(), "actor") == 0) {
-                        ActorPtr actor = createActor(this);
+                        std::auto_ptr<Actor> actor = createActor(this);
                         actor->load(child);
-                        addActor(actor);
+                        actors_.push_back(actor.release());
                     }
                 }
             }

@@ -148,8 +148,8 @@ namespace mortified {
         std::auto_ptr<GraphicsComponent> graphicsComponent_;
     };
     
-    boost::shared_ptr<Actor> createActor(Game *game)
+    std::auto_ptr<Actor> createActor(Game *game)
     {
-        return boost::shared_ptr<Actor>(new DefaultActor(game));
+        return std::auto_ptr<Actor>(new DefaultActor(game));
     }
 }
