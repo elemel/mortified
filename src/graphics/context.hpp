@@ -3,7 +3,7 @@
 
 #include "graphics_resource.hpp"
 
-#include <boost/shared_ptr.hpp>
+#include <boost/intrusive_ptr.hpp>
 
 namespace mortified {
     class Texture;
@@ -11,10 +11,13 @@ namespace mortified {
 
     class Context : public virtual GraphicsResource {
     public:
-        virtual boost::shared_ptr<Texture>
-        createTexture(boost::shared_ptr<TextureSource> source) = 0;
+        virtual bool multisample() const = 0;
+        virtual void multisample(bool multisample) = 0;
 
-        virtual boost::shared_ptr<Texture>
+        virtual boost::intrusive_ptr<Texture>
+        createTexture(boost::intrusive_ptr<TextureSource> source) = 0;
+
+        virtual boost::intrusive_ptr<Texture>
         createTexture(int width, int height) = 0;
     };
 }

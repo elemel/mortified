@@ -3,6 +3,7 @@
 #include "default_image.hpp"
 #include "font.hpp"
 #include "image.hpp"
+#include "ref_counted_base.hpp"
 #include "stream.hpp"
 
 #include <SDL/SDL_ttf.h>
@@ -12,21 +13,20 @@
 
 namespace mortified {
     class DefaultFont :
-        public Font
+        public virtual Font,
+        private virtual RefCountedBase
     {
     public:
         explicit DefaultFont(TTF_Font *font) :
             font_(font)
-        {
-            assert(font);
-        }
+        { }
 
         ~DefaultFont()
         {
             TTF_CloseFont(font_);
         }
 
-        boost::shared_ptr<Image> render(char const *text)
+        boost::intrusive_ptr<Image> render(char const *text)
         {
             assert(text);
             SDL_Color color = { 255, 255, 255, 255 };
@@ -36,7 +36,7 @@ namespace mortified {
                                          TTF_GetError());
             }
             try {
-                boost::shared_ptr<Image> image = createImage(surface);
+                boost::intrusive_ptr<Image> image = createImage(surface);
                 SDL_FreeSurface(surface);
                 return image;
             } catch (...) {
@@ -49,7 +49,7 @@ namespace mortified {
         TTF_Font *font_;
     };
 
-    boost::shared_ptr<Font> createFont(Stream *stream, int fontSize)
+    boost::intrusive_ptr<Font> createFont(Stream *stream, int fontSize)
     {
         assert(stream);
         TTF_Font *font = TTF_OpenFontRW(stream->rwops(), 0, fontSize);
@@ -57,6 +57,6 @@ namespace mortified {
             throw std::runtime_error(std::string("Failed to load font: ") +
                                      TTF_GetError());
         }
-        return boost::shared_ptr<Font>(new DefaultFont(font));
+        return boost::intrusive_ptr<Font>(new DefaultFont(font));
     }
 }

@@ -20,7 +20,7 @@ namespace mortified {
         private virtual WidgetBase
     {
     public:
-        explicit DefaultTextWidget(boost::shared_ptr<Context> context) :
+        explicit DefaultTextWidget(boost::intrusive_ptr<Context> context) :
             context_(context)
         { }
 
@@ -29,12 +29,12 @@ namespace mortified {
             return "text";
         }
 
-        boost::shared_ptr<Font> font() const
+        boost::intrusive_ptr<Font> font() const
         {
             return font_;
         }
 
-        void font(boost::shared_ptr<Font> font)
+        void font(boost::intrusive_ptr<Font> font)
         {
             font_ = font;
         }
@@ -117,15 +117,16 @@ namespace mortified {
         }
 
     private:
-        boost::shared_ptr<Context> context_;
-        boost::shared_ptr<Font> font_;
+        boost::intrusive_ptr<Context> context_;
+        boost::intrusive_ptr<Font> font_;
         std::string text_;
 
-        boost::shared_ptr<Image> image_;
-        boost::shared_ptr<Texture> texture_;
+        boost::intrusive_ptr<Image> image_;
+        boost::intrusive_ptr<Texture> texture_;
     };
 
-    std::auto_ptr<Widget> createTextWidget(boost::shared_ptr<Context> context)
+    std::auto_ptr<Widget>
+    createTextWidget(boost::intrusive_ptr<Context> context)
     {
         return std::auto_ptr<Widget>(new DefaultTextWidget(context));
     }

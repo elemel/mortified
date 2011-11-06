@@ -2,14 +2,14 @@
 #define MORTIFIED_DEFAULT_LAYOUT_PARSER_HPP
 
 #include <memory>
-#include <boost/shared_ptr.hpp>
+#include <boost/intrusive_ptr.hpp>
 
 namespace mortified {
     class Context;
     class LayoutParser;
 
     std::auto_ptr<LayoutParser>
-    createLayoutParser(boost::shared_ptr<Context>context);
+    createLayoutParser(boost::intrusive_ptr<Context> context);
 }
 
 #endif

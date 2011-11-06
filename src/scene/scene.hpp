@@ -2,14 +2,14 @@
 #define MORTIFIED_SCENE_HPP
 
 #include <list>
-#include <boost/shared_ptr.hpp>
+#include <boost/intrusive_ptr.hpp>
 
 namespace mortified {
     class SceneObject;
 
     class Scene {
     public:
-        typedef boost::shared_ptr<SceneObject> ObjectPtr;
+        typedef boost::intrusive_ptr<SceneObject> ObjectPtr;
         typedef std::list<ObjectPtr> ObjectList;
         typedef ObjectList::iterator ObjectIterator;
 

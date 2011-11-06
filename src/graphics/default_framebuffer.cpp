@@ -4,6 +4,7 @@
 #include "graphics_resource_base.hpp"
 #include "texture.hpp"
 
+#include <boost/intrusive_ptr.hpp>
 #include <SDL/SDL_opengl.h>
 
 namespace mortified {
@@ -12,7 +13,7 @@ namespace mortified {
         private virtual GraphicsResourceBase
     {
     public:
-        explicit DefaultFramebuffer(boost::shared_ptr<Texture> texture) :
+        explicit DefaultFramebuffer(boost::intrusive_ptr<Texture> texture) :
             texture_(texture),
             name_(0)
         {
@@ -47,7 +48,7 @@ namespace mortified {
         }
 
     private:
-        boost::shared_ptr<Texture> texture_;
+        boost::intrusive_ptr<Texture> texture_;
         GLuint name_;
 
         void createImpl()
@@ -72,9 +73,9 @@ namespace mortified {
         }
     };
     
-    boost::shared_ptr<Framebuffer>
-    createFramebuffer(boost::shared_ptr<Texture> texture)
+    boost::intrusive_ptr<Framebuffer>
+    createFramebuffer(boost::intrusive_ptr<Texture> texture)
     {
-        return boost::shared_ptr<Framebuffer>(new DefaultFramebuffer(texture));
+        return boost::intrusive_ptr<Framebuffer>(new DefaultFramebuffer(texture));
     }
 }

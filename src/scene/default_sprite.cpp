@@ -2,6 +2,7 @@
 
 #include "color.hpp"
 #include "math.hpp"
+#include "ref_counted_base.hpp"
 #include "scene_object_base.hpp"
 #include "sprite.hpp"
 #include "texture.hpp"
@@ -9,10 +10,11 @@
 namespace mortified {
     class DefaultSprite :
         public virtual Sprite,
-        private virtual SceneObjectBase
+        private virtual SceneObjectBase,
+        private virtual RefCountedBase
     {
     public:
-        explicit DefaultSprite(boost::shared_ptr<Texture> texture) :
+        explicit DefaultSprite(boost::intrusive_ptr<Texture> texture) :
             texture_(texture),
             angle_(0.0f),
             scale_(1.0f),
@@ -100,7 +102,7 @@ namespace mortified {
         }
 
     private:
-        boost::shared_ptr<Texture> texture_;
+        boost::intrusive_ptr<Texture> texture_;
         Vector2 position_;
         float angle_;
         Vector2 scale_;
@@ -132,8 +134,8 @@ namespace mortified {
         }
     };
 
-    boost::shared_ptr<Sprite> createSprite(boost::shared_ptr<Texture> texture)
+    boost::intrusive_ptr<Sprite> createSprite(boost::intrusive_ptr<Texture> texture)
     {
-        return boost::shared_ptr<Sprite>(new DefaultSprite(texture));
+        return boost::intrusive_ptr<Sprite>(new DefaultSprite(texture));
     }
 }

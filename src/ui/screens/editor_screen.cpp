@@ -1,5 +1,6 @@
 #include "editor_screen.hpp"
 
+#include "context.hpp"
 #include "canvas_widget.hpp"
 #include "default_font.hpp"
 #include "default_layout_parser.hpp"
@@ -22,7 +23,6 @@
 #include <iostream>
 #include <vector>
 #include <boost/bind.hpp>
-#include <boost/shared_ptr.hpp>
 #include <SDL/SDL_opengl.h>
 
 namespace mortified {
@@ -101,7 +101,8 @@ namespace mortified {
         int height_;
         std::auto_ptr<Scene> scene_;
         std::auto_ptr<Widget> rootWidget_;
-        boost::shared_ptr<Font> font_;
+        std::auto_ptr<Stream> fontStream_;
+        boost::intrusive_ptr<Font> font_;
 
         void createWidgets()
         {
@@ -118,9 +119,8 @@ namespace mortified {
                 styleParser->parse(styleStream.get());
             applyStyles(styleSheet.get(), rootWidget_.get());
 
-            std::auto_ptr<Stream> fontStream =
-                createStreamFromFile("../../../content/fonts/teen/teen.ttf", "rb");
-            font_ = createFont(fontStream.get(), 15);
+            fontStream_ = createStreamFromFile("../../../content/fonts/teen/teen.ttf", "rb");
+            font_ = createFont(fontStream_.get(), 15);
             updateFonts(rootWidget_.get());
         }
 

@@ -27,7 +27,6 @@
 #include <memory>
 #include <iostream>
 #include <stdexcept>
-#include <boost/shared_ptr.hpp>
 #include <Box2D/Box2D.h>
 #include <SDL/SDL_opengl.h>
 
@@ -97,8 +96,8 @@ namespace mortified {
         float cameraScale_;
 
         bool supersample_;
-        boost::shared_ptr<Texture> targetTexture_;
-        boost::shared_ptr<Framebuffer> targetFramebuffer_;
+        boost::intrusive_ptr<Texture> targetTexture_;
+        boost::intrusive_ptr<Framebuffer> targetFramebuffer_;
 
         void skipFrames(float time)
         {

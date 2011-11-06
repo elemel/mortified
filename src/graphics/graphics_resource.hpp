@@ -1,20 +1,22 @@
 #ifndef MORTIFIED_GRAPHICS_RESOURCE_HPP
 #define MORTIFIED_GRAPHICS_RESOURCE_HPP
 
+#include "ref_counted.hpp"
+
 #include <list>
-#include <boost/shared_ptr.hpp>
+#include <boost/intrusive_ptr.hpp>
 
 namespace mortified {
     class Context;
     class Framebuffer;
     class Texture;
 
-    class GraphicsResource {
+    class GraphicsResource : public virtual RefCounted {
     public:
         typedef std::list<GraphicsResource *> ChildList;
         typedef std::list<GraphicsResource *>::iterator ChildIterator;
         typedef std::pair<ChildIterator, ChildIterator> ChildRange;
-        typedef boost::shared_ptr<GraphicsResource> ParentPtr;
+        typedef boost::intrusive_ptr<GraphicsResource> ParentPtr;
         typedef std::pair<ParentPtr, ChildIterator> ParentPair;
         typedef std::list<ParentPair> ParentList;
         typedef std::list<ParentPair>::iterator ParentIterator;

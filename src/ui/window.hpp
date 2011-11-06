@@ -2,7 +2,7 @@
 #define MORTIFIED_WINDOW_HPP
 
 #include <memory>
-#include <boost/shared_ptr.hpp>
+#include <boost/intrusive_ptr.hpp>
 #include <SDL/SDL.h>
 
 namespace mortified {
@@ -35,7 +35,7 @@ namespace mortified {
         virtual void update() = 0;
         virtual void draw() = 0;
 
-        virtual boost::shared_ptr<Context> context() = 0;
+        virtual boost::intrusive_ptr<Context> context() = 0;
     };
 }
 

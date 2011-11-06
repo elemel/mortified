@@ -3,15 +3,15 @@
 
 #include "widget.hpp"
 
-#include <boost/shared_ptr.hpp>
+#include <boost/intrusive_ptr.hpp>
 
 namespace mortified {
     class Font;
 
     class TextWidget : public virtual Widget {
     public:
-        virtual boost::shared_ptr<Font> font() const = 0;
-        virtual void font(boost::shared_ptr<Font> font) = 0;
+        virtual boost::intrusive_ptr<Font> font() const = 0;
+        virtual void font(boost::intrusive_ptr<Font> font) = 0;
 
         virtual char const *text() const = 0;
         virtual void text(char const *text) = 0;

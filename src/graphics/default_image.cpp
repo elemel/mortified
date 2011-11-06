@@ -1,6 +1,7 @@
 #include "default_image.hpp"
 
 #include "image.hpp"
+#include "ref_counted_base.hpp"
 #include "stream.hpp"
 
 #include <SDL/SDL_image.h>
@@ -11,7 +12,8 @@
 
 namespace mortified {
     class DefaultImage :
-        public virtual Image
+        public virtual Image,
+        private virtual RefCountedBase
     {
     public:
         explicit DefaultImage(SDL_Surface *surface) :
@@ -66,7 +68,7 @@ namespace mortified {
         SDL_Surface *surface_;
     };
 
-    boost::shared_ptr<Image> createImage(int width, int height)
+    boost::intrusive_ptr<Image> createImage(int width, int height)
     {
         Uint32 redMask = 0, greenMask = 0, blueMask = 0, alphaMask = 0;
         if (SDL_BYTEORDER == SDL_BIG_ENDIAN) {
@@ -88,10 +90,10 @@ namespace mortified {
             throw std::runtime_error(std::string("Failed to create image: ") +
                                      SDL_GetError());
         }
-        return boost::shared_ptr<Image>(new DefaultImage(surface));
+        return boost::intrusive_ptr<Image>(new DefaultImage(surface));
     }
 
-    boost::shared_ptr<Image> createImage(SDL_Surface const *surface)
+    boost::intrusive_ptr<Image> createImage(SDL_Surface const *surface)
     {
         assert(surface);
         SDL_PixelFormat format;
@@ -129,10 +131,10 @@ namespace mortified {
             throw std::runtime_error(std::string("Failed to convert image to RGBA format: ") +
                                      SDL_GetError());
         }
-        return boost::shared_ptr<Image>(new DefaultImage(convertedSurface));
+        return boost::intrusive_ptr<Image>(new DefaultImage(convertedSurface));
     }
 
-    boost::shared_ptr<Image> createImage(Stream *stream, char const *type)
+    boost::intrusive_ptr<Image> createImage(Stream *stream, char const *type)
     {
         assert(stream);
         SDL_Surface *surface = type ?
@@ -143,7 +145,7 @@ namespace mortified {
                                      SDL_GetError());
         }
         try {
-            boost::shared_ptr<Image> image = createImage(surface);
+            boost::intrusive_ptr<Image> image = createImage(surface);
             SDL_FreeSurface(surface);
             return image;
         } catch (...) {

@@ -1,17 +1,19 @@
 #ifndef MORTIFIED_FONT_HPP
 #define MORTIFIED_FONT_HPP
 
-#include <boost/shared_ptr.hpp>
+#include "ref_counted.hpp"
+
+#include <boost/intrusive_ptr.hpp>
 
 namespace mortified {
     class Image;
 
-    class Font {
+    class Font : public virtual RefCounted {
     public:
         virtual ~Font()
         { }
 
-        virtual boost::shared_ptr<Image> render(char const *text) = 0;
+        virtual boost::intrusive_ptr<Image> render(char const *text) = 0;
     };
 }
 

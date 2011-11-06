@@ -1,11 +1,12 @@
 #include "default_graphics_component.hpp"
 
+#include "actor.hpp"
+#include "context.hpp"
 #include "default_image.hpp"
 #include "default_sprite.hpp"
 #include "default_stream.hpp"
 #include "default_texture.hpp"
 #include "game.hpp"
-#include "actor.hpp"
 #include "graphics_component.hpp"
 #include "graphics_service.hpp"
 #include "image.hpp"
@@ -100,12 +101,12 @@ namespace mortified {
                 file += ".png";
                 std::auto_ptr<Stream> stream =
                     createStreamFromFile(file.c_str(), "rb");
-                boost::shared_ptr<Image> image = createImage(stream.get());
+                boost::intrusive_ptr<Image> image = createImage(stream.get());
                 image->flipVertical();
-                boost::shared_ptr<Texture> texture =
-                    createTexture(boost::shared_ptr<Context>(),
+                boost::intrusive_ptr<Texture> texture =
+                    createTexture(boost::intrusive_ptr<Context>(),
                                   createImageTextureSource(image));
-                boost::shared_ptr<Sprite> sprite = createSprite(texture);
+                boost::intrusive_ptr<Sprite> sprite = createSprite(texture);
                 sprite->alignment(alignment);
                 sprite->position(position);
                 sprite->angle(angle);

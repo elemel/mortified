@@ -3,13 +3,13 @@
 
 #include "texture_source.hpp"
 
-#include <boost/shared_ptr.hpp>
+#include <boost/intrusive_ptr.hpp>
 
 namespace mortified {
     class Image;
 
-    boost::shared_ptr<TextureSource>
-        createImageTextureSource(boost::shared_ptr<Image> image);
+    boost::intrusive_ptr<TextureSource>
+    createImageTextureSource(boost::intrusive_ptr<Image> image);
 }
 
 #endif

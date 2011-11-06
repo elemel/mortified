@@ -2,14 +2,14 @@
 #define MORTIFIED_GRAPHICS_RESOURCE_BASE_HPP
 
 #include "graphics_resource.hpp"
+#include "ref_counted_base.hpp"
 
 namespace mortified {
-    class GraphicsResourceBase : public virtual GraphicsResource {
+    class GraphicsResourceBase :
+        public virtual GraphicsResource,
+        protected virtual RefCountedBase
+    {
     public:
-        GraphicsResourceBase() :
-            refCount_(0)
-        { }
-
         ~GraphicsResourceBase()
         {
             while (!parents_.empty()) {
@@ -62,18 +62,6 @@ namespace mortified {
             }
         }
         
-        void addRef() const
-        {
-            ++refCount_;
-        }
-
-        void release() const
-        {
-            if (--refCount_ <= 0) {
-                delete this;
-            }
-        }
-
         Context *asContext()
         {
             return 0;
@@ -123,13 +111,12 @@ namespace mortified {
         {
             children_.erase(child);
         }
-        
+
     protected:
-        mutable int refCount_;
         ParentList parents_;
         ChildList children_;
 
-        ParentIterator addParent(boost::shared_ptr<GraphicsResource> parent)
+        ParentIterator addParent(boost::intrusive_ptr<GraphicsResource> parent)
         {
             ParentIterator iterator =
                 parents_.insert(parents_.end(), ParentPair());

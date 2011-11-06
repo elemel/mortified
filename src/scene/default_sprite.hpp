@@ -1,13 +1,14 @@
 #ifndef MORTIFIED_DEFAULT_SPRITE_HPP
 #define MORTIFIED_DEFAULT_SPRITE_HPP
 
-#include <boost/shared_ptr.hpp>
+#include <boost/intrusive_ptr.hpp>
 
 namespace mortified {
     class Sprite;
     class Texture;
 
-    boost::shared_ptr<Sprite> createSprite(boost::shared_ptr<Texture> texture);
+    boost::intrusive_ptr<Sprite>
+    createSprite(boost::intrusive_ptr<Texture> texture);
 }
 
 #endif

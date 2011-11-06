@@ -4,22 +4,21 @@
 #include "default_texture.hpp"
 #include "graphics_resource_base.hpp"
 #include "texture.hpp"
+#include "texture_source.hpp"
 
 #include <iostream>
-#include <boost/enable_shared_from_this.hpp>
 #include <SDL/SDL.h>
 #include <SDL/SDL_opengl.h>
 
 namespace mortified {
     class DefaultContext :
         public virtual Context,
-        public virtual boost::enable_shared_from_this<DefaultContext>,
         private virtual GraphicsResourceBase
     {
     public:
-        explicit DefaultContext(SDL_Window *window, bool multisample) :
+        explicit DefaultContext(SDL_Window *window) :
             window_(window),
-            multisample_(multisample),
+            multisample_(false),
             context_(0)
         { }
 
@@ -45,15 +44,25 @@ namespace mortified {
             return this;
         }
 
-        boost::shared_ptr<Texture>
-        createTexture(boost::shared_ptr<TextureSource> source)
+        bool multisample() const
         {
-            return mortified::createTexture(shared_from_this(), source);
+            return multisample_;
         }
 
-        boost::shared_ptr<Texture> createTexture(int width, int height)
+        void multisample(bool multisample)
         {
-            return mortified::createTexture(shared_from_this(), width, height);
+            multisample_ = multisample;
+        }
+
+        boost::intrusive_ptr<Texture>
+        createTexture(boost::intrusive_ptr<TextureSource> source)
+        {
+            return mortified::createTexture(this, source);
+        }
+
+        boost::intrusive_ptr<Texture> createTexture(int width, int height)
+        {
+            return mortified::createTexture(this, width, height);
         }
 
     private:
@@ -85,9 +94,9 @@ namespace mortified {
         }
     };
 
-    boost::shared_ptr<Context>
-    createContext(SDL_Window *window, bool multisample)
+    boost::intrusive_ptr<Context>
+    createContext(SDL_Window *window)
     {
-        return boost::shared_ptr<Context>(new DefaultContext(window, multisample));
+        return boost::intrusive_ptr<Context>(new DefaultContext(window));
     }
 }

@@ -1,13 +1,17 @@
 #include "image_texture_source.hpp"
 
 #include "image.hpp"
+#include "ref_counted_base.hpp"
 
-#include <boost/shared_ptr.hpp>
+#include <boost/intrusive_ptr.hpp>
 
 namespace mortified {
-    class ImageTextureSource : public virtual TextureSource {
+    class ImageTextureSource :
+        public virtual TextureSource,
+        private virtual RefCountedBase
+    {
     public:
-        explicit ImageTextureSource(boost::shared_ptr<Image> image) :
+        explicit ImageTextureSource(boost::intrusive_ptr<Image> image) :
             image_(image)
         { }
 
@@ -38,12 +42,12 @@ namespace mortified {
         }
 
     private:
-        boost::shared_ptr<Image> image_;
+        boost::intrusive_ptr<Image> image_;
     };
 
-    boost::shared_ptr<TextureSource>
-        createImageTextureSource(boost::shared_ptr<Image> image)
+    boost::intrusive_ptr<TextureSource>
+    createImageTextureSource(boost::intrusive_ptr<Image> image)
     {
-        return boost::shared_ptr<TextureSource>(new ImageTextureSource(image));
+        return boost::intrusive_ptr<TextureSource>(new ImageTextureSource(image));
     }
 }

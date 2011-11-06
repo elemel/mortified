@@ -16,12 +16,11 @@
 #include <iostream>
 #include <stdexcept>
 #include <vector>
-#include <boost/shared_ptr.hpp>
 
 namespace mortified {
     class DefaultLayoutParser : public virtual LayoutParser {
     public:
-        explicit DefaultLayoutParser(boost::shared_ptr<Context> context) :
+        explicit DefaultLayoutParser(boost::intrusive_ptr<Context> context) :
             context_(context)
         { }
         
@@ -92,10 +91,10 @@ namespace mortified {
         }
 
     private:
-        boost::shared_ptr<Context> context_;
+        boost::intrusive_ptr<Context> context_;
     };
 
-    std::auto_ptr<LayoutParser> createLayoutParser(boost::shared_ptr<Context> context)
+    std::auto_ptr<LayoutParser> createLayoutParser(boost::intrusive_ptr<Context> context)
     {
         return std::auto_ptr<LayoutParser>(new DefaultLayoutParser(context));
     }

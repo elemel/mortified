@@ -1,9 +1,13 @@
 #include "empty_texture_source.hpp"
 
+#include "ref_counted_base.hpp"
 #include "texture_source.hpp"
 
 namespace mortified {
-    class EmptyTextureSource : public virtual TextureSource {
+    class EmptyTextureSource :
+        public virtual TextureSource,
+        private virtual RefCountedBase
+    {
     public:
         EmptyTextureSource(int width, int height) :
             width_(width),
@@ -41,9 +45,9 @@ namespace mortified {
         int height_;
     };
 
-    boost::shared_ptr<TextureSource>
-        createEmptyTextureSource(int width, int height)
+    boost::intrusive_ptr<TextureSource>
+    createEmptyTextureSource(int width, int height)
     {
-        return boost::shared_ptr<TextureSource>(new EmptyTextureSource(width, height));
+        return boost::intrusive_ptr<TextureSource>(new EmptyTextureSource(width, height));
     }
 }

@@ -1,8 +1,7 @@
 #ifndef MORTIFIED_DEFAULT_TEXTURE_HPP
 #define MORTIFIED_DEFAULT_TEXTURE_HPP
 
-#include <boost/shared_ptr.hpp>
-
+#include <boost/intrusive_ptr.hpp>
 #include <SDL/SDL_opengl.h>
 
 namespace mortified {
@@ -10,12 +9,12 @@ namespace mortified {
     class Texture;
     class TextureSource;
 
-    boost::shared_ptr<Texture>
-    createTexture(boost::shared_ptr<Context> context,
-                  boost::shared_ptr<TextureSource> source);
+    boost::intrusive_ptr<Texture>
+    createTexture(boost::intrusive_ptr<Context> context,
+                  boost::intrusive_ptr<TextureSource> source);
 
-    boost::shared_ptr<Texture>
-    createTexture(boost::shared_ptr<Context> context, int width, int height);
+    boost::intrusive_ptr<Texture>
+    createTexture(boost::intrusive_ptr<Context> context, int width, int height);
 }
 
 #endif

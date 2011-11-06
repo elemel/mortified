@@ -93,7 +93,8 @@ namespace mortified {
                                          SDL_GetError());
             }
 
-            context_ = createContext(window_, multisample_);
+            context_ = createContext(window_);
+            context_->multisample(multisample_);
             context_->create();
         }
 
@@ -176,7 +177,7 @@ namespace mortified {
             SDL_GL_SwapWindow(window_);
         }
 
-        boost::shared_ptr<Context> context()
+        boost::intrusive_ptr<Context> context()
         {
             return context_;
         }
@@ -187,7 +188,7 @@ namespace mortified {
         bool fullscreen_;
         bool multisample_;
         SDL_Window *window_;
-        boost::shared_ptr<Context> context_;
+        boost::intrusive_ptr<Context> context_;
         std::vector<Screen *> screens_;
 
         void removeAllScreens()

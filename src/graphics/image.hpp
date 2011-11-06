@@ -1,8 +1,10 @@
 #ifndef MORTIFIED_IMAGE_HPP
 #define MORTIFIED_IMAGE_HPP
 
+#include "ref_counted.hpp"
+
 namespace mortified {
-    class Image {
+    class Image : public virtual RefCounted {
     public:
         virtual ~Image()
         { }

@@ -18,7 +18,6 @@
 #include "window.hpp"
 
 #include <cmath>
-#include <boost/shared_ptr.hpp>
 #include <SDL/SDL.h>
 #include <SDL/SDL_opengl.h>
 
@@ -86,11 +85,11 @@ namespace mortified {
         
     private:
         Window *window_;
-        boost::shared_ptr<Font> font_;
-        boost::shared_ptr<Image> logoImage_;
-        boost::shared_ptr<Texture> logoTexture_;
-        boost::shared_ptr<Texture> targetTexture_;
-        boost::shared_ptr<Framebuffer> targetFramebuffer_;
+        boost::intrusive_ptr<Font> font_;
+        boost::intrusive_ptr<Image> logoImage_;
+        boost::intrusive_ptr<Texture> logoTexture_;
+        boost::intrusive_ptr<Texture> targetTexture_;
+        boost::intrusive_ptr<Framebuffer> targetFramebuffer_;
         float angle_;
 
         void drawLogoToTarget()

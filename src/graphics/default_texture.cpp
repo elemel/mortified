@@ -7,18 +7,17 @@
 #include "texture.hpp"
 #include "texture_source.hpp"
 
-#include <boost/enable_shared_from_this.hpp>
+#include <boost/intrusive_ptr.hpp>
 #include <SDL/SDL_opengl.h>
 
 namespace mortified {
     class DefaultTexture :
         public virtual Texture,
-        public virtual boost::enable_shared_from_this<DefaultTexture>,
         private virtual GraphicsResourceBase
     {
     public:
-        DefaultTexture(boost::shared_ptr<Context> context,
-                       boost::shared_ptr<TextureSource> source) :
+        DefaultTexture(boost::intrusive_ptr<Context> context,
+                       boost::intrusive_ptr<TextureSource> source) :
             source_(source),
             name_(0),
             width_(0),
@@ -31,7 +30,7 @@ namespace mortified {
             }
         }
 
-        DefaultTexture(boost::shared_ptr<Context> context, int width,
+        DefaultTexture(boost::intrusive_ptr<Context> context, int width,
                        int height) :
             name_(0),
             width_(width),
@@ -101,13 +100,13 @@ namespace mortified {
             magFilter_ = filter;
         }
 
-        boost::shared_ptr<Framebuffer> createFramebuffer()
+        boost::intrusive_ptr<Framebuffer> createFramebuffer()
         {
-            return mortified::createFramebuffer(shared_from_this());
+            return mortified::createFramebuffer(this);
         }
 
     private:
-        boost::shared_ptr<TextureSource> source_;
+        boost::intrusive_ptr<TextureSource> source_;
         GLuint name_;
         GLsizei width_;
         GLsizei height_;
@@ -145,17 +144,17 @@ namespace mortified {
         }
     };
 
-    boost::shared_ptr<Texture>
-    createTexture(boost::shared_ptr<Context> context,
-                  boost::shared_ptr<TextureSource> source)
+    boost::intrusive_ptr<Texture>
+    createTexture(boost::intrusive_ptr<Context> context,
+                  boost::intrusive_ptr<TextureSource> source)
     {
-        return boost::shared_ptr<Texture>(new DefaultTexture(context, source));
+        return boost::intrusive_ptr<Texture>(new DefaultTexture(context, source));
     }
 
-    boost::shared_ptr<Texture>
-    createTexture(boost::shared_ptr<Context> context, int width, int height)
+    boost::intrusive_ptr<Texture>
+    createTexture(boost::intrusive_ptr<Context> context, int width, int height)
     {
-        return boost::shared_ptr<Texture>(new DefaultTexture(context, width,
-                                                             height));
+        return boost::intrusive_ptr<Texture>(new DefaultTexture(context, width,
+                                                                height));
     }
 }
