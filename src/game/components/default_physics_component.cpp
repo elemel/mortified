@@ -466,8 +466,8 @@ namespace mortified {
                 b2Vec2 anchor = 0.5 * (joint->GetAnchorA() + joint->GetAnchorB());
                 rapidxml::xml_node<> *node = saveGroup(parent, "revolute-joint");
                 saveString(node, "name", name);
-                saveString(node, "body-a", bodyDataA->name.c_str());
-                saveString(node, "body-b", bodyDataB->name.c_str());
+                saveString(node, "body-a-ref", bodyDataA->name.c_str());
+                saveString(node, "body-b-ref", bodyDataB->name.c_str());
                 saveVec2(node, "anchor", anchor);
                 saveBool(node, "collide-connected", joint->GetCollideConnected());
                 saveBool(node, "limit-enabled", joint->IsLimitEnabled());
