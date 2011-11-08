@@ -18,6 +18,10 @@
       <control-service>
       </control-service>
       <physics-service>
+        <gravity>
+          <x>0</x>
+          <y>-15</y>
+        </gravity>
       </physics-service>
       <graphics-service>
       </graphics-service>

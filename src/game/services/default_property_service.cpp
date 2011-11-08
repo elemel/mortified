@@ -1,6 +1,7 @@
 #include "default_property_service.hpp"
 
 #include "property_service.hpp"
+#include "xml.hpp"
 
 #include <map>
 #include <stdexcept>
@@ -19,7 +20,10 @@ namespace mortified {
         }
         
         void save(rapidxml::xml_node<> *parent)
-        { }
+        {
+            rapidxml::xml_node<> *node = saveGroup(parent, "property-service");
+            saveProperties(node);
+        }
 
         void update(float dt)
         { }
@@ -90,6 +94,9 @@ namespace mortified {
             }
             throw std::runtime_error(std::string("Failed to parse \"") + name + "\" as type.");
         }
+
+        void saveProperties(rapidxml::xml_node<> *parent)
+        { }
     };
     
     std::auto_ptr<PropertyService> createPropertyService()
