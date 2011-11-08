@@ -1,0 +1,96 @@
+start = element module { (actor | module-ref)* }
+
+actor = element actor {
+    element name { text }? &
+    property-component? &
+    control-component? &
+    physics-component? &
+    graphics-component?
+}
+
+body = element body {
+    element name { text }? &
+    element position { x-y }? &
+    element angle { float }? &
+    element linear-velocity { x-y }? &
+    element angular-velocity { float }? &
+    element linear-damping { float }? &
+    element angular-damping { float }? &
+    element sleeping-allowed { bool }? &
+    element awake { bool }? &
+    element fixed-rotation { bool }? &
+    element bullet { bool }? &
+    element type { "static" | "kinematic" | "dynamic" }? &
+    element active { bool }? &
+    element gravity-scale { float }? &
+    fixture*
+}
+
+bool = "false" | "true"
+
+circle = element circle {
+    element center { x-y }? &
+    element radius { float }?
+}
+
+control-component = element control-component {
+    element state-machine {
+        element state-ref { text }
+    }*
+}
+
+fixture = element fixture {
+    element sensor { bool }? &
+    element density { float }? &
+    element friction { float }? &
+    element restitution { float }? &
+    shape
+}
+
+float = xsd:float
+
+graphics-component = element graphics-component { sprite* }
+
+joint = revolute-joint
+
+module-ref = element module-ref { text }
+
+int = xsd:int
+
+physics-component = element physics-component { (body | joint)* }
+
+polygon = element polygon { element vertex { x-y }* }
+
+property-component = element property-component {
+    element property {
+        element name { text } &
+        element value { text }
+    }*
+}
+
+revolute-joint = element revolute-joint {
+    element name { text }? &
+    element body-a-ref { text } &
+    element body-b-ref { text } &
+    element anchor { x-y } &
+    element collide-connected { bool }? &
+    element limit-enabled { bool }? &
+    element lower-limit { float }? &
+    element upper-limit { float }? &
+    element motor-enabled { bool }? &
+    element motor-speed { float }? &
+    element max-motor-torque { float }?
+}
+
+shape = circle | polygon
+
+sprite = element sprite {
+    element image-ref { text } &
+    element position { x-y }? &
+    element angle { float }? &
+    element scale { x-y }? &
+    element alignment { x-y }? &
+    element body-ref { text }?
+}
+
+x-y = element x { float } & element y { float }
