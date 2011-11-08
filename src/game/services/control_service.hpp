@@ -4,9 +4,13 @@
 #include "service.hpp"
 
 #include <list>
+#include <memory>
 #include <boost/function.hpp>
 
 namespace mortified {
+    class Actor;
+    class State;
+
     class ControlService : public virtual Service {
     public:
         typedef boost::function<void (float)> UpdateHandler;
@@ -17,6 +21,9 @@ namespace mortified {
         addUpdateHandler(UpdateHandler handler) = 0;
 
         virtual void removeUpdateHandler(UpdateHandlerIterator handler) = 0;
+
+        virtual std::auto_ptr<State>
+        createState(char const *name, Actor *actor) = 0;
     };
 }
 

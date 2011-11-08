@@ -1,7 +1,5 @@
 #include "default_control_component.hpp"
 
-#include "character_stand_state.hpp"
-#include "character_walk_state.hpp"
 #include "control_component.hpp"
 #include "control_service.hpp"
 #include "game.hpp"
@@ -86,7 +84,8 @@ namespace mortified {
                 }
             }
             if (stateRef) {
-                std::auto_ptr<State> state = createState(stateRef);
+                std::auto_ptr<State> state =
+                    controlService_->createState(stateRef, actor_);
                 StateData *data = &*states_.insert(states_.end(), StateData());
                 data->state = state.release();
                 ControlService::UpdateHandler handler =
@@ -115,7 +114,8 @@ namespace mortified {
             data->state->update(dt);
             char const *name = data->state->transition();
             if (name) {
-                std::auto_ptr<State> newState = createState(name);
+                std::auto_ptr<State> newState =
+                    controlService_->createState(name, actor_);
                 data->state->leave();
                 std::auto_ptr<State> oldState(data->state);
                 data->state = newState.release();
@@ -123,18 +123,6 @@ namespace mortified {
                 std::cerr << name << std::endl;
             }
         }
-
-        std::auto_ptr<State> createState(char const *name)
-        {
-            if (std::strcmp(name, "character-stand") == 0) {
-                return createCharacterStandState(actor_);
-            }
-            if (std::strcmp(name, "character-walk") == 0) {
-                return createCharacterWalkState(actor_);
-            }
-            throw std::runtime_error(std::string("Failed to create state \"") +
-                                     name + "\".");
-        }        
     };
 
     std::auto_ptr<ControlComponent> createControlComponent(Actor *actor)
