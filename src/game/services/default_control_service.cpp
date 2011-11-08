@@ -7,6 +7,12 @@
 namespace mortified {
     class DefaultControlService : public virtual ControlService {
     public:
+        void load(rapidxml::xml_node<> *node)
+        { }
+
+        void save(rapidxml::xml_node<> *parent)
+        { }
+
         void update(float dt)
         {
             for (UpdateHandlerIterator i = handlers_.begin();

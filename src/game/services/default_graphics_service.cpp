@@ -11,6 +11,12 @@ namespace mortified {
             scene_(createScene())
         { }        
 
+        void load(rapidxml::xml_node<> *node)
+        { }
+        
+        void save(rapidxml::xml_node<> *parent)
+        { }
+
         void update(float dt)
         {
             for (UpdateHandlerIterator i = handlers_.begin();

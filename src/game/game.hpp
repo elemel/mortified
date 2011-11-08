@@ -20,8 +20,11 @@ namespace mortified {
         virtual ~Game()
         { }
 
-        virtual void load(char const *file) = 0;
-        virtual void save(char const *file) = 0;
+        virtual void loadConfig(rapidxml::xml_node<> *node) = 0;
+        virtual void saveConfig(rapidxml::xml_node<> *parent) = 0;
+        
+        virtual void loadModule(char const *file) = 0;
+        virtual void saveModule(char const *file) = 0;
 
         virtual float time() const = 0;
 

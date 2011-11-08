@@ -42,7 +42,50 @@ namespace mortified {
             }
         }
 
-        void load(char const *file)
+        void loadConfig(rapidxml::xml_node<> *node)
+        {
+            for (rapidxml::xml_node<> *child = node->first_node(); child;
+                 child = child->next_sibling())
+            {
+                if (child->type() == rapidxml::node_element) {
+                    if (strcmp(child->name(), "property-service") == 0) {
+                        propertyService_ = createPropertyService();
+                        propertyService_->load(child);
+                    }
+                    if (strcmp(child->name(), "control-service") == 0) {
+                        controlService_ = createControlService();
+                        controlService_->load(child);
+                    }
+                    if (strcmp(child->name(), "physics-service") == 0) {
+                        physicsService_ = createPhysicsService();
+                        physicsService_->load(child);
+                    }
+                    if (strcmp(child->name(), "graphics-service") == 0) {
+                        graphicsService_ = createGraphicsService();
+                        graphicsService_->load(child);
+                    }
+                }
+            }
+        }
+
+        void saveConfig(rapidxml::xml_node<> *parent)
+        {
+            rapidxml::xml_node<> *node = saveGroup(parent, "game");
+            if (propertyService_.get()) {
+                propertyService_->save(node);
+            }
+            if (controlService_.get()) {
+                controlService_->save(node);
+            }
+            if (physicsService_.get()) {
+                physicsService_->save(node);
+            }
+            if (graphicsService_.get()) {
+                graphicsService_->save(node);
+            }
+        }
+
+        void loadModule(char const *file)
         {
             std::auto_ptr<Stream> stream = createStreamFromFile(file, "rb");
             
@@ -65,10 +108,10 @@ namespace mortified {
             }
         }
 
-        void save(char const *file)
+        void saveModule(char const *file)
         {
             rapidxml::xml_document<> document;
-            rapidxml::xml_node<> *node = saveGroup(&document, "group");
+            rapidxml::xml_node<> *node = saveGroup(&document, "module");
             for (std::size_t i = 0; i < actors_.size(); ++i) {
                 actors_[i]->save(node);
             }
@@ -167,7 +210,7 @@ namespace mortified {
                         file += "../../../content/modules/";
                         file += child->value();
                         file += ".xml";
-                        load(file.c_str());
+                        loadModule(file.c_str());
                     }
                     if (strcmp(child->name(), "actor") == 0) {
                         std::auto_ptr<Actor> actor = createActor(this);

@@ -1,0 +1,26 @@
+<config>
+  <game-screen>
+    <game>
+      <property-service>
+        <property>
+          <name>left-input</name>
+          <type>bool</type>
+        </property>
+        <property>
+          <name>right-input</name>
+          <type>bool</type>
+        </property>
+        <property>
+          <name>jump-input</name>
+          <type>bool</type>
+        </property>
+      </property-service>
+      <control-service>
+      </control-service>
+      <physics-service>
+      </physics-service>
+      <graphics-service>
+      </graphics-service>
+    </game>
+  </game-screen>
+</config>

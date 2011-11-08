@@ -45,12 +45,13 @@ namespace mortified {
         {
             physicsDraw_ = createPhysicsDraw();
             game_ = createGame();
-            game_->load("../../../content/modules/level.xml");
+            loadConfig("../../../content/configs/config.xml");
+            game_->loadModule("../../../content/modules/level.xml");
         }
         
         void destroy()
         {
-            game_->save("../../../content/modules/save.xml");
+            game_->saveModule("../../../content/modules/save.xml");
             targetFramebuffer_.reset();
             targetTexture_.reset();
         }
@@ -98,6 +99,55 @@ namespace mortified {
         bool supersample_;
         boost::intrusive_ptr<Texture> targetTexture_;
         boost::intrusive_ptr<Framebuffer> targetFramebuffer_;
+
+        void loadConfig(char const *file)
+        {
+            std::auto_ptr<Stream> stream = createStreamFromFile(file, "rb");
+            
+            int size = stream->seek(0, RW_SEEK_END);
+            stream->seek(0, RW_SEEK_SET);
+            std::vector<char> buffer(size + 1);
+            stream->read(&buffer[0], size);
+            buffer.back() = 0;
+            
+            rapidxml::xml_document<> document;
+            document.parse<0>(&buffer[0]);
+            for (rapidxml::xml_node<> *child = document.first_node(); child;
+                 child = child->next_sibling())
+            {
+                if (child->type() == rapidxml::node_element &&
+                    strcmp(child->name(), "config") == 0)
+                {
+                    loadConfig(child);
+                }
+            }
+        }
+
+        void loadConfig(rapidxml::xml_node<> *node)
+        {
+            for (rapidxml::xml_node<> *child = node->first_node(); child;
+                 child = child->next_sibling())
+            {
+                if (child->type() == rapidxml::node_element) {
+                    if (strcmp(child->name(), "game-screen") == 0) {
+                        loadGameScreenConfig(child);
+                    }
+                }
+            }
+        }
+        
+        void loadGameScreenConfig(rapidxml::xml_node<> *node)
+        {
+            for (rapidxml::xml_node<> *child = node->first_node(); child;
+                 child = child->next_sibling())
+            {
+                if (child->type() == rapidxml::node_element) {
+                    if (strcmp(child->name(), "game") == 0) {
+                        game_->loadConfig(child);
+                    }
+                }
+            }
+        }
 
         void skipFrames(float time)
         {

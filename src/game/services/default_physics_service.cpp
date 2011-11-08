@@ -14,7 +14,13 @@ namespace mortified {
             contactListener_ = createPhysicsContactListener();
             world_->SetContactListener(contactListener_.get());
         }        
+
+        void load(rapidxml::xml_node<> *node)
+        { }
         
+        void save(rapidxml::xml_node<> *parent)
+        { }
+
         void update(float dt)
         {
             world_->Step(dt, 10, 10);
