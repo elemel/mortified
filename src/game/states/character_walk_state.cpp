@@ -45,6 +45,9 @@ namespace mortified {
 
         char const *transition()
         {
+            if (*jumpInput_) {
+                return "character-jump";
+            }
             if (!*leftInput_ && !*rightInput_) {
                 return "character-stand";
             }

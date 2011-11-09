@@ -20,7 +20,7 @@
       <physics-service>
         <gravity>
           <x>0</x>
-          <y>-15</y>
+          <y>-20</y>
         </gravity>
       </physics-service>
       <graphics-service>

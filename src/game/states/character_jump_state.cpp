@@ -16,7 +16,8 @@ namespace mortified {
             actor_(actor),
             propertyComponent_(wire(actor->propertyComponent())),
             physicsComponent_(wire(actor->physicsComponent())),
-            jumpInput_(wire(propertyComponent_->findBool("jump-input")))
+            jumpInput_(wire(propertyComponent_->findBool("jump-input"))),
+            bodyBody_(wire(physicsComponent_->findBody("body")))
         { }
         
         virtual char const *name() const
@@ -25,7 +26,11 @@ namespace mortified {
         }
         
         void enter()
-        { }
+        {
+            b2Vec2 linearVelocity = bodyBody_->GetLinearVelocity();
+            linearVelocity.y = 10.0f;
+            bodyBody_->SetLinearVelocity(linearVelocity);
+        }
         
         void leave()
         { }
@@ -46,6 +51,7 @@ namespace mortified {
         PropertyComponent *propertyComponent_;
         PhysicsComponent *physicsComponent_;
         bool *jumpInput_;
+        b2Body *bodyBody_;
     };
     
     std::auto_ptr<State> createCharacterJumpState(Actor *actor)
