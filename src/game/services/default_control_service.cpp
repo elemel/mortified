@@ -1,5 +1,7 @@
 #include "default_control_service.hpp"
 
+#include "character_fall_state.hpp"
+#include "character_jump_state.hpp"
 #include "character_stand_state.hpp"
 #include "character_walk_state.hpp"
 #include "control_service.hpp"
@@ -37,6 +39,12 @@ namespace mortified {
 
         std::auto_ptr<State> createState(char const *name, Actor *actor)
         {
+            if (std::strcmp(name, "character-fall") == 0) {
+                return createCharacterFallState(actor);
+            }
+            if (std::strcmp(name, "character-jump") == 0) {
+                return createCharacterJumpState(actor);
+            }
             if (std::strcmp(name, "character-stand") == 0) {
                 return createCharacterStandState(actor);
             }
