@@ -49,19 +49,15 @@ namespace mortified {
             {
                 if (child->type() == rapidxml::node_element) {
                     if (strcmp(child->name(), "property-service") == 0) {
-                        propertyService_ = createPropertyService();
                         propertyService_->load(child);
                     }
                     if (strcmp(child->name(), "control-service") == 0) {
-                        controlService_ = createControlService();
                         controlService_->load(child);
                     }
                     if (strcmp(child->name(), "physics-service") == 0) {
-                        physicsService_ = createPhysicsService();
                         physicsService_->load(child);
                     }
                     if (strcmp(child->name(), "graphics-service") == 0) {
-                        graphicsService_ = createGraphicsService();
                         graphicsService_->load(child);
                     }
                 }

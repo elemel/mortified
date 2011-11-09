@@ -1,5 +1,6 @@
 #include "default_graphics_service.hpp"
 
+#include "context.hpp"
 #include "default_scene.hpp"
 #include "graphics_service.hpp"
 #include "scene.hpp"
@@ -9,7 +10,7 @@ namespace mortified {
     public:
         DefaultGraphicsService() :
             scene_(createScene())
-        { }        
+        { }
 
         void load(rapidxml::xml_node<> *node)
         { }
@@ -24,6 +25,16 @@ namespace mortified {
             {
                 (*i)(dt);
             }
+        }
+
+        boost::intrusive_ptr<Context> context()
+        {
+            return context_;
+        }
+
+        void context(boost::intrusive_ptr<Context> context)
+        {
+            context_ = context;
         }
 
         Scene *scene()
@@ -42,6 +53,7 @@ namespace mortified {
         }
 
     private:
+        boost::intrusive_ptr<Context> context_;
         std::auto_ptr<Scene> scene_;
         UpdateHandlerList handlers_;
     };

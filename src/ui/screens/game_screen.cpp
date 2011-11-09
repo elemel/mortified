@@ -9,6 +9,7 @@
 #include "empty_texture_source.hpp"
 #include "framebuffer.hpp"
 #include "game.hpp"
+#include "graphics_service.hpp"
 #include "actor.hpp"
 #include "graphics_service.hpp"
 #include "image.hpp"
@@ -45,6 +46,7 @@ namespace mortified {
         {
             physicsDraw_ = createPhysicsDraw();
             game_ = createGame();
+            game_->graphicsService()->context(window_->context());
             loadConfig("../../../content/configs/config.xml");
             game_->loadModule("../../../content/modules/level.xml");
         }

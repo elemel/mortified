@@ -100,7 +100,7 @@ namespace mortified {
                 boost::intrusive_ptr<Image> image = loadImageFromFile(file.c_str());
                 image->flipVertical();
                 boost::intrusive_ptr<Texture> texture =
-                    createTexture(boost::intrusive_ptr<Context>(),
+                    createTexture(graphicsService_->context(),
                                   createImageTextureSource(image));
                 boost::intrusive_ptr<Sprite> sprite = createSprite(texture);
                 sprite->alignment(alignment);
