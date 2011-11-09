@@ -8,8 +8,8 @@
 namespace mortified {
     class PhysicsService : public virtual Service {
     public:
-        virtual b2World *world() = 0;
-        virtual b2World const *world() const = 0;
+        virtual b2World *getWorld() = 0;
+        virtual b2World const *getWorld() const = 0;
     };
 }
 

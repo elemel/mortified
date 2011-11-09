@@ -45,8 +45,7 @@ namespace mortified {
         void create()
         {
             physicsDraw_ = createPhysicsDraw();
-            game_ = createGame();
-            game_->graphicsService()->context(window_->context());
+            game_ = createGame(window_->getContext());
             loadConfig("../../../content/configs/config.xml");
             game_->loadModule("../../../content/modules/level.xml");
         }
@@ -165,7 +164,7 @@ namespace mortified {
         {
             Actor *actor = game_->findActor("wizard");
             if (actor) {
-                PropertyComponent *component = actor->propertyComponent();
+                PropertyComponent *component = actor->getPropertyComponent();
                 if (component) {
                     bool *upInput = component->findBool("up-input");
                     bool *leftInput = component->findBool("left-input");
@@ -207,55 +206,56 @@ namespace mortified {
             glClear(GL_COLOR_BUFFER_BIT);
             glEnable(GL_BLEND);
             glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-            game_->graphicsService()->scene()->draw();
+            game_->getGraphicsService()->getScene()->draw();
             glDisable(GL_BLEND);
         }
         
         void drawSceneToTarget()
         {
             if (!targetTexture_ ||
-                targetTexture_->width() != 2 * window_->width() ||
-                targetTexture_->height() != 2 * window_->height())
+                targetTexture_->getWidth() != 2 * window_->getWidth() ||
+                targetTexture_->getHeight() != 2 * window_->getHeight())
             {
-                targetTexture_ = window_->context()->createTexture(2 * window_->width(),
-                                                                   2 * window_->height());
-                targetTexture_->minFilter(GL_LINEAR);
-                targetTexture_->magFilter(GL_LINEAR);
+                targetTexture_ = window_->getContext()->createTexture(2 * window_->getWidth(),
+                                                                      2 * window_->getHeight());
+                targetTexture_->setMinFilter(GL_LINEAR);
+                targetTexture_->setMagFilter(GL_LINEAR);
                 targetFramebuffer_ = targetTexture_->createFramebuffer();
             }
             
             targetFramebuffer_->create();
 
-            glViewport(0, 0, window_->width() * 2, window_->height() * 2);
+            glViewport(0, 0, window_->getWidth() * 2,
+                       window_->getHeight() * 2);
             glBindFramebufferEXT(GL_FRAMEBUFFER_EXT,
-                                 targetFramebuffer_->name());
+                                 targetFramebuffer_->getName());
             glClearColor(0.0, 0.0, 0.0, 0.0);
             drawScene();
             glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);
-            glViewport(0, 0, window_->width(), window_->height());
+            glViewport(0, 0, window_->getWidth(), window_->getHeight());
         }
         
         void drawTargetToScreen()
         {
             glMatrixMode(GL_PROJECTION);
             glLoadIdentity();
-            glOrtho(0.0, double(window_->width() * 2),
-                    0.0, double(window_->height() * 2),
+            glOrtho(0.0, double(window_->getWidth() * 2),
+                    0.0, double(window_->getHeight() * 2),
                     -1.0, 1.0);
             glMatrixMode(GL_MODELVIEW);
             
             glEnable(GL_TEXTURE_2D);
-            glBindTexture(GL_TEXTURE_2D, targetTexture_->name());
+            glBindTexture(GL_TEXTURE_2D, targetTexture_->getName());
             glBegin(GL_QUADS);
             {
                 glTexCoord2i(0, 0);
                 glVertex2i(0, 0);
                 glTexCoord2i(1, 0);
-                glVertex2i(window_->width() * 2, 0);
+                glVertex2i(window_->getWidth() * 2, 0);
                 glTexCoord2i(1, 1);
-                glVertex2i(window_->width() * 2, window_->height() * 2);
+                glVertex2i(window_->getWidth() * 2, window_->getHeight() * 2);
                 glTexCoord2i(0, 1);
-                glVertex2i(0, window_->height() * 2);
+                glVertex2i(0, window_->getHeight() * 2);
             }
             glEnd();
             glBindTexture(GL_TEXTURE_2D, 0);
@@ -269,15 +269,15 @@ namespace mortified {
             b2Transform transform;
             transform.SetIdentity();
             physicsDraw_->DrawTransform(transform);
-            b2World *world = game_->physicsService()->world();
+            b2World *world = game_->getPhysicsService()->getWorld();
             world->SetDebugDraw(physicsDraw_.get());
             world->DrawDebugData();
         }
 
         void applyCamera()
         {
-            float aspectRatio = (float(window_->width()) /
-                                 float(window_->height()));
+            float aspectRatio = (float(window_->getWidth()) /
+                                 float(window_->getHeight()));
 
             glMatrixMode(GL_PROJECTION);
             glLoadIdentity();

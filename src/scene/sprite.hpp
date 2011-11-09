@@ -11,20 +11,20 @@ namespace mortified {
 
     class Sprite : public virtual SceneObject {
     public:
-        virtual Vector2 position() const = 0;
-        virtual void position(Vector2 position) = 0;
+        virtual Vector2 getPosition() const = 0;
+        virtual void setPosition(Vector2 position) = 0;
 
-        virtual float angle() const = 0;
-        virtual void angle(float angle) = 0;
+        virtual float getAngle() const = 0;
+        virtual void setAngle(float angle) = 0;
         
-        virtual Vector2 scale() const = 0;
-        virtual void scale(Vector2 scale) = 0;
+        virtual Vector2 getScale() const = 0;
+        virtual void setScale(Vector2 scale) = 0;
 
-        virtual Vector2 alignment() const = 0;
-        virtual void alignment(Vector2 alignment) = 0;
+        virtual Vector2 getAlignment() const = 0;
+        virtual void setAlignment(Vector2 alignment) = 0;
 
-        virtual Color4 color() const = 0;
-        virtual void color(Color4 color) = 0;
+        virtual Color4 getColor() const = 0;
+        virtual void setColor(Color4 color) = 0;
     };
 }
 

@@ -40,8 +40,8 @@ namespace mortified {
         virtual Texture *asTexture() = 0;
         virtual Texture const *asTexture() const = 0;
 
-        virtual ParentRange parents() = 0;
-        virtual ChildRange children() = 0;
+        virtual ParentRange getParents() = 0;
+        virtual ChildRange getChildren() = 0;
 
         virtual ChildIterator addChild(GraphicsResource *child) = 0;
         virtual void removeChild(ChildIterator child) = 0;

@@ -11,15 +11,15 @@ namespace mortified {
 
     class Texture : public virtual GraphicsResource {
     public:
-        virtual int name() const = 0;
-        virtual int width() const = 0;
-        virtual int height() const = 0;
+        virtual int getName() const = 0;
+        virtual int getWidth() const = 0;
+        virtual int getHeight() const = 0;
 
-        virtual GLenum minFilter() const = 0;
-        virtual void minFilter(GLenum filter) = 0;
+        virtual GLenum getMinFilter() const = 0;
+        virtual void setMinFilter(GLenum filter) = 0;
 
-        virtual GLenum magFilter() const = 0;
-        virtual void magFilter(GLenum filter) = 0;
+        virtual GLenum getMagFilter() const = 0;
+        virtual void setMagFilter(GLenum filter) = 0;
 
         virtual boost::intrusive_ptr<Framebuffer> createFramebuffer() = 0;
     };

@@ -21,7 +21,6 @@ namespace mortified {
             width_(0),
             height_(0),
             fullscreen_(false),
-            multisample_(false),
             window_(0)
         { }
 
@@ -30,12 +29,12 @@ namespace mortified {
             destroy();
         }
 
-        int width() const
+        int getWidth() const
         {
             return width_;
         }
 
-        int height() const
+        int getHeight() const
         {
             return height_;
         }
@@ -46,24 +45,14 @@ namespace mortified {
             height_ = height;
         }
 
-        bool fullscreen() const
+        bool isFullscreen() const
         {
             return fullscreen_;
         }
 
-        void fullscreen(bool fullscreen)
+        void setFullscreen(bool fullscreen)
         {
             fullscreen_ = fullscreen;
-        }
-
-        bool multisample() const
-        {
-            return multisample_;
-        }
-
-        void multisample(bool multisample)
-        {
-            multisample_ = multisample;
         }
 
         void create()
@@ -94,7 +83,6 @@ namespace mortified {
             }
 
             context_ = createContext(window_);
-            context_->multisample(multisample_);
             context_->create();
         }
 
@@ -135,7 +123,7 @@ namespace mortified {
             return std::auto_ptr<Screen>();
         }
 
-        Screen *currentScreen()
+        Screen *getCurrentScreen()
         {
             assert(screens_.empty() || screens_.back());
             return !screens_.empty() ? screens_.back() : 0;
@@ -153,7 +141,7 @@ namespace mortified {
                 context_->create();
             }
             if (!handled) {
-                if (Screen *screen = currentScreen()) {
+                if (Screen *screen = getCurrentScreen()) {
                     handled = screen->handleEvent(event);
                 }
             }
@@ -162,7 +150,7 @@ namespace mortified {
 
         void update()
         {
-            if (Screen *screen = currentScreen()) {
+            if (Screen *screen = getCurrentScreen()) {
                 screen->update();
             }
         }
@@ -171,13 +159,13 @@ namespace mortified {
         {
             glClearColor(0.0, 0.0, 0.0, 0.0);
             glClear(GL_COLOR_BUFFER_BIT);
-            if (Screen *screen = currentScreen()) {
+            if (Screen *screen = getCurrentScreen()) {
                 screen->draw();
             }
             SDL_GL_SwapWindow(window_);
         }
 
-        boost::intrusive_ptr<Context> context()
+        boost::intrusive_ptr<Context> getContext()
         {
             return context_;
         }
@@ -186,15 +174,14 @@ namespace mortified {
         int width_;
         int height_;
         bool fullscreen_;
-        bool multisample_;
         SDL_Window *window_;
         boost::intrusive_ptr<Context> context_;
         std::vector<Screen *> screens_;
 
         void removeAllScreens()
         {
-            while (currentScreen()) {
-                removeScreen(currentScreen());
+            while (getCurrentScreen()) {
+                removeScreen(getCurrentScreen());
             }
         }
     };

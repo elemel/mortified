@@ -21,56 +21,56 @@ namespace mortified {
             dirtyVertices_(true)
         { }
 
-        Vector2 position() const
+        Vector2 getPosition() const
         {
             return position_;
         }
 
-        void position(Vector2 position)
+        void setPosition(Vector2 position)
         {
             position_ = position;
             dirtyVertices_ = true;
         }
 
-        float angle() const
+        float getAngle() const
         {
             return angle_;
         }
 
-        void angle(float angle)
+        void setAngle(float angle)
         {
             angle_ = angle;
             dirtyVertices_ = true;
         }
 
-        Vector2 scale() const
+        Vector2 getScale() const
         {
             return scale_;
         }
 
-        void scale(Vector2 scale)
+        void setScale(Vector2 scale)
         {
             scale_ = scale;
             dirtyVertices_ = true;
         }
 
-        Vector2 alignment() const
+        Vector2 getAlignment() const
         {
             return alignment_;
         }
 
-        void alignment(Vector2 alignment)
+        void setAlignment(Vector2 alignment)
         {
             alignment_ = alignment;
             dirtyVertices_ = true;
         }
 
-        Color4 color() const
+        Color4 getColor() const
         {
             return color_;
         }
 
-        void color(Color4 color)
+        void setColor(Color4 color)
         {
             color_ = color;
         }
@@ -81,7 +81,7 @@ namespace mortified {
 
             glColor4ub(color_.red, color_.green, color_.blue, color_.alpha);
             glEnable(GL_TEXTURE_2D);
-            glBindTexture(GL_TEXTURE_2D, texture_->name());
+            glBindTexture(GL_TEXTURE_2D, texture_->getName());
             glBegin(GL_QUADS);
             {
                 glTexCoord2f(0.0f, 0.0f);
@@ -115,8 +115,8 @@ namespace mortified {
         {
             if (dirtyVertices_) {
                 texture_->create();
-                Vector2 size(float(texture_->width()),
-                             float(texture_->height()));
+                Vector2 size(float(texture_->getWidth()),
+                             float(texture_->getHeight()));
                 Matrix3 m;
                 m.translate(position_);
                 m.rotate(angle_);

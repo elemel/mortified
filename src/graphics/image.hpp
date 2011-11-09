@@ -11,11 +11,11 @@ namespace mortified {
 
         virtual void convert() = 0;
 
-        virtual int width() const = 0;
-        virtual int height() const = 0;
+        virtual int getWidth() const = 0;
+        virtual int getHeight() const = 0;
 
-        virtual void *pixels() = 0;
-        virtual void const *pixels() const = 0;
+        virtual void *getPixels() = 0;
+        virtual void const *getPixels() const = 0;
 
         virtual void flipVertical() = 0;
     };

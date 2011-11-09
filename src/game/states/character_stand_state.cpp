@@ -14,15 +14,15 @@ namespace mortified {
     public:
         explicit CharacterStandState(Actor *actor) :
             actor_(actor),
-            propertyComponent_(wire(actor->propertyComponent())),
-            physicsComponent_(wire(actor->physicsComponent())),
+            propertyComponent_(wire(actor->getPropertyComponent())),
+            physicsComponent_(wire(actor->getPhysicsComponent())),
             leftInput_(wire(propertyComponent_->findBool("left-input"))),
             rightInput_(wire(propertyComponent_->findBool("right-input"))),
             jumpInput_(wire(propertyComponent_->findBool("jump-input"))),
             motorJoint_(wire(physicsComponent_->findRevoluteJoint("motor")))
         { }
 
-        virtual char const *name() const
+        virtual char const *getName() const
         {
             return "character-stand";
         }

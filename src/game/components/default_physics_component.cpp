@@ -13,17 +13,17 @@ namespace mortified {
     public:
         explicit DefaultPhysicsComponent(Actor *actor) :
             actor_(actor),
-            physicsService_(actor->game()->physicsService())
+            physicsService_(actor->getGame()->getPhysicsService())
         { }
         
         ~DefaultPhysicsComponent()
         {
             while (!joints_.empty()) {
-                physicsService_->world()->DestroyJoint(joints_.back().joint);
+                physicsService_->getWorld()->DestroyJoint(joints_.back().joint);
                 joints_.pop_back();
             }
             while (!bodies_.empty()) {
-                physicsService_->world()->DestroyBody(bodies_.back().body);
+                physicsService_->getWorld()->DestroyBody(bodies_.back().body);
                 bodies_.pop_back();
             }
         }
@@ -84,7 +84,7 @@ namespace mortified {
             std::string name;
             b2BodyDef def;
             loadBodyData(&name, &def, node);
-            b2Body *body = physicsService_->world()->CreateBody(&def);
+            b2Body *body = physicsService_->getWorld()->CreateBody(&def);
             bodies_.push_back(BodyData(this, body, name));
             setBodyData(body, &bodies_.back());
             loadFixtures(body, node);
@@ -326,7 +326,7 @@ namespace mortified {
                         }
                     }
                 }
-                b2Joint *joint = physicsService_->world()->CreateJoint(&def);
+                b2Joint *joint = physicsService_->getWorld()->CreateJoint(&def);
                 joints_.push_back(JointData(this, joint, name));
                 setJointData(joint, &joints_.back());
             }

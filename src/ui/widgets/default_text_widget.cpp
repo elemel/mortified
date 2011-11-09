@@ -57,7 +57,7 @@ namespace mortified {
             }
     
             if (image_) {
-                minContentSize_ = WidgetSize(image_->width(), image_->height());
+                minContentSize_ = WidgetSize(image_->getWidth(), image_->getHeight());
             } else {
                 minContentSize_ = WidgetSize();
             }
@@ -73,8 +73,8 @@ namespace mortified {
                 WidgetPosition origin = minContentPosition();
                 WidgetSize outerSize = maxContentSize();
         
-                int width = texture_->width();
-                int height = texture_->height();
+                int width = texture_->getWidth();
+                int height = texture_->getHeight();
         
                 int x = (position_.x + origin.x +
                          align(width, outerSize.width,
@@ -87,7 +87,7 @@ namespace mortified {
                            style_.color.green,
                            style_.color.blue,
                            style_.color.alpha);
-                glBindTexture(GL_TEXTURE_2D, texture_->name());
+                glBindTexture(GL_TEXTURE_2D, texture_->getName());
                 glBegin(GL_QUADS);
                 {
                     glTexCoord2i(0, 0);

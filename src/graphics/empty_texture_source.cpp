@@ -25,17 +25,17 @@ namespace mortified {
         void destroy()
         { }
         
-        int width() const
+        int getWidth() const
         {
             return width_;
         }
         
-        int height() const
+        int getHeight() const
         {
             return height_;
         }
         
-        void const *pixels() const
+        void const *getPixels() const
         {
             return 0;
         }

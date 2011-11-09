@@ -6,7 +6,7 @@
 namespace mortified {
     class Framebuffer : public virtual GraphicsResource {
     public:
-        virtual int name() const = 0;
+        virtual int getName() const = 0;
     };
 }
 

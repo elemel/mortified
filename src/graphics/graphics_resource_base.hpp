@@ -92,12 +92,12 @@ namespace mortified {
             return 0;
         }
 
-        ParentRange parents()
+        ParentRange getParents()
         {
             return ParentRange(parents_.begin(), parents_.end());
         }
 
-        ChildRange children()
+        ChildRange getChildren()
         {
             return ChildRange(children_.begin(), children_.end());
         }

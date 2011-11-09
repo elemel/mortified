@@ -22,17 +22,17 @@ namespace mortified {
             game_(game)
         { }
 
-        char const *name() const
+        char const *getName() const
         {
             return name_.empty() ? 0 : name_.c_str();
         }
         
-        Game *game()
+        Game *getGame()
         {
             return game_;
         }
 
-        Game const *game() const
+        Game const *getGame() const
         {
             return game_;
         }
@@ -99,42 +99,42 @@ namespace mortified {
             }
         }
 
-        PropertyComponent *propertyComponent()
+        PropertyComponent *getPropertyComponent()
         {
             return propertyComponent_.get();
         }
         
-        PropertyComponent const *propertyComponent() const
+        PropertyComponent const *getPropertyComponent() const
         {
             return propertyComponent_.get();
         }
 
-        ControlComponent *controlComponent()
+        ControlComponent *getControlComponent()
         {
             return controlComponent_.get();
         }
         
-        ControlComponent const *controlComponent() const
+        ControlComponent const *getControlComponent() const
         {
             return controlComponent_.get();
         }
         
-        PhysicsComponent *physicsComponent()
+        PhysicsComponent *getPhysicsComponent()
         {
             return physicsComponent_.get();
         }
         
-        PhysicsComponent const *physicsComponent() const
+        PhysicsComponent const *getPhysicsComponent() const
         {
             return physicsComponent_.get();
         }
         
-        GraphicsComponent *graphicsComponent()
+        GraphicsComponent *getGraphicsComponent()
         {
             return graphicsComponent_.get();
         }
 
-        GraphicsComponent const *graphicsComponent() const
+        GraphicsComponent const *getGraphicsComponent() const
         {
             return graphicsComponent_.get();
         }

@@ -22,7 +22,7 @@ namespace mortified {
 
         explicit DefaultPropertyComponent(Actor *actor) :
             actor_(actor),
-            propertyService_(actor->game()->propertyService())
+            propertyService_(actor->getGame()->getPropertyService())
         { }
 
         void load(rapidxml::xml_node<> *node)

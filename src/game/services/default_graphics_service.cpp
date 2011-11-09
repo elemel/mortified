@@ -8,7 +8,8 @@
 namespace mortified {
     class DefaultGraphicsService : public virtual GraphicsService {
     public:
-        DefaultGraphicsService() :
+        explicit DefaultGraphicsService(boost::intrusive_ptr<Context> context) :
+            context_(context),
             scene_(createScene())
         { }
 
@@ -27,17 +28,12 @@ namespace mortified {
             }
         }
 
-        boost::intrusive_ptr<Context> context()
+        boost::intrusive_ptr<Context> getContext()
         {
             return context_;
         }
 
-        void context(boost::intrusive_ptr<Context> context)
-        {
-            context_ = context;
-        }
-
-        Scene *scene()
+        Scene *getScene()
         {
             return scene_.get();
         }
@@ -58,8 +54,9 @@ namespace mortified {
         UpdateHandlerList handlers_;
     };
 
-    std::auto_ptr<GraphicsService> createGraphicsService()
+    std::auto_ptr<GraphicsService>
+    createGraphicsService(boost::intrusive_ptr<Context> context)
     {
-        return std::auto_ptr<GraphicsService>(new DefaultGraphicsService);
+        return std::auto_ptr<GraphicsService>(new DefaultGraphicsService(context));
     }
 }

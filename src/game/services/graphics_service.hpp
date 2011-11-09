@@ -17,10 +17,9 @@ namespace mortified {
         typedef std::list<UpdateHandler> UpdateHandlerList;
         typedef UpdateHandlerList::iterator UpdateHandlerIterator;
 
-        virtual boost::intrusive_ptr<Context> context() = 0;
-        virtual void context(boost::intrusive_ptr<Context> context) = 0;
+        virtual boost::intrusive_ptr<Context> getContext() = 0;
 
-        virtual Scene *scene() = 0;
+        virtual Scene *getScene() = 0;
 
         virtual UpdateHandlerIterator addUpdateHandler(UpdateHandler handler) = 0;
         virtual void removeUpdateHandler(UpdateHandlerIterator handler) = 0;

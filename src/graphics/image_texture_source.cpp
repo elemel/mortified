@@ -26,19 +26,19 @@ namespace mortified {
         void destroy()
         { }
 
-        int width() const
+        int getWidth() const
         {
-            return image_->width();
+            return image_->getWidth();
         }
 
-        int height() const
+        int getHeight() const
         {
-            return image_->height();
+            return image_->getHeight();
         }
 
-        void const *pixels() const
+        void const *getPixels() const
         {
-            return image_->pixels();
+            return image_->getPixels();
         }
 
     private:

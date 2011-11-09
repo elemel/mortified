@@ -39,22 +39,22 @@ namespace mortified {
             surface_ = convertedSurface;
         }
 
-        int width() const
+        int getWidth() const
         {
             return surface_->w;
         }
 
-        int height() const
+        int getHeight() const
         {
             return surface_->h;
         }
 
-        void *pixels()
+        void *getPixels()
         {
             return surface_->pixels;
         }
 
-        void const *pixels() const
+        void const *getPixels() const
         {
             return surface_->pixels;
         }

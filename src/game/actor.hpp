@@ -17,25 +17,25 @@ namespace mortified {
         virtual ~Actor()
         { }
 
-        virtual char const *name() const = 0;
+        virtual char const *getName() const = 0;
 
-        virtual Game *game() = 0;
-        virtual Game const *game() const = 0;
+        virtual Game *getGame() = 0;
+        virtual Game const *getGame() const = 0;
 
         virtual void load(rapidxml::xml_node<> *node) = 0;
         virtual void save(rapidxml::xml_node<> *parent) = 0;
 
-        virtual PropertyComponent *propertyComponent() = 0;
-        virtual PropertyComponent const *propertyComponent() const = 0;
+        virtual PropertyComponent *getPropertyComponent() = 0;
+        virtual PropertyComponent const *getPropertyComponent() const = 0;
 
-        virtual ControlComponent *controlComponent() = 0;
-        virtual ControlComponent const *controlComponent() const = 0;
+        virtual ControlComponent *getControlComponent() = 0;
+        virtual ControlComponent const *getControlComponent() const = 0;
 
-        virtual PhysicsComponent *physicsComponent() = 0;
-        virtual PhysicsComponent const *physicsComponent() const = 0;
+        virtual PhysicsComponent *getPhysicsComponent() = 0;
+        virtual PhysicsComponent const *getPhysicsComponent() const = 0;
 
-        virtual GraphicsComponent *graphicsComponent() = 0;
-        virtual GraphicsComponent const *graphicsComponent() const = 0;
+        virtual GraphicsComponent *getGraphicsComponent() = 0;
+        virtual GraphicsComponent const *getGraphicsComponent() const = 0;
     };
 }
 

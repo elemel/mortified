@@ -14,11 +14,11 @@ namespace mortified {
     public:
         explicit CharacterFallState(Actor *actor) :
             actor_(actor),
-            propertyComponent_(wire(actor->propertyComponent())),
-            physicsComponent_(wire(actor->physicsComponent()))
+            propertyComponent_(wire(actor->getPropertyComponent())),
+            physicsComponent_(wire(actor->getPhysicsComponent()))
         { }
         
-        virtual char const *name() const
+        virtual char const *getName() const
         {
             return "character-fall";
         }

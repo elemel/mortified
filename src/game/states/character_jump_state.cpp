@@ -14,13 +14,13 @@ namespace mortified {
     public:
         explicit CharacterJumpState(Actor *actor) :
             actor_(actor),
-            propertyComponent_(wire(actor->propertyComponent())),
-            physicsComponent_(wire(actor->physicsComponent())),
+            propertyComponent_(wire(actor->getPropertyComponent())),
+            physicsComponent_(wire(actor->getPhysicsComponent())),
             jumpInput_(wire(propertyComponent_->findBool("jump-input"))),
             bodyBody_(wire(physicsComponent_->findBody("body")))
         { }
         
-        virtual char const *name() const
+        virtual char const *getName() const
         {
             return "character-jump";
         }

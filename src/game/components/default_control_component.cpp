@@ -29,7 +29,7 @@ namespace mortified {
 
         explicit DefaultControlComponent(Actor *actor) :
             actor_(actor),
-            controlService_(actor->game()->controlService())
+            controlService_(actor->getGame()->getControlService())
         { }
 
         ~DefaultControlComponent()
@@ -106,7 +106,7 @@ namespace mortified {
         void saveStateMachine(rapidxml::xml_node<> *parent, State *state)
         {
             rapidxml::xml_node<> *node = saveGroup(parent, "state-machine");
-            saveString(node, "state-ref", state->name());
+            saveString(node, "state-ref", state->getName());
         }
 
         void updateStateMachine(StateData *data, float dt)

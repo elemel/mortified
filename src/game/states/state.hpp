@@ -7,7 +7,7 @@ namespace mortified {
         virtual ~State()
         { }
 
-        virtual char const *name() const = 0;
+        virtual char const *getName() const = 0;
 
         virtual void enter() = 0;
         virtual void leave() = 0;

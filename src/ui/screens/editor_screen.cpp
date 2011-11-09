@@ -66,9 +66,11 @@ namespace mortified {
 
         void update()
         {
-            if (width_ != window_->width() || height_ != window_->height()) {
-                width_ = window_->width();
-                height_ = window_->height();
+            if (width_ != window_->getWidth() ||
+                height_ != window_->getHeight())
+            {
+                width_ = window_->getWidth();
+                height_ = window_->getHeight();
 
                 if (rootWidget_.get()) {
                     rootWidget_->size(WidgetSize(width_, height_));
@@ -108,7 +110,7 @@ namespace mortified {
             std::auto_ptr<Stream> layoutStream =
                 createStreamFromFile("../../../content/layouts/editor.xml", "rb");
             std::auto_ptr<LayoutParser>
-                layoutParser = createLayoutParser(window_->context());
+                layoutParser = createLayoutParser(window_->getContext());
             rootWidget_ = layoutParser->parse(layoutStream.get());
 
             std::auto_ptr<Stream> styleStream =

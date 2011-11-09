@@ -50,12 +50,12 @@ namespace mortified {
             world_->Step(dt, velocityIterations_, positionIterations_);
         }
 
-        b2World *world()
+        b2World *getWorld()
         {
             return world_.get();
         }
 
-        b2World const *world() const
+        b2World const *getWorld() const
         {
             return world_.get();
         }

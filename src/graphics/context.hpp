@@ -11,9 +11,6 @@ namespace mortified {
 
     class Context : public virtual GraphicsResource {
     public:
-        virtual bool multisample() const = 0;
-        virtual void multisample(bool multisample) = 0;
-
         virtual boost::intrusive_ptr<Texture>
         createTexture(boost::intrusive_ptr<TextureSource> source) = 0;
 

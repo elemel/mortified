@@ -33,11 +33,11 @@ namespace mortified {
 
             logoImage_ = font_->render("Mortified");
             logoImage_->flipVertical();
-            logoTexture_ = window_->context()->createTexture(createImageTextureSource(logoImage_));
-            logoTexture_->minFilter(GL_LINEAR);
-            logoTexture_->magFilter(GL_LINEAR);
+            logoTexture_ = window_->getContext()->createTexture(createImageTextureSource(logoImage_));
+            logoTexture_->setMinFilter(GL_LINEAR);
+            logoTexture_->setMagFilter(GL_LINEAR);
 
-            targetTexture_ = window_->context()->createTexture(128, 128);
+            targetTexture_ = window_->getContext()->createTexture(128, 128);
             targetFramebuffer_ = targetTexture_->createFramebuffer();
         }
 
@@ -93,26 +93,26 @@ namespace mortified {
             logoTexture_->create();
             targetFramebuffer_->create();
             
-            glViewport(0, 0, targetTexture_->width(),
-                       targetTexture_->height());
+            glViewport(0, 0, targetTexture_->getWidth(),
+                       targetTexture_->getHeight());
             
             glMatrixMode(GL_PROJECTION);
             glLoadIdentity();
             glOrtho(-1.0, 1.0, -1.0, 1.0, -1.0, 1.0);
             glMatrixMode(GL_MODELVIEW);
             
-            float aspectRatio = (float(logoTexture_->width()) /
-                                 float(logoTexture_->height()));
+            float aspectRatio = (float(logoTexture_->getWidth()) /
+                                 float(logoTexture_->getHeight()));
             float scale = 0.2f;
             
             glBindFramebufferEXT(GL_FRAMEBUFFER_EXT,
-                                 targetFramebuffer_->name());
+                                 targetFramebuffer_->getName());
             glClearColor(0.0, 0.0, 0.0, 0.0);
             glClear(GL_COLOR_BUFFER_BIT);
             glEnable(GL_BLEND);
             glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
             glEnable(GL_TEXTURE_2D);
-            glBindTexture(GL_TEXTURE_2D, logoTexture_->name());
+            glBindTexture(GL_TEXTURE_2D, logoTexture_->getName());
             glPushMatrix();
             glRotatef(angle_, 0.0f, 0.0f, 1.0f);
             glColor3f(1.0f, 0.8f, 0.2f);
@@ -137,11 +137,11 @@ namespace mortified {
         
         void drawTargetToScreen()
         {
-            float aspectRatio = (float(window_->width()) /
-                                 float(window_->height()));
+            float aspectRatio = (float(window_->getWidth()) /
+                                 float(window_->getHeight()));
             float scale = 1.5f;
             
-            glViewport(0, 0, window_->width(), window_->height());
+            glViewport(0, 0, window_->getWidth(), window_->getHeight());
             
             glMatrixMode(GL_PROJECTION);
             glLoadIdentity();
@@ -151,7 +151,7 @@ namespace mortified {
             glEnable(GL_BLEND);
             glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
             glEnable(GL_TEXTURE_2D);
-            glBindTexture(GL_TEXTURE_2D, targetTexture_->name());
+            glBindTexture(GL_TEXTURE_2D, targetTexture_->getName());
             glPushMatrix();
             glRotatef(-angle_, 0.0f, 0.0f, 1.0f);
             glBegin(GL_QUADS);

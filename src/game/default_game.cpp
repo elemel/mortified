@@ -1,5 +1,6 @@
 #include "default_game.hpp"
 
+#include "context.hpp"
 #include "control_service.hpp"
 #include "default_control_service.hpp"
 #include "default_actor.hpp"
@@ -26,12 +27,12 @@
 namespace mortified {
     class DefaultGame : public virtual Game {
     public:
-        DefaultGame() :
+        explicit DefaultGame(boost::intrusive_ptr<Context> context) :
             time_(0.0f),
             propertyService_(createPropertyService()),
             controlService_(createControlService()),
             physicsService_(createPhysicsService()),
-            graphicsService_(createGraphicsService())
+            graphicsService_(createGraphicsService(context))
         { }
         
         ~DefaultGame()
@@ -115,47 +116,47 @@ namespace mortified {
             out << document;
         }
 
-        float time() const
+        float getTime() const
         {
             return time_;
         }
 
-        PropertyService *propertyService()
+        PropertyService *getPropertyService()
         {
             return propertyService_.get();
         }
 
-        PropertyService const *propertyService() const
+        PropertyService const *getPropertyService() const
         {
             return propertyService_.get();
         }        
 
-        ControlService *controlService()
+        ControlService *getControlService()
         {
             return controlService_.get();
         }
         
-        ControlService const *controlService() const
+        ControlService const *getControlService() const
         {
             return controlService_.get();
         }
 
-        PhysicsService *physicsService()
+        PhysicsService *getPhysicsService()
         {
             return physicsService_.get();
         }
         
-        PhysicsService const *physicsService() const
+        PhysicsService const *getPhysicsService() const
         {
             return physicsService_.get();
         }
 
-        GraphicsService *graphicsService()
+        GraphicsService *getGraphicsService()
         {
             return graphicsService_.get();
         }
         
-        GraphicsService const *graphicsService() const
+        GraphicsService const *getGraphicsService() const
         {
             return graphicsService_.get();
         }
@@ -171,7 +172,7 @@ namespace mortified {
         Actor *findActor(char const *name)
         {
             for (std::size_t i = 0; i < actors_.size(); ++i) {
-                char const *actorName = actors_[i]->name();
+                char const *actorName = actors_[i]->getName();
                 if (actorName && std::strcmp(actorName, name) == 0) {
                     return actors_[i];
                 }
@@ -218,8 +219,8 @@ namespace mortified {
         }
     };
 
-    std::auto_ptr<Game> createGame()
+    std::auto_ptr<Game> createGame(boost::intrusive_ptr<Context> context)
     {
-        return std::auto_ptr<Game>(new DefaultGame);
+        return std::auto_ptr<Game>(new DefaultGame(context));
     }
 }

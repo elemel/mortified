@@ -32,7 +32,7 @@ namespace mortified {
             return name_ != 0;
         }
 
-        int name() const
+        int getName() const
         {
             return name_;
         }
@@ -57,7 +57,7 @@ namespace mortified {
             glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, name_);
             glFramebufferTexture2DEXT(GL_FRAMEBUFFER_EXT,
                                       GL_COLOR_ATTACHMENT0_EXT,
-                                      GL_TEXTURE_2D, texture_->name(), 0);
+                                      GL_TEXTURE_2D, texture_->getName(), 0);
             glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);
         }
         

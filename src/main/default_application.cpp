@@ -23,7 +23,6 @@ namespace mortified {
         bool editor;
         bool fullscreen;
         bool game;
-        bool multisample;
         bool supersample;
 
         ApplicationSettings();
@@ -34,7 +33,6 @@ namespace mortified {
         editor(false),
         fullscreen(false),
         game(false),
-        multisample(false),
         supersample(false)
     { }
 
@@ -57,8 +55,7 @@ namespace mortified {
             initSdl();
             window_ = createWindow();
             window_->resize(640, 480);
-            window_->fullscreen(settings_.fullscreen);
-            window_->multisample(settings_.multisample);
+            window_->setFullscreen(settings_.fullscreen);
             window_->create();
             if (settings_.editor) {
                 window_->addScreen(createEditorScreen(window_.get()));
@@ -91,9 +88,6 @@ namespace mortified {
                 if (strcmp(argv[i], "--game") == 0) {
                     settings_.game = true;
                 }
-                if (strcmp(argv[i], "--multisample") == 0) {
-                    settings_.multisample = true;
-                }
                 if (strcmp(argv[i], "--windowed") == 0) {
                     settings_.fullscreen = false;
                 }
@@ -116,17 +110,12 @@ namespace mortified {
                           << SDL_GetError() << std::endl;
             }
 
-            if (settings_.multisample) {
-                SDL_GL_SetAttribute(SDL_GL_MULTISAMPLEBUFFERS, 1);
-                SDL_GL_SetAttribute(SDL_GL_MULTISAMPLESAMPLES, 4);
-            }
-
             TTF_Init();
         }
 
         void eventLoop()
         {
-            while (window_->currentScreen()) {
+            while (window_->getCurrentScreen()) {
                 handleEvents();
                 window_->update();
                 window_->draw();
@@ -149,7 +138,7 @@ namespace mortified {
                 switch (event->type) {
                 case SDL_KEYDOWN:
                     if (event->key.keysym.sym == SDLK_ESCAPE) {
-                        if (Screen *screen = window_->currentScreen()) {
+                        if (Screen *screen = window_->getCurrentScreen()) {
                             window_->removeScreen(screen);
                         }
                     }

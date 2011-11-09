@@ -65,37 +65,37 @@ namespace mortified {
             return this;
         }
 
-        int name() const
+        int getName() const
         {
             return name_;
         }
 
-        int width() const
+        int getWidth() const
         {
             return width_;
         }
 
-        int height() const
+        int getHeight() const
         {
             return height_;
         }
 
-        GLenum minFilter() const
+        GLenum getMinFilter() const
         {
             return minFilter_;
         }
 
-        void minFilter(GLenum filter)
+        void setMinFilter(GLenum filter)
         {
             minFilter_ = filter;
         }
         
-        GLenum magFilter() const
+        GLenum getMagFilter() const
         {
             return magFilter_;
         }
 
-        void magFilter(GLenum filter)
+        void setMagFilter(GLenum filter)
         {
             magFilter_ = filter;
         }
@@ -118,15 +118,15 @@ namespace mortified {
             if (source_) {
                 source_->create();
 
-                width_ = source_->width();
-                height_ = source_->height();
+                width_ = source_->getWidth();
+                height_ = source_->getHeight();
             }
 
             glGenTextures(1, &name_);
             glBindTexture(GL_TEXTURE_2D, name_);
             glTexImage2D(GL_TEXTURE_2D, 0, 4, width_, height_, 0,
                          GL_RGBA, GL_UNSIGNED_BYTE,
-                         source_ ? source_->pixels() : 0);
+                         source_ ? source_->getPixels() : 0);
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, minFilter_);
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, magFilter_);
             glBindTexture(GL_TEXTURE_2D, 0);
