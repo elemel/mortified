@@ -33,5 +33,37 @@
       </body>
     </physics-component>
   </actor>
+  <actor>
+    <physics-component>
+      <body>
+        <name>body</name>
+        <type>static</type>
+        <position>
+          <x>3.5</x>
+          <y>-2.8</y>
+        </position>
+        <fixture>
+          <polygon>
+            <vertex>
+              <x>-1</x>
+              <y>-0.1</y>
+            </vertex>
+            <vertex>
+              <x>1</x>
+              <y>-0.1</y>
+            </vertex>
+            <vertex>
+              <x>1</x>
+              <y>0.1</y>
+            </vertex>
+            <vertex>
+              <x>-1</x>
+              <y>0.1</y>
+            </vertex>
+          </polygon>
+        </fixture>
+      </body>
+    </physics-component>
+  </actor>
   <module-ref>wizard</module-ref>
 </module>

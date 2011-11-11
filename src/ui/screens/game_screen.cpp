@@ -16,6 +16,7 @@
 #include "image_texture_source.hpp"
 #include "math.hpp"
 #include "physics_draw.hpp"
+#include "physics_component.hpp"
 #include "physics_service.hpp"
 #include "property_component.hpp"
 #include "scene.hpp"
@@ -75,6 +76,7 @@ namespace mortified {
             skipFrames(time);
             updateInput();
             updateGame(time);
+            updateCamera();
         }
         
         void draw()
@@ -199,7 +201,23 @@ namespace mortified {
                 game_->update(dt_);
             }
         }
-        
+
+        void updateCamera()
+        {
+            Actor *actor = game_->findActor("wizard");
+            if (actor) {
+                PhysicsComponent *component = actor->getPhysicsComponent();
+                if (component) {
+                    b2Body *bodyBody = component->findBody("body");
+                    if (bodyBody) {
+                        b2Vec2 position = bodyBody->GetPosition();
+                        cameraPosition_.x = position.x;
+                        cameraPosition_.y = position.y;
+                    }
+                }
+            }
+        }
+
         void drawScene()
         {
             applyCamera();
