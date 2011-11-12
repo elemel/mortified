@@ -37,65 +37,65 @@ namespace mortified {
             return game_;
         }
 
-        void load(rapidxml::xml_node<> *node)
+        void load(rapidxml::xml_node<> *node, Matrix3 parentTransform)
         {
             rapidxml::xml_node<> *propertyNode = 0;
             rapidxml::xml_node<> *controlNode = 0;
             rapidxml::xml_node<> *physicsNode = 0;
             rapidxml::xml_node<> *graphicsNode = 0;
-            for (rapidxml::xml_node<> *child = node->first_node();
-                 child; child = child->next_sibling())
+            for (rapidxml::xml_node<> *childNode = node->first_node();
+                 childNode; childNode = childNode->next_sibling())
             {
-                if (child->type() == rapidxml::node_element) {
-                    if (std::strcmp(child->name(), "name") == 0) {
-                        name_ = child->value();
+                if (childNode->type() == rapidxml::node_element) {
+                    if (std::strcmp(childNode->name(), "name") == 0) {
+                        name_ = childNode->value();
                     }
-                    if (std::strcmp(child->name(), "property-component") == 0) {
-                        propertyNode = child;
+                    if (std::strcmp(childNode->name(), "property-component") == 0) {
+                        propertyNode = childNode;
                     }
-                    if (std::strcmp(child->name(), "control-component") == 0) {
-                        controlNode = child;
+                    if (std::strcmp(childNode->name(), "control-component") == 0) {
+                        controlNode = childNode;
                     }
-                    if (std::strcmp(child->name(), "physics-component") == 0) {
-                        physicsNode = child;
+                    if (std::strcmp(childNode->name(), "physics-component") == 0) {
+                        physicsNode = childNode;
                     }
-                    if (std::strcmp(child->name(), "graphics-component") == 0) {
-                        graphicsNode = child;
+                    if (std::strcmp(childNode->name(), "graphics-component") == 0) {
+                        graphicsNode = childNode;
                     }
                 }
             }
             if (propertyNode) {
                 propertyComponent_ = createPropertyComponent(this);
-                propertyComponent_->load(propertyNode);
+                propertyComponent_->load(propertyNode, parentTransform);
             }
             if (physicsNode) {
                 physicsComponent_ = createPhysicsComponent(this);
-                physicsComponent_->load(physicsNode);
+                physicsComponent_->load(physicsNode, parentTransform);
             }
             if (controlNode) {
                 controlComponent_ = createControlComponent(this);
-                controlComponent_->load(controlNode);
+                controlComponent_->load(controlNode, parentTransform);
             }
             if (graphicsNode) {
                 graphicsComponent_ = createGraphicsComponent(this);
-                graphicsComponent_->load(graphicsNode);
+                graphicsComponent_->load(graphicsNode, parentTransform);
             }
         }
 
-        void save(rapidxml::xml_node<> *parent)
+        void save(rapidxml::xml_node<> *parentNode, Matrix3 parentTransform)
         {
-            rapidxml::xml_node<> *node = saveGroup(parent, "actor");
+            rapidxml::xml_node<> *node = saveGroup(parentNode, "actor");
             if (propertyComponent_.get()) {
-                propertyComponent_->save(node);
+                propertyComponent_->save(node, parentTransform);
             }
             if (controlComponent_.get()) {
-                controlComponent_->save(node);
+                controlComponent_->save(node, parentTransform);
             }
             if (physicsComponent_.get()) {
-                physicsComponent_->save(node);
+                physicsComponent_->save(node, parentTransform);
             }
             if (graphicsComponent_.get()) {
-                graphicsComponent_->save(node);
+                graphicsComponent_->save(node, parentTransform);
             }
         }
 

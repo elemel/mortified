@@ -1,17 +1,17 @@
 #ifndef MORTIFIED_GAME_HPP
 #define MORTIFIED_GAME_HPP
 
-#include <Box2D/Box2D.h>
-
 #include <list>
 #include <memory>
 #include <utility>
 #include <rapidxml.hpp>
+#include <Box2D/Box2D.h>
 
 namespace mortified {
     class Actor;
     class ControlService;
     class GraphicsService;
+    class Matrix3;
     class PhysicsService;
     class PropertyService;
 
@@ -21,10 +21,10 @@ namespace mortified {
         { }
 
         virtual void loadConfig(rapidxml::xml_node<> *node) = 0;
-        virtual void saveConfig(rapidxml::xml_node<> *parent) = 0;
+        virtual void saveConfig(rapidxml::xml_node<> *parentNode) = 0;
         
-        virtual void loadModule(char const *file) = 0;
-        virtual void saveModule(char const *file) = 0;
+        virtual void loadModule(char const *file, Matrix3 parentTransform) = 0;
+        virtual void saveModule(char const *file, Matrix3 parentTransform) = 0;
 
         virtual float getTime() const = 0;
 

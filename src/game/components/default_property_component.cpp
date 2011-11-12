@@ -1,7 +1,8 @@
 #include "default_property_component.hpp"
 
-#include "game.hpp"
 #include "actor.hpp"
+#include "game.hpp"
+#include "math.hpp"
 #include "property_component.hpp"
 #include "property_service.hpp"
 #include "xml.hpp"
@@ -25,12 +26,12 @@ namespace mortified {
             propertyService_(actor->getGame()->getPropertyService())
         { }
 
-        void load(rapidxml::xml_node<> *node)
+        void load(rapidxml::xml_node<> *node, Matrix3 transform)
         {
             loadProperties(node);
         }
 
-        void save(rapidxml::xml_node<> *parent)
+        void save(rapidxml::xml_node<> *parent, Matrix3 transform)
         {
             rapidxml::xml_node<> *node = saveGroup(parent, "property-component");
             saveProperties(node);

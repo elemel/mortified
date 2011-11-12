@@ -1,6 +1,8 @@
 #ifndef MORTIFIED_XML_HPP
 #define MORTIFIED_XML_HPP
 
+#include "math.hpp"
+
 #include <cstdlib>
 #include <rapidxml.hpp>
 
@@ -20,6 +22,24 @@ namespace mortified {
         return float(std::atof(node->value()));
     }
 
+    inline Vector2 loadVector2(rapidxml::xml_node<> *node)
+    {
+        Vector2 result;
+        for (rapidxml::xml_node<> *child = node->first_node();
+             child; child = child->next_sibling())
+        {
+            if (child->type() == rapidxml::node_element) {
+                if (std::strcmp(child->name(), "x") == 0) {
+                    result.x = loadFloat(child);
+                }
+                if (std::strcmp(child->name(), "y") == 0) {
+                    result.y = loadFloat(child);
+                }
+            }
+        }
+        return result;
+    }
+    
     inline rapidxml::xml_node<> *saveGroup(rapidxml::xml_node<> *parent,
                                            char const *name)
     {

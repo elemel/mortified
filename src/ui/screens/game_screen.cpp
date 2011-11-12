@@ -48,12 +48,12 @@ namespace mortified {
             physicsDraw_ = createPhysicsDraw();
             game_ = createGame(window_->getContext());
             loadConfig("../../../content/configs/config.xml");
-            game_->loadModule("../../../content/modules/level.xml");
+            game_->loadModule("../../../content/modules/level.xml", Matrix3());
         }
         
         void destroy()
         {
-            game_->saveModule("../../../content/modules/save.xml");
+            game_->saveModule("../../../content/modules/save.xml", Matrix3());
             targetFramebuffer_.reset();
             targetTexture_.reset();
         }

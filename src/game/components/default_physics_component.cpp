@@ -1,7 +1,8 @@
 #include "default_physics_component.hpp"
 
-#include "game.hpp"
 #include "actor.hpp"
+#include "game.hpp"
+#include "math.hpp"
 #include "physics_component.hpp"
 #include "physics_service.hpp"
 #include "xml.hpp"
@@ -28,15 +29,15 @@ namespace mortified {
             }
         }
 
-        void load(rapidxml::xml_node<> *node)
+        void load(rapidxml::xml_node<> *node, Matrix3 parentTransform)
         {
-            loadBodies(node);
-            loadJoints(node);
+            loadBodies(node, parentTransform);
+            loadJoints(node, parentTransform);
         }
 
-        void save(rapidxml::xml_node<> *parent)
+        void save(rapidxml::xml_node<> *parentNode, Matrix3 parentTransform)
         {
-            rapidxml::xml_node<> *node = saveGroup(parent, "physics-component");
+            rapidxml::xml_node<> *node = saveGroup(parentNode, "physics-component");
             saveBodies(node);
             saveJoints(node);
         }
@@ -66,28 +67,37 @@ namespace mortified {
         BodyList bodies_;
         JointList joints_;
 
-        void loadBodies(rapidxml::xml_node<> *node)
+        void loadBodies(rapidxml::xml_node<> *node, Matrix3 parentTransform)
         {
             for (rapidxml::xml_node<> *child = node->first_node();
                  child; child = child->next_sibling())
             {
                 if (child->type() == rapidxml::node_element) {
                     if (std::strcmp(child->name(), "body") == 0) {
-                        loadBody(child);
+                        loadBody(child, parentTransform);
                     }
                 }
-            }
+            } 
         }
 
-        void loadBody(rapidxml::xml_node<> *node)
+        void loadBody(rapidxml::xml_node<> *node, Matrix3 parentTransform)
         {
             std::string name;
             b2BodyDef def;
             loadBodyData(&name, &def, node);
+            def.position = transformVec2(def.position, parentTransform);
+            def.angle += parentTransform.rotation();
             b2Body *body = physicsService_->getWorld()->CreateBody(&def);
             bodies_.push_back(BodyData(this, body, name));
             setBodyData(body, &bodies_.back());
             loadFixtures(body, node);
+        }
+        
+        b2Vec2 transformVec2(b2Vec2 vec, Matrix3 transform)
+        {
+            Vector2 v(vec.x, vec.y);
+            v = transform * v;
+            return b2Vec2(v.x, v.y);
         }
 
         void loadBodyData(std::string *name, b2BodyDef *def,
@@ -258,20 +268,21 @@ namespace mortified {
             body->CreateFixture(def);
         }
 
-        void loadJoints(rapidxml::xml_node<> *node)
+        void loadJoints(rapidxml::xml_node<> *node, Matrix3 parentTransform)
         {
             for (rapidxml::xml_node<> *child = node->first_node();
                  child; child = child->next_sibling())
             {
                 if (child->type() == rapidxml::node_element) {
                     if (std::strcmp(child->name(), "revolute-joint") == 0) {
-                        loadRevoluteJoint(child);
+                        loadRevoluteJoint(child, parentTransform);
                     }
                 }
             }
         }
 
-        void loadRevoluteJoint(rapidxml::xml_node<> *node)
+        void loadRevoluteJoint(rapidxml::xml_node<> *node,
+                               Matrix3 parentTransform)
         {
             b2Body *bodyA = 0;
             b2Body *bodyB = 0;
@@ -293,6 +304,7 @@ namespace mortified {
             }
 
             if (bodyA && bodyB && bodyA != bodyB) {
+                anchor = transformVec2(anchor, parentTransform);
                 std::string name;
                 b2RevoluteJointDef def;
                 def.Initialize(bodyA, bodyB, anchor);

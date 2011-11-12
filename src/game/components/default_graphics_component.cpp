@@ -28,15 +28,15 @@ namespace mortified {
             graphicsService_(actor->getGame()->getGraphicsService())
         { }
 
-        void load(rapidxml::xml_node<> *node)
+        void load(rapidxml::xml_node<> *node, Matrix3 parentTransform)
         {
-            loadSprites(node);
+            loadSprites(node, parentTransform);
         }
         
-        void save(rapidxml::xml_node<> *parent)
+        void save(rapidxml::xml_node<> *parentNode, Matrix3 parentTransform)
         {
-            rapidxml::xml_node<> *node = saveGroup(parent, "graphics-component");
-            saveSprites(node);
+            rapidxml::xml_node<> *node = saveGroup(parentNode, "graphics-component");
+            saveSprites(node, parentTransform);
         }
         
         void draw()
@@ -46,20 +46,20 @@ namespace mortified {
         Actor *actor_;
         GraphicsService *graphicsService_;
 
-        void loadSprites(rapidxml::xml_node<> *node)
+        void loadSprites(rapidxml::xml_node<> *node, Matrix3 parentTransform)
         {
-            for (rapidxml::xml_node<> *child = node->first_node();
-                 child; child = child->next_sibling())
+            for (rapidxml::xml_node<> *childNode = node->first_node();
+                 childNode; childNode = childNode->next_sibling())
             {
-                if (child->type() == rapidxml::node_element) {
-                    if (std::strcmp(child->name(), "sprite") == 0) {
-                        loadSprite(child);
+                if (childNode->type() == rapidxml::node_element) {
+                    if (std::strcmp(childNode->name(), "sprite") == 0) {
+                        loadSprite(childNode, parentTransform);
                     }
                 }
             }
         }
 
-        void loadSprite(rapidxml::xml_node<> *node)
+        void loadSprite(rapidxml::xml_node<> *node, Matrix3 parentTransform)
         {
             const char *imageRef = 0;
             Vector2 alignment;
@@ -68,31 +68,33 @@ namespace mortified {
             Vector2 scale(1.0f);
             const char *bodyRef = 0;
             PhysicsComponent *physicsComponent = actor_->getPhysicsComponent();
-            for (rapidxml::xml_node<> *child = node->first_node();
-                 child; child = child->next_sibling())
+            for (rapidxml::xml_node<> *childNode = node->first_node();
+                 childNode; childNode = childNode->next_sibling())
             {
-                if (child->type() == rapidxml::node_element) {
-                    if (std::strcmp(child->name(), "image-ref") == 0) {
-                        imageRef = child->value();
+                if (childNode->type() == rapidxml::node_element) {
+                    if (std::strcmp(childNode->name(), "image-ref") == 0) {
+                        imageRef = childNode->value();
                     }
-                    if (std::strcmp(child->name(), "alignment") == 0) {
-                        alignment = loadVector2(child);
+                    if (std::strcmp(childNode->name(), "alignment") == 0) {
+                        alignment = loadVector2(childNode);
                     }
-                    if (std::strcmp(child->name(), "position") == 0) {
-                        position = loadVector2(child);
+                    if (std::strcmp(childNode->name(), "position") == 0) {
+                        position = loadVector2(childNode);
                     }
-                    if (std::strcmp(child->name(), "angle") == 0) {
-                        angle = loadFloat(child);
+                    if (std::strcmp(childNode->name(), "angle") == 0) {
+                        angle = loadFloat(childNode);
                     }
-                    if (std::strcmp(child->name(), "scale") == 0) {
-                        scale = loadVector2(child);
+                    if (std::strcmp(childNode->name(), "scale") == 0) {
+                        scale = loadVector2(childNode);
                     }
-                    if (std::strcmp(child->name(), "body-ref") == 0) {
-                        bodyRef = child->value();
+                    if (std::strcmp(childNode->name(), "body-ref") == 0) {
+                        bodyRef = childNode->value();
                     }
                 }
             }
             if (imageRef) {
+                position = parentTransform * position;
+                angle += parentTransform.rotation();
                 std::string file;
                 file += "../../../content/images/";
                 file += imageRef;
@@ -118,25 +120,7 @@ namespace mortified {
             }
         }
 
-        Vector2 loadVector2(rapidxml::xml_node<> *node)
-        {
-            Vector2 result;
-            for (rapidxml::xml_node<> *child = node->first_node();
-                 child; child = child->next_sibling())
-            {
-                if (child->type() == rapidxml::node_element) {
-                    if (std::strcmp(child->name(), "x") == 0) {
-                        result.x = loadFloat(child);
-                    }
-                    if (std::strcmp(child->name(), "y") == 0) {
-                        result.y = loadFloat(child);
-                    }
-                }
-            }
-            return result;
-        }
-
-        void saveSprites(rapidxml::xml_node<> *parent)
+        void saveSprites(rapidxml::xml_node<> *parent, Matrix3 parentTransform)
         { }
 
         void attachSpriteToBody(Sprite *sprite, b2Body *body)

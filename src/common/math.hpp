@@ -204,6 +204,7 @@ namespace mortified {
                 float g, float h, float i);
 
         float scale() const;
+        float rotation() const;
 
         Matrix3 &operator+=(Matrix3 const &m);
         Matrix3 &operator-=(Matrix3 const &m);

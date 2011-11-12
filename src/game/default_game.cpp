@@ -45,29 +45,29 @@ namespace mortified {
 
         void loadConfig(rapidxml::xml_node<> *node)
         {
-            for (rapidxml::xml_node<> *child = node->first_node(); child;
-                 child = child->next_sibling())
+            for (rapidxml::xml_node<> *childNode = node->first_node();
+                 childNode; childNode = childNode->next_sibling())
             {
-                if (child->type() == rapidxml::node_element) {
-                    if (strcmp(child->name(), "property-service") == 0) {
-                        propertyService_->load(child);
+                if (childNode->type() == rapidxml::node_element) {
+                    if (strcmp(childNode->name(), "property-service") == 0) {
+                        propertyService_->load(childNode);
                     }
-                    if (strcmp(child->name(), "control-service") == 0) {
-                        controlService_->load(child);
+                    if (strcmp(childNode->name(), "control-service") == 0) {
+                        controlService_->load(childNode);
                     }
-                    if (strcmp(child->name(), "physics-service") == 0) {
-                        physicsService_->load(child);
+                    if (strcmp(childNode->name(), "physics-service") == 0) {
+                        physicsService_->load(childNode);
                     }
-                    if (strcmp(child->name(), "graphics-service") == 0) {
-                        graphicsService_->load(child);
+                    if (strcmp(childNode->name(), "graphics-service") == 0) {
+                        graphicsService_->load(childNode);
                     }
                 }
             }
         }
 
-        void saveConfig(rapidxml::xml_node<> *parent)
+        void saveConfig(rapidxml::xml_node<> *parentNode)
         {
-            rapidxml::xml_node<> *node = saveGroup(parent, "game");
+            rapidxml::xml_node<> *node = saveGroup(parentNode, "game");
             if (propertyService_.get()) {
                 propertyService_->save(node);
             }
@@ -82,7 +82,7 @@ namespace mortified {
             }
         }
 
-        void loadModule(char const *file)
+        void loadModule(char const *file, Matrix3 parentTransform)
         {
             std::auto_ptr<Stream> stream = createStreamFromFile(file, "rb");
             
@@ -94,23 +94,23 @@ namespace mortified {
             
             rapidxml::xml_document<> document;
             document.parse<0>(&buffer[0]);
-            for (rapidxml::xml_node<> *child = document.first_node(); child;
-                 child = child->next_sibling())
+            for (rapidxml::xml_node<> *childNode = document.first_node();
+                 childNode; childNode = childNode->next_sibling())
             {
-                if (child->type() == rapidxml::node_element &&
-                    strcmp(child->name(), "module") == 0)
+                if (childNode->type() == rapidxml::node_element &&
+                    strcmp(childNode->name(), "module") == 0)
                 {
-                    loadGroup(child);
+                    loadGroup(childNode, parentTransform);
                 }
             }
         }
 
-        void saveModule(char const *file)
+        void saveModule(char const *file, Matrix3 parentTransform)
         {
             rapidxml::xml_document<> document;
             rapidxml::xml_node<> *node = saveGroup(&document, "module");
             for (std::size_t i = 0; i < actors_.size(); ++i) {
-                actors_[i]->save(node);
+                actors_[i]->save(node, parentTransform);
             }
             std::ofstream out(file);
             out << document;
@@ -193,29 +193,54 @@ namespace mortified {
         std::auto_ptr<GraphicsService> graphicsService_;
         std::vector<Actor *> actors_;
 
-        void loadGroup(rapidxml::xml_node<> *node)
+        void loadGroup(rapidxml::xml_node<> *node, Matrix3 parentTransform)
         {
-            for (rapidxml::xml_node<> *child = node->first_node(); child;
-                 child = child->next_sibling())
+            Matrix3 localTransform = loadTransform(node);
+            Matrix3 transform = parentTransform * localTransform;
+            for (rapidxml::xml_node<> *childNode = node->first_node();
+                 childNode; childNode = childNode->next_sibling())
             {
-                if (child->type() == rapidxml::node_element) {
-                    if (strcmp(child->name(), "group") == 0) {
-                        loadGroup(child);
+                if (childNode->type() == rapidxml::node_element) {
+                    if (strcmp(childNode->name(), "group") == 0) {
+                        loadGroup(childNode, transform);
                     }
-                    if (strcmp(child->name(), "module-ref") == 0) {
+                    if (strcmp(childNode->name(), "module-ref") == 0) {
                         std::string file;
                         file += "../../../content/modules/";
-                        file += child->value();
+                        file += childNode->value();
                         file += ".xml";
-                        loadModule(file.c_str());
+                        loadModule(file.c_str(), transform);
                     }
-                    if (strcmp(child->name(), "actor") == 0) {
+                    if (strcmp(childNode->name(), "actor") == 0) {
                         std::auto_ptr<Actor> actor = createActor(this);
-                        actor->load(child);
+                        actor->load(childNode, transform);
                         actors_.push_back(actor.release());
                     }
                 }
             }
+        }
+
+        Matrix3 loadTransform(rapidxml::xml_node<> *node)
+        {
+            Vector2 position;
+            float angle = 0.0f;
+            for (rapidxml::xml_node<> *childNode = node->first_node();
+                 childNode; childNode = childNode->next_sibling())
+            {
+                if (childNode->type() == rapidxml::node_element) {
+                    if (strcmp(childNode->name(), "position") == 0) {
+                        position = loadVector2(childNode);
+                    }
+                    if (strcmp(childNode->name(), "angle") == 0) {
+                        angle = loadFloat(childNode);
+                    }
+                }
+            }
+
+            Matrix3 transform;
+            transform.translate(position);
+            transform.rotate(angle);
+            return transform;
         }
     };
 

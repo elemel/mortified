@@ -6,9 +6,10 @@
 #include <rapidxml.hpp>
 
 namespace mortified {
-    class Game;
     class ControlComponent;
+    class Game;
     class GraphicsComponent;
+    class Matrix3;
     class PhysicsComponent;
     class PropertyComponent;
     
@@ -22,8 +23,8 @@ namespace mortified {
         virtual Game *getGame() = 0;
         virtual Game const *getGame() const = 0;
 
-        virtual void load(rapidxml::xml_node<> *node) = 0;
-        virtual void save(rapidxml::xml_node<> *parent) = 0;
+        virtual void load(rapidxml::xml_node<> *node, Matrix3 parentTransform) = 0;
+        virtual void save(rapidxml::xml_node<> *parentNode, Matrix3 parentTransform) = 0;
 
         virtual PropertyComponent *getPropertyComponent() = 0;
         virtual PropertyComponent const *getPropertyComponent() const = 0;

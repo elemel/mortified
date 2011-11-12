@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module>
+  <actor>
+    <physics-component>
+      <body>
+        <name>body</name>
+        <type>static</type>
+        <fixture>
+          <polygon>
+            <vertex>
+              <x>-1</x>
+              <y>-0.1</y>
+            </vertex>
+            <vertex>
+              <x>1</x>
+              <y>-0.1</y>
+            </vertex>
+            <vertex>
+              <x>1</x>
+              <y>0.1</y>
+            </vertex>
+            <vertex>
+              <x>-1</x>
+              <y>0.1</y>
+            </vertex>
+          </polygon>
+        </fixture>
+      </body>
+    </physics-component>
+  </actor>
+</module>

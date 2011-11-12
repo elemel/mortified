@@ -1,9 +1,10 @@
 #include "default_control_component.hpp"
 
+#include "actor.hpp"
 #include "control_component.hpp"
 #include "control_service.hpp"
 #include "game.hpp"
-#include "actor.hpp"
+#include "math.hpp"
 #include "state.hpp"
 #include "xml.hpp"
 
@@ -42,12 +43,12 @@ namespace mortified {
             }
         }
 
-        void load(rapidxml::xml_node<> *node)
+        void load(rapidxml::xml_node<> *node, Matrix3 transform)
         {
             loadStateMachines(node);
         }
         
-        void save(rapidxml::xml_node<> *parent)
+        void save(rapidxml::xml_node<> *parent, Matrix3 transform)
         {
             rapidxml::xml_node<> *node = saveGroup(parent, "control-component");
             saveStateMachines(node);
