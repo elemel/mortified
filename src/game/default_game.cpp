@@ -206,7 +206,7 @@ namespace mortified {
                     }
                     if (strcmp(childNode->name(), "module-ref") == 0) {
                         std::string file;
-                        file += "../../../content/modules/";
+                        file += "../../../data/modules/";
                         file += childNode->value();
                         file += ".xml";
                         loadModule(file.c_str(), transform);

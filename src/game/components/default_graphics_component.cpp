@@ -96,7 +96,7 @@ namespace mortified {
                 position = parentTransform * position;
                 angle += parentTransform.rotation();
                 std::string file;
-                file += "../../../content/images/";
+                file += "../../../data/images/";
                 file += imageRef;
                 file += ".png";
                 boost::intrusive_ptr<Image> image = loadImageFromFile(file.c_str());

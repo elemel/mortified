@@ -108,19 +108,19 @@ namespace mortified {
         void createWidgets()
         {
             std::auto_ptr<Stream> layoutStream =
-                createStreamFromFile("../../../content/layouts/editor.xml", "rb");
+                createStreamFromFile("../../../data/layouts/editor.xml", "rb");
             std::auto_ptr<LayoutParser>
                 layoutParser = createLayoutParser(window_->getContext());
             rootWidget_ = layoutParser->parse(layoutStream.get());
 
             std::auto_ptr<Stream> styleStream =
-                createStreamFromFile("../../../content/styles/editor.txt", "rb");
+                createStreamFromFile("../../../data/styles/editor.txt", "rb");
             std::auto_ptr<StyleParser> styleParser = createStyleParser();
             std::auto_ptr<StyleSheet> styleSheet =
                 styleParser->parse(styleStream.get());
             applyStyles(styleSheet.get(), rootWidget_.get());
 
-            font_ = loadFontFromFile("../../../content/fonts/teen/teen.ttf", 15);
+            font_ = loadFontFromFile("../../../data/fonts/teen/teen.ttf", 15);
             updateFonts(rootWidget_.get());
         }
 

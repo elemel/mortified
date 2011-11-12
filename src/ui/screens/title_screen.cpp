@@ -29,7 +29,7 @@ namespace mortified {
 
         void create()
         {
-            font_ = loadFontFromFile("../../../content/fonts/teen/teen.ttf", 256);
+            font_ = loadFontFromFile("../../../data/fonts/teen/teen.ttf", 256);
 
             logoImage_ = font_->render("Mortified");
             logoImage_->flipVertical();
