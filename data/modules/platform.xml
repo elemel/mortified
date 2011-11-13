@@ -27,5 +27,20 @@
         </fixture>
       </body>
     </physics-component>
+    <graphics-component>
+      <sprite>
+        <image-ref>platform</image-ref>
+        <alignment>
+          <x>0.5</x>
+          <y>0.5</y>
+        </alignment>
+        <angle>-0.6</angle>
+        <scale>
+          <x>0.1</x>
+          <y>0.1</y>
+        </scale>
+        <body-ref>body</body-ref>
+      </sprite>
+    </graphics-component>
   </actor>
 </module>

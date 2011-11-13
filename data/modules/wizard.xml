@@ -80,6 +80,10 @@
           <x>0.5</x>
           <y>0.5</y>
         </alignment>
+        <position>
+          <x>0</x>
+          <y>-0.2</y>
+        </position>
         <scale>
           <x>0.1</x>
           <y>0.1</y>
@@ -94,7 +98,7 @@
         </alignment>
         <position>
           <x>0</x>
-          <y>0.4</y>
+          <y>0.2</y>
         </position>
         <angle>0.2</angle>
         <scale>

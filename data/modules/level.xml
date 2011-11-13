@@ -3,22 +3,30 @@
   <group>
     <position>
       <x>0</x>
-      <y>-3</y>
+      <y>-2.5</y>
     </position>
-    <angle>0.1</angle>
+    <angle>0.2</angle>
     <module-ref>platform</module-ref>
   </group>
   <group>
     <position>
-      <x>4</x>
-      <y>-2.8</y>
+      <x>3.5</x>
+      <y>-2.6</y>
+    </position>
+    <angle>-0.1</angle>
+    <module-ref>platform</module-ref>
+  </group>
+  <group>
+    <position>
+      <x>7</x>
+      <y>-2.4</y>
     </position>
     <module-ref>platform</module-ref>
   </group>
   <group>
     <position>
-      <x>4</x>
-      <y>1.0</y>
+      <x>3.5</x>
+      <y>0</y>
     </position>
     <module-ref>wizard</module-ref>
   </group>

@@ -40,7 +40,7 @@ namespace mortified {
             updateTime_(0.0f),
             dt_(1.0f / 60.0f),
             supersample_(supersample),
-            cameraScale_(5.0f)
+            cameraScale_(7.0f)
         { }
         
         void create()
@@ -87,7 +87,7 @@ namespace mortified {
             } else {
                 drawScene();
             }
-            drawPhysics();
+            // drawPhysics();
         }
         
     private:
