@@ -32,96 +32,79 @@ namespace mortified {
     public:
         float x, y;
 
-        Vector2();
-        explicit Vector2(float f);
-        Vector2(float x, float y);
-
-        float length() const;
-        float squaredLength() const;
-
-        Vector2 operator-() const;
-
-        Vector2 &operator+=(Vector2 const &v);
-        Vector2 &operator-=(Vector2 const &v);
-        Vector2 &operator*=(float f);
-        Vector2 &operator/=(float f);
-
-        float normalize();
-        void clampLength(float maxLength);
+        Vector2() :
+            x(0.0f), y(0.0f)
+        { }
+        
+        explicit Vector2(float f) :
+            x(f), y(f)
+        { }
+        
+        Vector2(float x, float y) :
+            x(x), y(y)
+        { }
+        
+        float length() const
+        {
+            return std::sqrt(squaredLength());
+        }
+        
+        float squaredLength() const
+        {
+            return square(x) + square(y);
+        }
+        
+        Vector2 operator-() const
+        {
+            return Vector2(-x, -y);
+        }
+        
+        Vector2 &operator+=(Vector2 const &v)
+        {
+            x += v.x;
+            y += v.y;
+            return *this;
+        }
+        
+        Vector2 &operator-=(Vector2 const &v)
+        {
+            x -= v.x;
+            y -= v.y;
+            return *this;
+        }
+        
+        Vector2 &operator*=(float f)
+        {
+            x *= f;
+            y *= f;
+            return *this;
+        }
+        
+        Vector2 &operator/=(float f)
+        {
+            x /= f;
+            y /= f;
+            return *this;
+        }
+        
+        float normalize()
+        {
+            float f = squaredLength();
+            if (f != 0.0f && f != 1.0f) {
+                f = std::sqrt(f);
+                *this /= f;
+            }
+            return f;
+        }
+        
+        void clampLength(float maxLength)
+        {
+            if (squaredLength() > square(maxLength)) {
+                normalize();
+                *this *= maxLength;
+            }
+        }
     };
-
-    inline Vector2::Vector2() :
-        x(0.0f), y(0.0f)
-    { }
-
-    inline Vector2::Vector2(float f) :
-        x(f), y(f)
-    { }
-
-    inline Vector2::Vector2(float x, float y) :
-        x(x), y(y)
-    { }
-
-    inline float Vector2::length() const
-    {
-        return std::sqrt(squaredLength());
-    }
-
-    inline float Vector2::squaredLength() const
-    {
-        return square(x) + square(y);
-    }
-
-    inline Vector2 Vector2::operator-() const
-    {
-        return Vector2(-x, -y);
-    }
-
-    inline Vector2 &Vector2::operator+=(Vector2 const &v)
-    {
-        x += v.x;
-        y += v.y;
-        return *this;
-    }
-
-    inline Vector2 &Vector2::operator-=(Vector2 const &v)
-    {
-        x -= v.x;
-        y -= v.y;
-        return *this;
-    }
-
-    inline Vector2 &Vector2::operator*=(float f)
-    {
-        x *= f;
-        y *= f;
-        return *this;
-    }
-
-    inline Vector2 &Vector2::operator/=(float f)
-    {
-        x /= f;
-        y /= f;
-        return *this;
-    }
-
-    inline float Vector2::normalize()
-    {
-        float f = squaredLength();
-        if (f != 0.0f && f != 1.0f) {
-            f = std::sqrt(f);
-            *this /= f;
-        }
-        return f;
-    }
-
-    inline void Vector2::clampLength(float maxLength)
-    {
-        if (squaredLength() > square(maxLength)) {
-            normalize();
-            *this *= maxLength;
-        }
-    }
 
     inline Vector2 operator+(Vector2 const &v1, Vector2 const &v2)
     {
@@ -187,150 +170,171 @@ namespace mortified {
         return (p2 - p1).squaredLength();
     }
 
-    std::ostream &operator<<(std::ostream &out, Vector2 const &v);
-
     class Matrix3 {
     public:
         float a, b, c;
         float d, e, f;
         float g, h, i;
 
-        Matrix3();
-        explicit Matrix3(float x);
+        Matrix3() :
+            a(1.0f), b(0.0f), c(0.0f),
+            d(0.0f), e(1.0f), f(0.0f),
+            g(0.0f), h(0.0f), i(1.0f)
+        { }
+
+        explicit Matrix3(float x) :
+            a(x), b(x), c(x),
+            d(x), e(x), f(x),
+            g(x), h(x), i(x)
+        { }
+
         Matrix3(float a, float b, float c,
-                float d, float e, float f);
+                float d, float e, float f) :
+            a(a), b(b), c(c),
+            d(d), e(e), f(f),
+            g(0.0f), h(0.0f), i(1.0f)
+        { }
+
         Matrix3(float a, float b, float c,
                 float d, float e, float f,
-                float g, float h, float i);
+                float g, float h, float i) :
+            a(a), b(b), c(c),
+            d(d), e(e), f(f),
+            g(g), h(h), i(i)
+        { }
 
-        float scale() const;
-        float rotation() const;
+        Matrix3 &operator+=(Matrix3 const &m)
+        {
+            a += m.a;
+            b += m.b;
+            c += m.c;
+            
+            d += m.d;
+            e += m.e;
+            f += m.f;
+            
+            g += m.g;
+            h += m.h;
+            i += m.i;
+            
+            return *this;
+        }
+        
+        Matrix3 &operator-=(Matrix3 const &m)
+        {
+            a -= m.a;
+            b -= m.b;
+            c -= m.c;
+            
+            d -= m.d;
+            e -= m.e;
+            f -= m.f;
+            
+            g -= m.g;
+            h -= m.h;
+            i -= m.i;
+            
+            return *this;
+        }
 
-        Matrix3 &operator+=(Matrix3 const &m);
-        Matrix3 &operator-=(Matrix3 const &m);
         Matrix3 &operator*=(Matrix3 const &m);
-        Matrix3 &operator*=(float x);
-        Matrix3 &operator/=(float x);
 
-        void transpose();
+        Matrix3 &operator*=(float x)
+        {
+            a *= x;
+            b *= x;
+            c *= x;
+            
+            d *= x;
+            e *= x;
+            f *= x;
+            
+            g *= x;
+            h *= x;
+            i *= x;
+            
+            return *this;
+        }
+        
+        Matrix3 &operator/=(float x)
+        {
+            return *this *= 1.0f / x;
+        }
+        
+        void transpose()
+        {
+            std::swap(d, b);
+            std::swap(g, c);
+            std::swap(h, f);
+        }
 
-        void translate(Vector2 const &v);
-        void scale(float x);
-        void scale(Vector2 const &v);
-        void rotate(float x);
+        float determinant() const
+        {
+            return (a * e * i - a * f * h -
+                    b * d * i + b * f * g +
+                    c * d * h - c * e * g);
+        }
+        
+        void inverse()
+        {
+            float det = determinant();
+            float invDet = 1.0f / det;
+            
+            float a2 = e * i - f * h;
+            float b2 = c * h - b * i;
+            float c2 = b * f - c * e;
+
+            float d2 = f * g - d * i;
+            float e2 = a * i - c * g;
+            float f2 = c * d - a * f;
+
+            float g2 = d * h - e * g;
+            float h2 = b * g - a * h;
+            float i2 = a * e - b * d;
+
+            a = invDet * a2;
+            b = invDet * b2;
+            c = invDet * c2;
+
+            d = invDet * d2;
+            e = invDet * e2;
+            f = invDet * f2;
+
+            g = invDet * g2;
+            h = invDet * h2;
+            i = invDet * i2;
+        }
+
+        void translate(Vector2 const &v)
+        {
+            *this *= Matrix3(1.0f, 0.0f, v.x, 0.0f, 1.0f, v.y);
+        }
+        
+        void rotate(float x)
+        {
+            float sx = std::sin(x);
+            float cx = std::cos(x);
+            *this *= Matrix3(cx, -sx, 0.0f, sx, cx, 0.0f);
+        }
+        
+        void scale(float x)
+        {
+            *this *= Matrix3(x, 0.0f, 0.0f, 0.0f, x, 0.0f);
+        }
+        
+        void scale(Vector2 const &v)
+        {
+            *this *= Matrix3(v.x, 0.0f, 0.0f, 0.0f, v.y, 0.0f);
+        }
+
+        Vector2 translation() const
+        {
+            return Vector2(c, f);
+        }
+        
+        float rotation() const;        
+        float scale() const;
     };
-
-    inline Matrix3::Matrix3() :
-        a(1.0f), b(0.0f), c(0.0f),
-        d(0.0f), e(1.0f), f(0.0f),
-        g(0.0f), h(0.0f), i(1.0f)
-    { }
-
-    inline Matrix3::Matrix3(float x) :
-        a(x), b(x), c(x),
-        d(x), e(x), f(x),
-        g(x), h(x), i(x)
-    { }
-
-    inline Matrix3::Matrix3(float a, float b, float c,
-                            float d, float e, float f) :
-        a(a), b(b), c(c),
-        d(d), e(e), f(f),
-        g(0.0f), h(0.0f), i(1.0f)
-    { }
-
-    inline Matrix3::Matrix3(float a, float b, float c,
-                            float d, float e, float f,
-                            float g, float h, float i) :
-        a(a), b(b), c(c),
-        d(d), e(e), f(f),
-        g(g), h(h), i(i)
-    { }
-
-    inline Matrix3 &Matrix3::operator+=(Matrix3 const &m)
-    {
-        a += m.a;
-        b += m.b;
-        c += m.c;
-
-        d += m.d;
-        e += m.e;
-        f += m.f;
-
-        g += m.g;
-        h += m.h;
-        i += m.i;
-
-        return *this;
-    }
-
-    inline Matrix3 &Matrix3::operator-=(Matrix3 const &m)
-    {
-        a -= m.a;
-        b -= m.b;
-        c -= m.c;
-
-        d -= m.d;
-        e -= m.e;
-        f -= m.f;
-
-        g -= m.g;
-        h -= m.h;
-        i -= m.i;
-
-        return *this;
-    }
-
-    inline Matrix3 &Matrix3::operator*=(float x)
-    {
-        a *= x;
-        b *= x;
-        c *= x;
-
-        d *= x;
-        e *= x;
-        f *= x;
-
-        g *= x;
-        h *= x;
-        i *= x;
-
-        return *this;
-    }
-
-    inline Matrix3 &Matrix3::operator/=(float x)
-    {
-        return *this *= 1.0f / x;
-    }
-
-    inline void Matrix3::transpose()
-    {
-        std::swap(d, b);
-        std::swap(g, c);
-        std::swap(h, f);
-    }
-
-    inline void Matrix3::translate(Vector2 const &v)
-    {
-        *this *= Matrix3(1.0f, 0.0f, v.x, 0.0f, 1.0f, v.y);
-    }
-
-    inline void Matrix3::scale(float x)
-    {
-        *this *= Matrix3(x, 0.0f, 0.0f, 0.0f, x, 0.0f);
-    }
-
-    inline void Matrix3::scale(Vector2 const &v)
-    {
-        *this *= Matrix3(v.x, 0.0f, 0.0f, 0.0f, v.y, 0.0f);
-    }
-
-    inline void Matrix3::rotate(float x)
-    {
-        float sx = std::sin(x);
-        float cx = std::cos(x);
-        *this *= Matrix3(cx, -sx, 0.0f, sx, cx, 0.0f);
-    }
 
     inline Matrix3 operator*(Matrix3 const &m1, Matrix3 const &m2)
     {
@@ -347,15 +351,44 @@ namespace mortified {
                        m1.g * m2.c + m1.h * m2.f + m1.i * m2.i);
     }
 
-    inline Matrix3 &Matrix3::operator*=(Matrix3 const &m)
+    inline Matrix3 operator*(Matrix3 const &m, float x)
     {
-        return *this = *this * m;
+        return Matrix3(m) *= x;
+    }
+
+    inline Matrix3 operator*(float x, Matrix3 const &m)
+    {
+        return Matrix3(m) *= x;
+    }
+
+    inline Matrix3 operator/(Matrix3 const &m, float x)
+    {
+        return Matrix3(m) *= 1.0f / x;
     }
 
     inline Vector2 operator*(Matrix3 const &m, Vector2 const &p)
     {
         return Vector2(m.a * p.x + m.b * p.y + m.c,
                        m.d * p.x + m.e * p.y + m.f);
+    }
+
+    inline Matrix3 &Matrix3::operator*=(Matrix3 const &m)
+    {
+        return *this = *this * m;
+    }
+
+    inline float Matrix3::rotation() const
+    {
+        Vector2 v = (*this * Vector2(1.0f, 0.0f) -
+                     *this * Vector2(0.0f, 0.0f));
+        return std::atan2(v.y, v.x);
+    }
+    
+    inline float Matrix3::scale() const
+    {
+        Vector2 v = (*this * Vector2(1.0f, 0.0f) -
+                     *this * Vector2(0.0f, 0.0f));
+        return v.length();
     }
 }
 
