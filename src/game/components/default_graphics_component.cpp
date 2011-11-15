@@ -13,7 +13,6 @@
 #include "image_texture_source.hpp"
 #include "math.hpp"
 #include "physics_component.hpp"
-#include "scene.hpp"
 #include "sprite.hpp"
 #include "texture.hpp"
 #include "texture_source.hpp"
@@ -110,7 +109,7 @@ namespace mortified {
                 sprite->setPosition(position);
                 sprite->setAngle(angle);
                 sprite->setScale(scale);
-                graphicsService_->getScene()->addSprite(sprite);
+                graphicsService_->addSprite(sprite);
 
                 if (bodyRef && physicsComponent) {
                     b2Body *body = physicsComponent->findBody(bodyRef);

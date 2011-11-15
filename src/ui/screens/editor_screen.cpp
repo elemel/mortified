@@ -4,13 +4,11 @@
 #include "canvas_widget.hpp"
 #include "default_font.hpp"
 #include "default_layout_parser.hpp"
-#include "default_scene.hpp"
 #include "default_stream.hpp"
 #include "default_style_parser.hpp"
 #include "font.hpp"
 #include "geometry.hpp"
 #include "layout_parser.hpp"
-#include "scene.hpp"
 #include "screen.hpp"
 #include "sprite.hpp"
 #include "stream.hpp"
@@ -36,7 +34,6 @@ namespace mortified {
 
         void create()
         {
-            scene_ = createScene();
             createWidgets();
             createHandlers();
         }
@@ -44,7 +41,6 @@ namespace mortified {
         void destroy()
         {
             rootWidget_.reset();
-            scene_.reset();
         }
 
         bool handleEvent(SDL_Event const *event)
@@ -101,7 +97,6 @@ namespace mortified {
         Window *window_;
         int width_;
         int height_;
-        std::auto_ptr<Scene> scene_;
         std::auto_ptr<Widget> rootWidget_;
         boost::intrusive_ptr<Font> font_;
 
@@ -210,26 +205,6 @@ namespace mortified {
         void drawSceneWidget(Widget *widget)
         {
             (void) widget;
-#if 0
-            WidgetPosition position = widget->position();
-            WidgetPosition absolutePosition =
-                widget->toAbsolutePosition(position);
-            WidgetSize size = widget->size();
-
-            glViewport(absolutePosition.x, absolutePosition.y, size.width, size.height);
-
-            glColor3ub(255, 127, 127);
-            glBegin(GL_POLYGON);
-            glVertex2i(position.x, position.y);
-            glVertex2i(position.x + size.width, position.y);
-            glVertex2i(position.x + size.width, position.y + size.height);
-            glVertex2i(position.x, position.y + size.height);
-            glEnd();
-
-            scene_->draw();
-
-            glViewport(0, 0, width_, height_);
-#endif
         }
     };
 

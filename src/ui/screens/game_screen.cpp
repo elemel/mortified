@@ -19,7 +19,6 @@
 #include "physics_component.hpp"
 #include "physics_service.hpp"
 #include "property_component.hpp"
-#include "scene.hpp"
 #include "screen.hpp"
 #include "stream.hpp"
 #include "texture.hpp"
@@ -224,7 +223,7 @@ namespace mortified {
             glClear(GL_COLOR_BUFFER_BIT);
             glEnable(GL_BLEND);
             glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-            game_->getGraphicsService()->getScene()->draw();
+            game_->getGraphicsService()->draw();
             glDisable(GL_BLEND);
         }
         
