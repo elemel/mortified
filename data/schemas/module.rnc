@@ -5,7 +5,7 @@ actor = element actor {
     property-component? &
     control-component? &
     physics-component? &
-    graphics-component?
+    render-component?
 }
 
 body = element body {
@@ -49,7 +49,7 @@ fixture = element fixture {
 
 float = xsd:float
 
-graphics-component = element graphics-component { sprite* }
+render-component = element render-component { sprite* }
 
 joint = revolute-joint
 

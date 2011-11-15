@@ -1,5 +1,5 @@
-#ifndef MORTIFIED_GRAPHICS_SERVICE_HPP
-#define MORTIFIED_GRAPHICS_SERVICE_HPP
+#ifndef MORTIFIED_RENDER_SERVICE_HPP
+#define MORTIFIED_RENDER_SERVICE_HPP
 
 #include "service.hpp"
 
@@ -11,7 +11,7 @@ namespace mortified {
     class Context;
     class Sprite;
 
-    class GraphicsService : public virtual Service {
+    class RenderService : public virtual Service {
     public:
         typedef boost::function<void (float)> UpdateHandler;
         typedef std::list<UpdateHandler> UpdateHandlerList;

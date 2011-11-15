@@ -10,10 +10,10 @@
 namespace mortified {
     class Actor;
     class ControlService;
-    class GraphicsService;
     class Matrix3;
     class PhysicsService;
     class PropertyService;
+    class RenderService;
 
     class Game {
     public:
@@ -39,8 +39,8 @@ namespace mortified {
         virtual PhysicsService *getPhysicsService() = 0;
         virtual PhysicsService const *getPhysicsService() const = 0;
         
-        virtual GraphicsService *getGraphicsService() = 0;
-        virtual GraphicsService const *getGraphicsService() const = 0;
+        virtual RenderService *getRenderService() = 0;
+        virtual RenderService const *getRenderService() const = 0;
         
         virtual Actor *findActor(char const *name) = 0;
         virtual Actor const *findActor(char const *name) const = 0;

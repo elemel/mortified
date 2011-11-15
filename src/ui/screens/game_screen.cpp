@@ -1,6 +1,7 @@
 
 #include "game_screen.hpp"
 
+#include "actor.hpp"
 #include "context.hpp"
 #include "default_game.hpp"
 #include "default_actor.hpp"
@@ -9,9 +10,6 @@
 #include "empty_texture_source.hpp"
 #include "framebuffer.hpp"
 #include "game.hpp"
-#include "graphics_service.hpp"
-#include "actor.hpp"
-#include "graphics_service.hpp"
 #include "image.hpp"
 #include "image_texture_source.hpp"
 #include "math.hpp"
@@ -19,6 +17,7 @@
 #include "physics_component.hpp"
 #include "physics_service.hpp"
 #include "property_component.hpp"
+#include "render_service.hpp"
 #include "screen.hpp"
 #include "stream.hpp"
 #include "texture.hpp"
@@ -223,7 +222,7 @@ namespace mortified {
             glClear(GL_COLOR_BUFFER_BIT);
             glEnable(GL_BLEND);
             glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-            game_->getGraphicsService()->draw();
+            game_->getRenderService()->draw();
             glDisable(GL_BLEND);
         }
         

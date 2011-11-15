@@ -27,7 +27,7 @@
         </fixture>
       </body>
     </physics-component>
-    <graphics-component>
+    <render-component>
       <sprite>
         <image-ref>platform</image-ref>
         <alignment>
@@ -41,6 +41,6 @@
         </scale>
         <body-ref>body</body-ref>
       </sprite>
-    </graphics-component>
+    </render-component>
   </actor>
 </module>

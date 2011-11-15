@@ -1,19 +1,19 @@
-#include "default_graphics_service.hpp"
+#include "default_render_service.hpp"
 
 #include "color.hpp"
 #include "context.hpp"
 #include "default_sparse_image.hpp"
-#include "graphics_service.hpp"
 #include "math.hpp"
+#include "render_service.hpp"
 #include "sparse_image.hpp"
 #include "sprite.hpp"
 
 #include <SDL/SDL_opengl.h>
 
 namespace mortified {
-    class DefaultGraphicsService : public virtual GraphicsService {
+    class DefaultRenderService : public virtual RenderService {
     public:
-        explicit DefaultGraphicsService(boost::intrusive_ptr<Context> context) :
+        explicit DefaultRenderService(boost::intrusive_ptr<Context> context) :
             context_(context),
             sparseImage_(createSparseImage()),
             sparseImageAngle_(0.5),
@@ -146,9 +146,9 @@ namespace mortified {
         }
     };
 
-    std::auto_ptr<GraphicsService>
-    createGraphicsService(boost::intrusive_ptr<Context> context)
+    std::auto_ptr<RenderService>
+    createRenderService(boost::intrusive_ptr<Context> context)
     {
-        return std::auto_ptr<GraphicsService>(new DefaultGraphicsService(context));
+        return std::auto_ptr<RenderService>(new DefaultRenderService(context));
     }
 }

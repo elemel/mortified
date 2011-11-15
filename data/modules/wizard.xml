@@ -73,7 +73,7 @@
         <max-motor-torque>10</max-motor-torque>
       </revolute-joint>
     </physics-component>
-    <graphics-component>
+    <render-component>
       <sprite>
         <image-ref>mario-body</image-ref>
         <alignment>
@@ -107,6 +107,6 @@
         </scale>
         <body-ref>body</body-ref>
       </sprite>
-    </graphics-component>
+    </render-component>
   </actor>
 </module>

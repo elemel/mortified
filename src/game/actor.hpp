@@ -8,10 +8,10 @@
 namespace mortified {
     class ControlComponent;
     class Game;
-    class GraphicsComponent;
     class Matrix3;
     class PhysicsComponent;
     class PropertyComponent;
+    class RenderComponent;
     
     class Actor {
     public:
@@ -35,8 +35,8 @@ namespace mortified {
         virtual PhysicsComponent *getPhysicsComponent() = 0;
         virtual PhysicsComponent const *getPhysicsComponent() const = 0;
 
-        virtual GraphicsComponent *getGraphicsComponent() = 0;
-        virtual GraphicsComponent const *getGraphicsComponent() const = 0;
+        virtual RenderComponent *getRenderComponent() = 0;
+        virtual RenderComponent const *getRenderComponent() const = 0;
     };
 }
 

@@ -4,15 +4,15 @@
 #include "control_service.hpp"
 #include "default_control_service.hpp"
 #include "default_actor.hpp"
-#include "default_graphics_service.hpp"
 #include "default_physics_service.hpp"
 #include "default_property_service.hpp"
+#include "default_render_service.hpp"
 #include "default_stream.hpp"
 #include "game.hpp"
 #include "actor.hpp"
-#include "graphics_service.hpp"
 #include "physics_service.hpp"
 #include "property_service.hpp"
+#include "render_service.hpp"
 #include "stream.hpp"
 #include "xml.hpp"
 
@@ -32,7 +32,7 @@ namespace mortified {
             propertyService_(createPropertyService()),
             controlService_(createControlService()),
             physicsService_(createPhysicsService()),
-            graphicsService_(createGraphicsService(context))
+            renderService_(createRenderService(context))
         { }
         
         ~DefaultGame()
@@ -58,8 +58,8 @@ namespace mortified {
                     if (strcmp(childNode->name(), "physics-service") == 0) {
                         physicsService_->load(childNode);
                     }
-                    if (strcmp(childNode->name(), "graphics-service") == 0) {
-                        graphicsService_->load(childNode);
+                    if (strcmp(childNode->name(), "render-service") == 0) {
+                        renderService_->load(childNode);
                     }
                 }
             }
@@ -77,8 +77,8 @@ namespace mortified {
             if (physicsService_.get()) {
                 physicsService_->save(node);
             }
-            if (graphicsService_.get()) {
-                graphicsService_->save(node);
+            if (renderService_.get()) {
+                renderService_->save(node);
             }
         }
 
@@ -151,14 +151,14 @@ namespace mortified {
             return physicsService_.get();
         }
 
-        GraphicsService *getGraphicsService()
+        RenderService *getRenderService()
         {
-            return graphicsService_.get();
+            return renderService_.get();
         }
         
-        GraphicsService const *getGraphicsService() const
+        RenderService const *getRenderService() const
         {
-            return graphicsService_.get();
+            return renderService_.get();
         }
 
         void update(float dt)
@@ -166,7 +166,7 @@ namespace mortified {
             time_ += dt;
             controlService_->update(dt);
             physicsService_->update(dt);
-            graphicsService_->update(dt);
+            renderService_->update(dt);
         }
 
         Actor *findActor(char const *name)
@@ -190,7 +190,7 @@ namespace mortified {
         std::auto_ptr<PropertyService> propertyService_;
         std::auto_ptr<ControlService> controlService_;
         std::auto_ptr<PhysicsService> physicsService_;
-        std::auto_ptr<GraphicsService> graphicsService_;
+        std::auto_ptr<RenderService> renderService_;
         std::vector<Actor *> actors_;
 
         void loadGroup(rapidxml::xml_node<> *node, Matrix3 parentTransform)

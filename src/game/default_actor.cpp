@@ -1,15 +1,15 @@
 #include "default_actor.hpp"
 
+#include "actor.hpp"
 #include "component.hpp"
 #include "control_component.hpp"
 #include "default_control_component.hpp"
-#include "default_graphics_component.hpp"
 #include "default_physics_component.hpp"
 #include "default_property_component.hpp"
-#include "actor.hpp"
-#include "graphics_component.hpp"
+#include "default_render_component.hpp"
 #include "physics_component.hpp"
 #include "property_component.hpp"
+#include "render_component.hpp"
 #include "xml.hpp"
 
 #include <cstring>
@@ -42,7 +42,7 @@ namespace mortified {
             rapidxml::xml_node<> *propertyNode = 0;
             rapidxml::xml_node<> *controlNode = 0;
             rapidxml::xml_node<> *physicsNode = 0;
-            rapidxml::xml_node<> *graphicsNode = 0;
+            rapidxml::xml_node<> *renderNode = 0;
             for (rapidxml::xml_node<> *childNode = node->first_node();
                  childNode; childNode = childNode->next_sibling())
             {
@@ -59,8 +59,8 @@ namespace mortified {
                     if (std::strcmp(childNode->name(), "physics-component") == 0) {
                         physicsNode = childNode;
                     }
-                    if (std::strcmp(childNode->name(), "graphics-component") == 0) {
-                        graphicsNode = childNode;
+                    if (std::strcmp(childNode->name(), "render-component") == 0) {
+                        renderNode = childNode;
                     }
                 }
             }
@@ -76,9 +76,9 @@ namespace mortified {
                 controlComponent_ = createControlComponent(this);
                 controlComponent_->load(controlNode, parentTransform);
             }
-            if (graphicsNode) {
-                graphicsComponent_ = createGraphicsComponent(this);
-                graphicsComponent_->load(graphicsNode, parentTransform);
+            if (renderNode) {
+                renderComponent_ = createRenderComponent(this);
+                renderComponent_->load(renderNode, parentTransform);
             }
         }
 
@@ -94,8 +94,8 @@ namespace mortified {
             if (physicsComponent_.get()) {
                 physicsComponent_->save(node, parentTransform);
             }
-            if (graphicsComponent_.get()) {
-                graphicsComponent_->save(node, parentTransform);
+            if (renderComponent_.get()) {
+                renderComponent_->save(node, parentTransform);
             }
         }
 
@@ -129,14 +129,14 @@ namespace mortified {
             return physicsComponent_.get();
         }
         
-        GraphicsComponent *getGraphicsComponent()
+        RenderComponent *getRenderComponent()
         {
-            return graphicsComponent_.get();
+            return renderComponent_.get();
         }
 
-        GraphicsComponent const *getGraphicsComponent() const
+        RenderComponent const *getRenderComponent() const
         {
-            return graphicsComponent_.get();
+            return renderComponent_.get();
         }
         
     private:
@@ -145,7 +145,7 @@ namespace mortified {
         std::auto_ptr<PropertyComponent> propertyComponent_;
         std::auto_ptr<PhysicsComponent> physicsComponent_;
         std::auto_ptr<ControlComponent> controlComponent_;
-        std::auto_ptr<GraphicsComponent> graphicsComponent_;
+        std::auto_ptr<RenderComponent> renderComponent_;
     };
     
     std::auto_ptr<Actor> createActor(Game *game)

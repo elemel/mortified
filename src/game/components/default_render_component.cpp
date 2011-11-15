@@ -1,4 +1,4 @@
-#include "default_graphics_component.hpp"
+#include "default_render_component.hpp"
 
 #include "actor.hpp"
 #include "context.hpp"
@@ -6,13 +6,13 @@
 #include "default_image_sprite.hpp"
 #include "default_texture.hpp"
 #include "game.hpp"
-#include "graphics_component.hpp"
-#include "graphics_service.hpp"
 #include "image.hpp"
 #include "image_sprite.hpp"
 #include "image_texture_source.hpp"
 #include "math.hpp"
 #include "physics_component.hpp"
+#include "render_component.hpp"
+#include "render_service.hpp"
 #include "sprite.hpp"
 #include "texture.hpp"
 #include "texture_source.hpp"
@@ -21,11 +21,11 @@
 #include <boost/bind.hpp>
 
 namespace mortified {
-    class DefaultGraphicsComponent : public virtual GraphicsComponent {
+    class DefaultRenderComponent : public virtual RenderComponent {
     public:
-        explicit DefaultGraphicsComponent(Actor *actor) :
+        explicit DefaultRenderComponent(Actor *actor) :
             actor_(actor),
-            graphicsService_(actor->getGame()->getGraphicsService())
+            renderService_(actor->getGame()->getRenderService())
         { }
 
         void load(rapidxml::xml_node<> *node, Matrix3 parentTransform)
@@ -35,7 +35,7 @@ namespace mortified {
         
         void save(rapidxml::xml_node<> *parentNode, Matrix3 parentTransform)
         {
-            rapidxml::xml_node<> *node = saveGroup(parentNode, "graphics-component");
+            rapidxml::xml_node<> *node = saveGroup(parentNode, "render-component");
             saveSprites(node, parentTransform);
         }
         
@@ -44,7 +44,7 @@ namespace mortified {
 
     private:
         Actor *actor_;
-        GraphicsService *graphicsService_;
+        RenderService *renderService_;
 
         void loadSprites(rapidxml::xml_node<> *node, Matrix3 parentTransform)
         {
@@ -102,14 +102,14 @@ namespace mortified {
                 boost::intrusive_ptr<Image> image = loadImageFromFile(file.c_str());
                 image->flipVertical();
                 boost::intrusive_ptr<Texture> texture =
-                    createTexture(graphicsService_->getContext(),
+                    createTexture(renderService_->getContext(),
                                   createImageTextureSource(image));
                 boost::intrusive_ptr<ImageSprite> sprite = createImageSprite(texture);
                 sprite->setAlignment(alignment);
                 sprite->setPosition(position);
                 sprite->setAngle(angle);
                 sprite->setScale(scale);
-                graphicsService_->addSprite(sprite);
+                renderService_->addSprite(sprite);
 
                 if (bodyRef && physicsComponent) {
                     b2Body *body = physicsComponent->findBody(bodyRef);
@@ -130,10 +130,10 @@ namespace mortified {
                                           b2Vec2(position.x,
                                                  position.y));
             float localAngle = sprite->getAngle() - body->GetAngle();
-            GraphicsService::UpdateHandler handler =
-            boost::bind(&DefaultGraphicsComponent::updateImageSpriteFromBody,
-                        this, sprite, body, localPosition, localAngle, _1);
-            graphicsService_->addUpdateHandler(handler);
+            RenderService::UpdateHandler handler =
+                boost::bind(&DefaultRenderComponent::updateImageSpriteFromBody,
+                            this, sprite, body, localPosition, localAngle, _1);
+            renderService_->addUpdateHandler(handler);
         }
 
         void updateImageSpriteFromBody(ImageSprite *sprite, b2Body *body,
@@ -146,8 +146,8 @@ namespace mortified {
         }
     };
 
-    std::auto_ptr<GraphicsComponent> createGraphicsComponent(Actor *actor)
+    std::auto_ptr<RenderComponent> createRenderComponent(Actor *actor)
     {
-        return std::auto_ptr<GraphicsComponent>(new DefaultGraphicsComponent(actor));
+        return std::auto_ptr<RenderComponent>(new DefaultRenderComponent(actor));
     }
 }
