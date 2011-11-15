@@ -129,7 +129,7 @@ namespace elemel {
             return values_.max_size();
         }
 
-        value_type &operator[](key_type const &key)
+        data_type &operator[](key_type const &key)
         {
             return insert(value_type(key, data_type())).first->second;
         }
