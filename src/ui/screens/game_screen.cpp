@@ -264,6 +264,7 @@ namespace mortified {
             
             glEnable(GL_TEXTURE_2D);
             glBindTexture(GL_TEXTURE_2D, targetTexture_->getName());
+            glColor3ub(255, 255, 255);
             glBegin(GL_QUADS);
             {
                 glTexCoord2i(0, 0);
