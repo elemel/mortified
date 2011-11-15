@@ -11,4 +11,5 @@ namespace mortified {
 
     std::auto_ptr<Actor> createActor(Game *game);
 }
+
 #endif
