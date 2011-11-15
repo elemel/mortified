@@ -157,7 +157,7 @@ namespace elemel {
         }
 
         // Exception safety: Basic guarantee.
-        void resize(size_type n, value_type const &value)
+        void resize(size_type n, value_type const &value = value_type())
         {
             if (size() < n) {
                 reserve(n);
