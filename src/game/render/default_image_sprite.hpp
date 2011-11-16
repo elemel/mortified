@@ -5,10 +5,10 @@
 
 namespace mortified {
     class ImageSprite;
-    class Texture;
+    class RenderService;
 
     boost::intrusive_ptr<ImageSprite>
-    createImageSprite(boost::intrusive_ptr<Texture> texture);
+    createImageSprite(RenderService *service);
 }
 
 #endif

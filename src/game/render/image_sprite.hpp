@@ -11,6 +11,9 @@ namespace mortified {
 
     class ImageSprite : public virtual Sprite {
     public:
+        virtual boost::intrusive_ptr<Image> getImage() = 0;
+        virtual void setImage(boost::intrusive_ptr<Image> image) = 0;
+
         virtual Vector2 getPosition() const = 0;
         virtual void setPosition(Vector2 position) = 0;
 

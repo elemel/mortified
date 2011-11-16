@@ -1,9 +1,14 @@
 #include "default_image_sprite.hpp"
 
 #include "color.hpp"
+#include "context.hpp"
+#include "default_texture.hpp"
+#include "image.hpp"
 #include "image_sprite.hpp"
+#include "image_texture_source.hpp"
 #include "math.hpp"
 #include "ref_counted_base.hpp"
+#include "render_service.hpp"
 #include "sprite.hpp"
 #include "texture.hpp"
 
@@ -13,12 +18,23 @@ namespace mortified {
         private virtual RefCountedBase
     {
     public:
-        explicit DefaultImageSprite(boost::intrusive_ptr<Texture> texture) :
-            texture_(texture),
+        explicit DefaultImageSprite(RenderService *service) :
+            renderService_(service),
             angle_(0.0f),
             scale_(1.0f),
             dirtyVertices_(true)
         { }
+
+        boost::intrusive_ptr<Image> getImage()
+        {
+            return image_;
+        }
+
+        void setImage(boost::intrusive_ptr<Image> image)
+        {
+            image_ = image;
+            dirtyVertices_ = true;
+        }
 
         Vector2 getPosition() const
         {
@@ -76,31 +92,36 @@ namespace mortified {
 
         void draw()
         {
+            updateTexture();
             updateVertices();
 
-            glColor4ub(color_.red, color_.green, color_.blue, color_.alpha);
-            glEnable(GL_TEXTURE_2D);
-            glBindTexture(GL_TEXTURE_2D, texture_->getName());
-            glBegin(GL_QUADS);
-            {
-                glTexCoord2f(0.0f, 0.0f);
-                glVertex2f(vertices_[0].x, vertices_[0].y);
-
-                glTexCoord2f(1.0f, 0.0f);
-                glVertex2f(vertices_[1].x, vertices_[1].y);
-
-                glTexCoord2f(1.0f, 1.0f);
-                glVertex2f(vertices_[2].x, vertices_[2].y);
-
-                glTexCoord2f(0.0f, 1.0f);
-                glVertex2f(vertices_[3].x, vertices_[3].y);
+            if (texture_) {
+                glColor4ub(color_.red, color_.green, color_.blue, color_.alpha);
+                glEnable(GL_TEXTURE_2D);
+                glBindTexture(GL_TEXTURE_2D, texture_->getName());
+                glBegin(GL_QUADS);
+                {
+                    glTexCoord2f(0.0f, 0.0f);
+                    glVertex2f(vertices_[0].x, vertices_[0].y);
+                    
+                    glTexCoord2f(1.0f, 0.0f);
+                    glVertex2f(vertices_[1].x, vertices_[1].y);
+                    
+                    glTexCoord2f(1.0f, 1.0f);
+                    glVertex2f(vertices_[2].x, vertices_[2].y);
+                    
+                    glTexCoord2f(0.0f, 1.0f);
+                    glVertex2f(vertices_[3].x, vertices_[3].y);
+                }
+                glEnd();
+                glBindTexture(GL_TEXTURE_2D, 0);
+                glDisable(GL_TEXTURE_2D);
             }
-            glEnd();
-            glBindTexture(GL_TEXTURE_2D, 0);
-            glDisable(GL_TEXTURE_2D);
         }
 
     private:
+        RenderService *renderService_;
+        boost::intrusive_ptr<Image> image_;
         boost::intrusive_ptr<Texture> texture_;
         Vector2 position_;
         float angle_;
@@ -110,9 +131,17 @@ namespace mortified {
         Vector2 vertices_[4];
         bool dirtyVertices_;
 
+        void updateTexture()
+        {
+            if (image_ && !texture_) {
+                texture_ = createTexture(renderService_->getContext(),
+                                         createImageTextureSource(image_));
+            }
+        }
+
         void updateVertices()
         {
-            if (dirtyVertices_) {
+            if (texture_ && dirtyVertices_) {
                 texture_->create();
                 Vector2 size(float(texture_->getWidth()),
                              float(texture_->getHeight()));
@@ -134,8 +163,8 @@ namespace mortified {
     };
 
     boost::intrusive_ptr<ImageSprite>
-    createImageSprite(boost::intrusive_ptr<Texture> texture)
+    createImageSprite(RenderService *service)
     {
-        return boost::intrusive_ptr<ImageSprite>(new DefaultImageSprite(texture));
+        return boost::intrusive_ptr<ImageSprite>(new DefaultImageSprite(service));
     }
 }

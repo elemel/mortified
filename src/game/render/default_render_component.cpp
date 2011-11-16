@@ -101,10 +101,8 @@ namespace mortified {
                 file += ".png";
                 boost::intrusive_ptr<Image> image = loadImageFromFile(file.c_str());
                 image->flipVertical();
-                boost::intrusive_ptr<Texture> texture =
-                    createTexture(renderService_->getContext(),
-                                  createImageTextureSource(image));
-                boost::intrusive_ptr<ImageSprite> sprite = createImageSprite(texture);
+                boost::intrusive_ptr<ImageSprite> sprite = createImageSprite(renderService_);
+                sprite->setImage(image);
                 sprite->setAlignment(alignment);
                 sprite->setPosition(position);
                 sprite->setAngle(angle);
