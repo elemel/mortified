@@ -1,16 +1,20 @@
-#ifndef MORTIFIED_IMAGE_SPRITE_HPP
-#define MORTIFIED_IMAGE_SPRITE_HPP
+#ifndef MORTIFIED_SPRITE_HPP
+#define MORTIFIED_SPRITE_HPP
 
-#include "color.hpp"
-#include "math.hpp"
-#include "sprite.hpp"
+#include <boost/intrusive_ptr.hpp>
 
 namespace mortified {
     class Color4;
+    class Image;
     class Vector2;
 
-    class ImageSprite : public virtual Sprite {
+    class Sprite {
     public:
+        virtual ~Sprite()
+        { }
+
+        virtual int getLayerIndex() const = 0;
+        
         virtual boost::intrusive_ptr<Image> getImage() = 0;
         virtual void setImage(boost::intrusive_ptr<Image> image) = 0;
 
@@ -28,6 +32,8 @@ namespace mortified {
 
         virtual Color4 getColor() const = 0;
         virtual void setColor(Color4 color) = 0;
+
+        virtual void draw() = 0;
     };
 }
 

@@ -1,30 +1,32 @@
-#include "default_image_sprite.hpp"
+#include "default_sprite.hpp"
 
 #include "color.hpp"
 #include "context.hpp"
 #include "default_texture.hpp"
 #include "image.hpp"
-#include "image_sprite.hpp"
 #include "image_texture_source.hpp"
 #include "math.hpp"
-#include "ref_counted_base.hpp"
 #include "render_service.hpp"
+#include "scene.hpp"
 #include "sprite.hpp"
 #include "texture.hpp"
 
 namespace mortified {
-    class DefaultImageSprite :
-        public virtual ImageSprite,
-        private virtual RefCountedBase
-    {
+    class DefaultSprite : public virtual Sprite {
     public:
-        explicit DefaultImageSprite(RenderService *service) :
-            renderService_(service),
+        explicit DefaultSprite(Scene *scene) :
+            scene_(scene),
+            layerIndex_(0),
             angle_(0.0f),
             scale_(1.0f),
             dirtyVertices_(true)
         { }
 
+        int getLayerIndex() const
+        {
+            return layerIndex_;
+        }
+        
         boost::intrusive_ptr<Image> getImage()
         {
             return image_;
@@ -120,7 +122,8 @@ namespace mortified {
         }
 
     private:
-        RenderService *renderService_;
+        Scene *scene_;
+        int layerIndex_;
         boost::intrusive_ptr<Image> image_;
         boost::intrusive_ptr<Texture> texture_;
         Vector2 position_;
@@ -134,7 +137,7 @@ namespace mortified {
         void updateTexture()
         {
             if (image_ && !texture_) {
-                texture_ = createTexture(renderService_->getContext(),
+                texture_ = createTexture(scene_->getContext(),
                                          createImageTextureSource(image_));
             }
         }
@@ -162,9 +165,8 @@ namespace mortified {
         }
     };
 
-    boost::intrusive_ptr<ImageSprite>
-    createImageSprite(RenderService *service)
+    std::auto_ptr<Sprite> createSprite(Scene *scene)
     {
-        return boost::intrusive_ptr<ImageSprite>(new DefaultImageSprite(service));
+        return std::auto_ptr<Sprite>(new DefaultSprite(scene));
     }
 }

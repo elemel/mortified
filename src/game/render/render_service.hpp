@@ -9,6 +9,7 @@
 
 namespace mortified {
     class Context;
+    class Scene;
     class Sprite;
 
     class RenderService : public virtual Service {
@@ -17,17 +18,11 @@ namespace mortified {
         typedef std::list<UpdateHandler> UpdateHandlerList;
         typedef UpdateHandlerList::iterator UpdateHandlerIterator;
 
-        typedef boost::intrusive_ptr<Sprite> SpritePtr;
-        typedef std::list<SpritePtr> SpriteList;
-        typedef SpriteList::iterator SpriteIterator;
-
-        virtual boost::intrusive_ptr<Context> getContext() = 0;
-
         virtual UpdateHandlerIterator addUpdateHandler(UpdateHandler handler) = 0;
         virtual void removeUpdateHandler(UpdateHandlerIterator handler) = 0;
 
-        virtual SpriteIterator addSprite(SpritePtr sprite) = 0;
-        virtual void removeSprite(SpriteIterator sprite) = 0;
+        virtual Scene *getScene() = 0;
+        virtual Scene const *getScene() const = 0;
         
         virtual void draw() = 0;
     };

@@ -2,11 +2,12 @@
 
 #include "color.hpp"
 #include "context.hpp"
+#include "default_scene.hpp"
 #include "default_sparse_image.hpp"
 #include "math.hpp"
 #include "render_service.hpp"
+#include "scene.hpp"
 #include "sparse_image.hpp"
-#include "sprite.hpp"
 
 #include <SDL/SDL_opengl.h>
 
@@ -14,7 +15,7 @@ namespace mortified {
     class DefaultRenderService : public virtual RenderService {
     public:
         explicit DefaultRenderService(boost::intrusive_ptr<Context> context) :
-            context_(context),
+            scene_(createScene(context)),
             sparseImage_(createSparseImage()),
             sparseImageAngle_(0.5),
             sparseImageScale_(0.1)
@@ -86,11 +87,6 @@ namespace mortified {
             }
         }
 
-        boost::intrusive_ptr<Context> getContext()
-        {
-            return context_;
-        }
-
         UpdateHandlerIterator addUpdateHandler(UpdateHandler handler)
         {
             return handlers_.insert(handlers_.end(), handler);
@@ -101,40 +97,31 @@ namespace mortified {
             handlers_.erase(handler);
         }
 
-        SpriteIterator addSprite(SpritePtr sprite)
+        Scene *getScene()
         {
-            return sprites_.insert(sprites_.end(), sprite);
+            return scene_.get();
         }
-        
-        void removeSprite(SpriteIterator sprite)
+
+        Scene const *getScene() const
         {
-            sprites_.erase(sprite);
+            return scene_.get();
         }
-        
+
         void draw()
         {
-            drawSprites();
+            scene_->draw();
             drawSparseImage();
         }
 
     private:
-        boost::intrusive_ptr<Context> context_;
+        std::auto_ptr<Scene> scene_;
         UpdateHandlerList handlers_;
-        SpriteList sprites_;
         
         std::auto_ptr<SparseImage> sparseImage_;
         Vector2 sparseImagePosition_;
         float sparseImageAngle_;
         float sparseImageScale_;
 
-        void drawSprites()
-        {
-            for (SpriteIterator i = sprites_.begin(); i != sprites_.end(); ++i)
-            {
-                (*i)->draw();
-            }
-        }
-        
         void drawSparseImage()
         {
             glPushMatrix();

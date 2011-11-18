@@ -3,16 +3,15 @@
 #include "actor.hpp"
 #include "context.hpp"
 #include "default_image.hpp"
-#include "default_image_sprite.hpp"
 #include "default_texture.hpp"
 #include "game.hpp"
 #include "image.hpp"
-#include "image_sprite.hpp"
 #include "image_texture_source.hpp"
 #include "math.hpp"
 #include "physics_component.hpp"
 #include "render_component.hpp"
 #include "render_service.hpp"
+#include "scene.hpp"
 #include "sprite.hpp"
 #include "texture.hpp"
 #include "texture_source.hpp"
@@ -101,18 +100,17 @@ namespace mortified {
                 file += ".png";
                 boost::intrusive_ptr<Image> image = loadImageFromFile(file.c_str());
                 image->flipVertical();
-                boost::intrusive_ptr<ImageSprite> sprite = createImageSprite(renderService_);
+                Scene::SpriteIterator sprite = renderService_->getScene()->createSprite();
                 sprite->setImage(image);
                 sprite->setAlignment(alignment);
                 sprite->setPosition(position);
                 sprite->setAngle(angle);
                 sprite->setScale(scale);
-                renderService_->addSprite(sprite);
 
                 if (bodyRef && physicsComponent) {
                     b2Body *body = physicsComponent->findBody(bodyRef);
                     if (body) {
-                        attachImageSpriteToBody(sprite.get(), body);
+                        attachSpriteToBody(&*sprite, body);
                     }
                 }
             }
@@ -121,7 +119,7 @@ namespace mortified {
         void saveSprites(rapidxml::xml_node<> *parent, Matrix3 parentTransform)
         { }
 
-        void attachImageSpriteToBody(ImageSprite *sprite, b2Body *body)
+        void attachSpriteToBody(Sprite *sprite, b2Body *body)
         {
             Vector2 position = sprite->getPosition();
             b2Vec2 localPosition = b2MulT(body->GetTransform(),
@@ -129,14 +127,14 @@ namespace mortified {
                                                  position.y));
             float localAngle = sprite->getAngle() - body->GetAngle();
             RenderService::UpdateHandler handler =
-                boost::bind(&DefaultRenderComponent::updateImageSpriteFromBody,
+                boost::bind(&DefaultRenderComponent::updateSpriteFromBody,
                             this, sprite, body, localPosition, localAngle, _1);
             renderService_->addUpdateHandler(handler);
         }
 
-        void updateImageSpriteFromBody(ImageSprite *sprite, b2Body *body,
-                                       b2Vec2 localPosition, float localAngle,
-                                       float dt)
+        void updateSpriteFromBody(Sprite *sprite, b2Body *body,
+                                  b2Vec2 localPosition, float localAngle,
+                                  float dt)
         {
             b2Vec2 position = b2Mul(body->GetTransform(), localPosition);
             sprite->setPosition(Vector2(position.x, position.y));
