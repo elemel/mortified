@@ -20,8 +20,6 @@ namespace mortified {
 
         virtual GLenum getMagFilter() const = 0;
         virtual void setMagFilter(GLenum filter) = 0;
-
-        virtual boost::intrusive_ptr<Framebuffer> createFramebuffer() = 0;
     };
 }
 

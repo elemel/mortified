@@ -6,6 +6,7 @@
 #include <boost/intrusive_ptr.hpp>
 
 namespace mortified {
+    class FrameBuffer;
     class Texture;
     class TextureSource;
 
@@ -16,6 +17,8 @@ namespace mortified {
 
         virtual boost::intrusive_ptr<Texture>
         createTexture(int width, int height) = 0;
+
+        virtual boost::intrusive_ptr<FrameBuffer> createFrameBuffer() = 0;
     };
 }
 

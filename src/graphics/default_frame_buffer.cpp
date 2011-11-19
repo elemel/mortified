@@ -1,6 +1,7 @@
-#include "default_framebuffer.hpp"
+#include "default_frame_buffer.hpp"
 
-#include "framebuffer.hpp"
+#include "context.hpp"
+#include "frame_buffer.hpp"
 #include "graphics_resource_base.hpp"
 #include "texture.hpp"
 
@@ -8,22 +9,30 @@
 #include <SDL/SDL_opengl.h>
 
 namespace mortified {
-    class DefaultFramebuffer :
-        public virtual Framebuffer,
+    class DefaultFrameBuffer :
+        public virtual FrameBuffer,
         private virtual GraphicsResourceBase
     {
     public:
-        explicit DefaultFramebuffer(boost::intrusive_ptr<Texture> texture) :
-            texture_(texture),
+        explicit DefaultFrameBuffer(boost::intrusive_ptr<Context> context) :
+            context_(context),
             name_(0)
         {
-            addParent(texture);
+            addParent(context_);
         }
 
-        ~DefaultFramebuffer()
+        ~DefaultFrameBuffer()
         {
             if (name_) {
                 glDeleteFramebuffersEXT(1, &name_);
+            }
+        }
+
+        void setColorAttachment(boost::intrusive_ptr<Texture> texture)
+        {
+            if (!colorAttachment_) {
+                colorAttachment_ = texture;
+                addParent(colorAttachment_);
             }
         }
 
@@ -37,18 +46,19 @@ namespace mortified {
             return name_;
         }
 
-        Framebuffer *asFramebuffer()
+        FrameBuffer *asFrameBuffer()
         {
             return this;
         }
 
-        Framebuffer const *asFramebuffer() const
+        FrameBuffer const *asFrameBuffer() const
         {
             return this;
         }
 
     private:
-        boost::intrusive_ptr<Texture> texture_;
+        boost::intrusive_ptr<Context> context_;
+        boost::intrusive_ptr<Texture> colorAttachment_;
         GLuint name_;
 
         void createImpl()
@@ -57,7 +67,7 @@ namespace mortified {
             glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, name_);
             glFramebufferTexture2DEXT(GL_FRAMEBUFFER_EXT,
                                       GL_COLOR_ATTACHMENT0_EXT,
-                                      GL_TEXTURE_2D, texture_->getName(), 0);
+                                      GL_TEXTURE_2D, colorAttachment_->getName(), 0);
             glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);
         }
         
@@ -66,16 +76,16 @@ namespace mortified {
             glDeleteFramebuffersEXT(1, &name_);
             name_ = 0;
         }
-        
+
         void invalidateImpl()
         {
             name_ = 0;
         }
     };
-    
-    boost::intrusive_ptr<Framebuffer>
-    createFramebuffer(boost::intrusive_ptr<Texture> texture)
+
+    boost::intrusive_ptr<FrameBuffer>
+    createFrameBuffer(boost::intrusive_ptr<Context> context)
     {
-        return boost::intrusive_ptr<Framebuffer>(new DefaultFramebuffer(texture));
+        return boost::intrusive_ptr<FrameBuffer>(new DefaultFrameBuffer(context));
     }
 }

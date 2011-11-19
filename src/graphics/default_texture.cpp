@@ -1,8 +1,6 @@
 #include "default_texture.hpp"
 
 #include "context.hpp"
-#include "framebuffer.hpp"
-#include "default_framebuffer.hpp"
 #include "graphics_resource_base.hpp"
 #include "texture.hpp"
 #include "texture_source.hpp"
@@ -98,11 +96,6 @@ namespace mortified {
         void setMagFilter(GLenum filter)
         {
             magFilter_ = filter;
-        }
-
-        boost::intrusive_ptr<Framebuffer> createFramebuffer()
-        {
-            return mortified::createFramebuffer(this);
         }
 
     private:

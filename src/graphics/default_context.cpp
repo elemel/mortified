@@ -1,7 +1,9 @@
 #include "default_context.hpp"
 
 #include "context.hpp"
+#include "default_frame_buffer.hpp"
 #include "default_texture.hpp"
+#include "frame_buffer.hpp"
 #include "graphics_resource_base.hpp"
 #include "texture.hpp"
 #include "texture_source.hpp"
@@ -54,6 +56,11 @@ namespace mortified {
             return mortified::createTexture(this, width, height);
         }
 
+        boost::intrusive_ptr<FrameBuffer> createFrameBuffer()
+        {
+            return mortified::createFrameBuffer(this);
+        }
+        
     private:
         SDL_Window *window_;
         SDL_GLContext context_;

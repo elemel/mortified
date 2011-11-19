@@ -8,7 +8,7 @@
 
 namespace mortified {
     class Context;
-    class Framebuffer;
+    class FrameBuffer;
     class Texture;
 
     class GraphicsResource : public virtual RefCounted {
@@ -34,8 +34,8 @@ namespace mortified {
         virtual Context *asContext() = 0;
         virtual Context const *asContext() const = 0;
 
-        virtual Framebuffer *asFramebuffer() = 0;
-        virtual Framebuffer const *asFramebuffer() const = 0;
+        virtual FrameBuffer *asFrameBuffer() = 0;
+        virtual FrameBuffer const *asFrameBuffer() const = 0;
 
         virtual Texture *asTexture() = 0;
         virtual Texture const *asTexture() const = 0;

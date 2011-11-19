@@ -72,12 +72,12 @@ namespace mortified {
             return 0;
         }
 
-        Framebuffer *asFramebuffer()
+        FrameBuffer *asFrameBuffer()
         {
             return 0;
         }
         
-        Framebuffer const *asFramebuffer() const
+        FrameBuffer const *asFrameBuffer() const
         {
             return 0;
         }

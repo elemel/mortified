@@ -8,7 +8,7 @@
 #include "default_image.hpp"
 #include "default_stream.hpp"
 #include "empty_texture_source.hpp"
-#include "framebuffer.hpp"
+#include "frame_buffer.hpp"
 #include "game.hpp"
 #include "image.hpp"
 #include "image_texture_source.hpp"
@@ -52,7 +52,7 @@ namespace mortified {
         void destroy()
         {
             game_->saveModule("../../../data/modules/save.xml", Matrix3());
-            targetFramebuffer_.reset();
+            targetFrameBuffer_.reset();
             targetTexture_.reset();
         }
         
@@ -101,7 +101,7 @@ namespace mortified {
 
         bool supersample_;
         boost::intrusive_ptr<Texture> targetTexture_;
-        boost::intrusive_ptr<Framebuffer> targetFramebuffer_;
+        boost::intrusive_ptr<FrameBuffer> targetFrameBuffer_;
 
         void loadConfig(char const *file)
         {
@@ -237,15 +237,16 @@ namespace mortified {
                                                                       2 * window_->getHeight());
                 targetTexture_->setMinFilter(GL_LINEAR);
                 targetTexture_->setMagFilter(GL_LINEAR);
-                targetFramebuffer_ = targetTexture_->createFramebuffer();
+                targetFrameBuffer_ = window_->getContext()->createFrameBuffer();
+                targetFrameBuffer_->setColorAttachment(targetTexture_);
             }
             
-            targetFramebuffer_->create();
+            targetFrameBuffer_->create();
 
             glViewport(0, 0, window_->getWidth() * 2,
                        window_->getHeight() * 2);
             glBindFramebufferEXT(GL_FRAMEBUFFER_EXT,
-                                 targetFramebuffer_->getName());
+                                 targetFrameBuffer_->getName());
             glClearColor(0.0, 0.0, 0.0, 0.0);
             glClear(GL_COLOR_BUFFER_BIT);
             drawScene();

@@ -7,7 +7,7 @@
 #include "editor_screen.hpp"
 #include "empty_texture_source.hpp"
 #include "font.hpp"
-#include "framebuffer.hpp"
+#include "frame_buffer.hpp"
 #include "game_screen.hpp"
 #include "image.hpp"
 #include "image_texture_source.hpp"
@@ -38,7 +38,8 @@ namespace mortified {
             logoTexture_->setMagFilter(GL_LINEAR);
 
             targetTexture_ = window_->getContext()->createTexture(128, 128);
-            targetFramebuffer_ = targetTexture_->createFramebuffer();
+            targetFrameBuffer_ = window_->getContext()->createFrameBuffer();
+            targetFrameBuffer_->setColorAttachment(targetTexture_);
         }
 
         void destroy()
@@ -85,13 +86,13 @@ namespace mortified {
         boost::intrusive_ptr<Image> logoImage_;
         boost::intrusive_ptr<Texture> logoTexture_;
         boost::intrusive_ptr<Texture> targetTexture_;
-        boost::intrusive_ptr<Framebuffer> targetFramebuffer_;
+        boost::intrusive_ptr<FrameBuffer> targetFrameBuffer_;
         float angle_;
 
         void drawLogoToTarget()
         {
             logoTexture_->create();
-            targetFramebuffer_->create();
+            targetFrameBuffer_->create();
             
             glViewport(0, 0, targetTexture_->getWidth(),
                        targetTexture_->getHeight());
@@ -107,7 +108,7 @@ namespace mortified {
             float scale = 0.2f;
             
             glBindFramebufferEXT(GL_FRAMEBUFFER_EXT,
-                                 targetFramebuffer_->getName());
+                                 targetFrameBuffer_->getName());
             glClearColor(0.0, 0.0, 0.0, 0.0);
             glClear(GL_COLOR_BUFFER_BIT);
             glEnable(GL_BLEND);
