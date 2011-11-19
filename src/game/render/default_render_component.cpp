@@ -60,6 +60,7 @@ namespace mortified {
 
         void loadSprite(rapidxml::xml_node<> *node, Matrix3 parentTransform)
         {
+            int layerIndex = 0;
             const char *imageRef = 0;
             Vector2 alignment;
             Vector2 position;
@@ -71,6 +72,9 @@ namespace mortified {
                  childNode; childNode = childNode->next_sibling())
             {
                 if (childNode->type() == rapidxml::node_element) {
+                    if (std::strcmp(childNode->name(), "layer-ref") == 0) {
+                        layerIndex = loadInt(childNode);
+                    }
                     if (std::strcmp(childNode->name(), "image-ref") == 0) {
                         imageRef = childNode->value();
                     }
@@ -100,7 +104,7 @@ namespace mortified {
                 file += ".png";
                 boost::intrusive_ptr<Image> image = loadImageFromFile(file.c_str());
                 image->flipVertical();
-                Scene::SpriteIterator sprite = renderService_->getScene()->createSprite();
+                Scene::SpriteIterator sprite = renderService_->getScene()->createSprite(layerIndex);
                 sprite->setImage(image);
                 sprite->setAlignment(alignment);
                 sprite->setPosition(position);

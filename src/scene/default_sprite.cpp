@@ -14,9 +14,9 @@
 namespace mortified {
     class DefaultSprite : public virtual Sprite {
     public:
-        explicit DefaultSprite(Scene *scene) :
+        DefaultSprite(Scene *scene, int layerIndex) :
             scene_(scene),
-            layerIndex_(0),
+            layerIndex_(layerIndex),
             angle_(0.0f),
             scale_(1.0f),
             dirtyVertices_(true)
@@ -98,6 +98,8 @@ namespace mortified {
             updateVertices();
 
             if (texture_) {
+                texture_->create();
+
                 glColor4ub(color_.red, color_.green, color_.blue, color_.alpha);
                 glEnable(GL_TEXTURE_2D);
                 glBindTexture(GL_TEXTURE_2D, texture_->getName());
@@ -165,8 +167,8 @@ namespace mortified {
         }
     };
 
-    std::auto_ptr<Sprite> createSprite(Scene *scene)
+    std::auto_ptr<Sprite> createSprite(Scene *scene, int layerIndex)
     {
-        return std::auto_ptr<Sprite>(new DefaultSprite(scene));
+        return std::auto_ptr<Sprite>(new DefaultSprite(scene, layerIndex));
     }
 }

@@ -3,6 +3,8 @@
 
 #include <boost/intrusive_ptr.hpp>
 
+#include <memory>
+
 namespace mortified {
     class Context;
     class Scene;

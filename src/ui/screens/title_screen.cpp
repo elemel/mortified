@@ -100,6 +100,7 @@ namespace mortified {
             glLoadIdentity();
             glOrtho(-1.0, 1.0, -1.0, 1.0, -1.0, 1.0);
             glMatrixMode(GL_MODELVIEW);
+            glLoadIdentity();
             
             float aspectRatio = (float(logoTexture_->getWidth()) /
                                  float(logoTexture_->getHeight()));

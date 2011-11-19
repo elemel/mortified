@@ -7,7 +7,7 @@ namespace mortified {
     class Sprite;
     class Scene;
 
-    std::auto_ptr<Sprite> createSprite(Scene *scene);
+    std::auto_ptr<Sprite> createSprite(Scene *scene, int layerIndex);
 }
 
 #endif

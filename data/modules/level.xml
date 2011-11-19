@@ -30,4 +30,22 @@
     </position>
     <module-ref>wizard</module-ref>
   </group>
+  <actor>
+    <render-component>
+      <sprite>
+        <layer-ref>1</layer-ref>
+        <image-ref>platform</image-ref>
+        <alignment>
+          <x>0.5</x>
+          <y>0.5</y>
+        </alignment>
+        <angle>-0.6</angle>
+        <scale>
+          <x>0.1</x>
+          <y>0.1</y>
+        </scale>
+        <body-ref>body</body-ref>
+      </sprite>
+    </render-component>
+  </actor>
 </module>

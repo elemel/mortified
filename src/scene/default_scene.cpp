@@ -1,9 +1,12 @@
 #include "default_scene.hpp"
 
 #include "context.hpp"
-#include "default_sprite.hpp"
+#include "default_layer.hpp"
+#include "layer.hpp"
 #include "scene.hpp"
 #include "sprite.hpp"
+
+#include <SDL/SDL_opengl.h>
 
 namespace mortified {
     class DefaultScene : public virtual Scene {
@@ -17,27 +20,37 @@ namespace mortified {
             return context_;
         }
 
-        SpriteIterator createSprite()
+        SpriteIterator createSprite(int layerIndex)
         {
-            return sprites_.insert(sprites_.end(), mortified::createSprite(this));
+            while (layerIndex >= int(layers_.size())) {
+                layers_.push_back(createLayer(this));
+            }
+            Layer *layer = &layers_[layerIndex];
+            return layer->createSprite(layerIndex);
         }
 
         void destroySprite(SpriteIterator sprite)
         {
-            sprites_.erase(sprite);
+            int layerIndex = sprite->getLayerIndex();
+            Layer *layer = &layers_[layerIndex];
+            layer->destroySprite(sprite);
         }
 
         void draw()
         {
-            for (SpriteIterator i = sprites_.begin(); i != sprites_.end(); ++i)
-            {
-                i->draw();
+            for (std::size_t i = layers_.size(); i >= 1; --i) {
+                std::size_t j = i - 1;
+                float z = -float(j);
+                glPushMatrix();
+                glTranslatef(0.0f, 0.0f, z);
+                layers_[j].draw();
+                glPopMatrix();
             }
         }
 
     private:
         boost::intrusive_ptr<Context> context_;
-        SpriteList sprites_;
+        LayerVector layers_;
     };
 
     std::auto_ptr<Scene> createScene(boost::intrusive_ptr<Context> context)

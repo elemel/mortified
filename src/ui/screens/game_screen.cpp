@@ -38,7 +38,7 @@ namespace mortified {
             updateTime_(0.0f),
             dt_(1.0f / 60.0f),
             supersample_(supersample),
-            cameraScale_(7.0f)
+            cameraScale_(1.0f)
         { }
         
         void create()
@@ -79,13 +79,15 @@ namespace mortified {
         
         void draw()
         {
+            glClearColor(0.0, 0.0, 0.0, 0.0);
+            glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
             if (supersample_) {
                 drawSceneToTarget();
                 drawTargetToScreen();
             } else {
                 drawScene();
             }
-            // drawPhysics();
+            drawPhysics();
         }
         
     private:
@@ -219,7 +221,6 @@ namespace mortified {
         void drawScene()
         {
             applyCamera();
-            glClear(GL_COLOR_BUFFER_BIT);
             glEnable(GL_BLEND);
             glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
             game_->getRenderService()->draw();
@@ -246,6 +247,7 @@ namespace mortified {
             glBindFramebufferEXT(GL_FRAMEBUFFER_EXT,
                                  targetFramebuffer_->getName());
             glClearColor(0.0, 0.0, 0.0, 0.0);
+            glClear(GL_COLOR_BUFFER_BIT);
             drawScene();
             glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);
             glViewport(0, 0, window_->getWidth(), window_->getHeight());
@@ -259,6 +261,7 @@ namespace mortified {
                     0.0, double(window_->getHeight() * 2),
                     -1.0, 1.0);
             glMatrixMode(GL_MODELVIEW);
+            glLoadIdentity();
             
             glEnable(GL_TEXTURE_2D);
             glBindTexture(GL_TEXTURE_2D, targetTexture_->getName());
@@ -293,16 +296,22 @@ namespace mortified {
 
         void applyCamera()
         {
-            float aspectRatio = (float(window_->getWidth()) /
-                                 float(window_->getHeight()));
+            float aspect = (float(window_->getWidth()) /
+                            float(window_->getHeight()));
+            float fov = 1.0;
+            float near = 1.0f;
+            float far = 20.0f;
+            float top = std::tan(fov) * near;
+            float bottom = -top;
+            float left = aspect * bottom;
+            float right = aspect * top;
 
             glMatrixMode(GL_PROJECTION);
             glLoadIdentity();
-            glOrtho(cameraPosition_.x - cameraScale_ * aspectRatio,
-                    cameraPosition_.x + cameraScale_ * aspectRatio,
-                    cameraPosition_.y - cameraScale_,
-                    cameraPosition_.y + cameraScale_, -1.0f, 1.0f);
+            glFrustum(left, right, bottom, top, near, far);
             glMatrixMode(GL_MODELVIEW);
+            glLoadIdentity();
+            glTranslatef(-cameraPosition_.x, -cameraPosition_.y, -5.0f);
         }
     };
 
