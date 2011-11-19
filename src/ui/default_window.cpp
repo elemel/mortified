@@ -21,6 +21,7 @@ namespace mortified {
             width_(0),
             height_(0),
             fullscreen_(false),
+            maximized_(true),
             window_(0)
         { }
 
@@ -80,6 +81,10 @@ namespace mortified {
             if (window_ == 0) {
                 throw std::runtime_error(std::string("Failed to create window: ") +
                                          SDL_GetError());
+            }
+            
+            if (!fullscreen_ && maximized_) {
+                SDL_MaximizeWindow(window_);
             }
 
             context_ = createContext(window_);
@@ -174,6 +179,7 @@ namespace mortified {
         int width_;
         int height_;
         bool fullscreen_;
+        bool maximized_;
         SDL_Window *window_;
         boost::intrusive_ptr<Context> context_;
         std::vector<Screen *> screens_;
