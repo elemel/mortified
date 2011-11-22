@@ -7,7 +7,7 @@
 namespace mortified {
     class DefaultSparseImage : public virtual SparseImage {
     public:
-        typedef std::pair<int, int> Key;
+        typedef std::pair<short, short> Key;
         typedef elemel::flat_map<Key, Color4> PixelMap;
         typedef PixelMap::iterator PixelIterator;
         typedef PixelMap::const_iterator ConstPixelIterator;
@@ -60,7 +60,17 @@ namespace mortified {
                 maxY_ = std::max(y, maxY_);
             }
         }
-        
+
+        int getSize() const
+        {
+            return pixels_.size();
+        }
+
+        Pixel const *getData() const
+        {
+            return reinterpret_cast<Pixel const *>(pixels_.data());
+        }
+
         void normalize()
         {
             DefaultSparseImage temp;

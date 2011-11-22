@@ -192,6 +192,16 @@ namespace elemel {
             return values_.get_allocator();
         }
 
+        value_type *data()
+        {
+            return values_.empty() ? 0 : &values_[0];
+        }
+
+        value_type const *data() const
+        {
+            return values_.empty() ? 0 : &values_[0];
+        }
+
     private:
         compare comp_;
         vector_type values_;

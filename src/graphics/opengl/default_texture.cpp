@@ -117,6 +117,10 @@ namespace mortified {
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, minFilter_);
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, magFilter_);
             glBindTexture(GL_TEXTURE_2D, 0);
+
+            if (source_.get()) {
+                source_->destroy();
+            }
         }
         
         void destroyImpl()

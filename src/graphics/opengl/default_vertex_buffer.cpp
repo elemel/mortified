@@ -131,6 +131,8 @@ namespace mortified {
                                    stride, source_->getColorOffset());
                 }
                 glBindBufferARB(GL_ARRAY_BUFFER, 0);
+
+                source_->destroy();
             }
         }
         
