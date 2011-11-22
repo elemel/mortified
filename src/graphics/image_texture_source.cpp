@@ -1,15 +1,9 @@
 #include "image_texture_source.hpp"
 
 #include "image.hpp"
-#include "ref_counted_base.hpp"
-
-#include <boost/intrusive_ptr.hpp>
 
 namespace mortified {
-    class ImageTextureSource :
-        public virtual TextureSource,
-        private virtual RefCountedBase
-    {
+    class ImageTextureSource : public virtual TextureSource {
     public:
         explicit ImageTextureSource(boost::intrusive_ptr<Image> image) :
             image_(image)
@@ -45,9 +39,9 @@ namespace mortified {
         boost::intrusive_ptr<Image> image_;
     };
 
-    boost::intrusive_ptr<TextureSource>
+    std::auto_ptr<TextureSource>
     createImageTextureSource(boost::intrusive_ptr<Image> image)
     {
-        return boost::intrusive_ptr<TextureSource>(new ImageTextureSource(image));
+        return std::auto_ptr<TextureSource>(new ImageTextureSource(image));
     }
 }

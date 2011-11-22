@@ -67,7 +67,7 @@ namespace mortified {
             height_ = height;
         }
         
-        void setSource(boost::intrusive_ptr<TextureSource> source)
+        void setSource(std::auto_ptr<TextureSource> source)
         {
             source_ = source;
         }
@@ -93,7 +93,7 @@ namespace mortified {
         }
 
     private:
-        boost::intrusive_ptr<TextureSource> source_;
+        std::auto_ptr<TextureSource> source_;
         GLuint name_;
         GLsizei width_;
         GLsizei height_;
@@ -102,7 +102,7 @@ namespace mortified {
 
         void createImpl()
         {
-            if (source_) {
+            if (source_.get()) {
                 source_->create();
 
                 width_ = source_->getWidth();
@@ -113,7 +113,7 @@ namespace mortified {
             glBindTexture(GL_TEXTURE_2D, name_);
             glTexImage2D(GL_TEXTURE_2D, 0, 4, width_, height_, 0,
                          GL_RGBA, GL_UNSIGNED_BYTE,
-                         source_ ? source_->getData() : 0);
+                         source_.get() ? source_->getData() : 0);
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, minFilter_);
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, magFilter_);
             glBindTexture(GL_TEXTURE_2D, 0);

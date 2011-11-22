@@ -47,7 +47,7 @@ namespace mortified {
             usage_ = usage;
         }
         
-        void setSource(boost::intrusive_ptr<VertexBufferSource> source)
+        void setSource(std::auto_ptr<VertexBufferSource> source)
         {
             source_ = source;
         }
@@ -96,7 +96,7 @@ namespace mortified {
         GLuint name_;
         GLenum usage_;
         GLenum mode_;
-        boost::intrusive_ptr<VertexBufferSource> source_;
+        std::auto_ptr<VertexBufferSource> source_;
         GLsizei count_;
         GLsizei vertexSize_;
         GLsizei texCoordSize_;
@@ -105,7 +105,7 @@ namespace mortified {
         void createImpl()
         {
             glGenBuffersARB(1, &name_);
-            if (source_) {
+            if (source_.get()) {
                 source_->create();
 
                 GLsizei stride = source_->getStride();

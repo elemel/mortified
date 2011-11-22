@@ -1,11 +1,12 @@
 #ifndef MORTIFIED_VERTEX_BUFFER_SOURCE_HPP
 #define MORTIFIED_VERTEX_BUFFER_SOURCE_HPP
 
-#include "ref_counted.hpp"
-
 namespace mortified {
-    class VertexBufferSource : public virtual RefCounted {
+    class VertexBufferSource {
     public:
+        virtual ~VertexBufferSource()
+        { }
+
         virtual bool isValid() const = 0;
         
         virtual void create() = 0;

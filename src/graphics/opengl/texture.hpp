@@ -3,11 +3,10 @@
 
 #include "graphics_resource.hpp"
 
+#include <memory>
 #include <SDL/SDL_opengl.h>
 
 namespace mortified {
-    class Context;
-    class Framebuffer;
     class TextureSource;
 
     class Texture : public virtual GraphicsResource {
@@ -18,7 +17,7 @@ namespace mortified {
         virtual GLsizei getHeight() const = 0;
         virtual void setSize(GLsizei width, GLsizei height) = 0;
 
-        virtual void setSource(boost::intrusive_ptr<TextureSource> source) = 0;        
+        virtual void setSource(std::auto_ptr<TextureSource> source) = 0;        
 
         virtual GLenum getMinFilter() const = 0;
         virtual void setMinFilter(GLenum filter) = 0;
