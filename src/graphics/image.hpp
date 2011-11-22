@@ -14,8 +14,8 @@ namespace mortified {
         virtual int getWidth() const = 0;
         virtual int getHeight() const = 0;
 
-        virtual void *getPixels() = 0;
-        virtual void const *getPixels() const = 0;
+        virtual void *getData() = 0;
+        virtual void const *getData() const = 0;
 
         virtual void flipVertical() = 0;
     };

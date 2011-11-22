@@ -4,13 +4,14 @@
 #include "graphics_resource.hpp"
 
 #include <boost/intrusive_ptr.hpp>
+#include <SDL/SDL_opengl.h>
 
 namespace mortified {
     class Texture;
 
     class FrameBuffer : public virtual GraphicsResource {
     public:
-        virtual int getName() const = 0;
+        virtual GLuint getName() const = 0;
 
         virtual void setColorAttachment(boost::intrusive_ptr<Texture> texture) = 0;
     };

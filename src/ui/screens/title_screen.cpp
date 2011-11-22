@@ -5,7 +5,6 @@
 #include "default_image.hpp"
 #include "default_texture.hpp"
 #include "editor_screen.hpp"
-#include "empty_texture_source.hpp"
 #include "font.hpp"
 #include "frame_buffer.hpp"
 #include "game_screen.hpp"

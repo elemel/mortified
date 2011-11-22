@@ -10,6 +10,7 @@ namespace mortified {
     class Context;
     class FrameBuffer;
     class Texture;
+    class VertexBuffer;
 
     class GraphicsResource : public virtual RefCounted {
     public:
@@ -25,7 +26,7 @@ namespace mortified {
         virtual ~GraphicsResource()
         { }
 
-        virtual bool exists() const = 0;
+        virtual bool isValid() const = 0;
 
         virtual void create() = 0;
         virtual void destroy() = 0;
@@ -40,6 +41,9 @@ namespace mortified {
         virtual Texture *asTexture() = 0;
         virtual Texture const *asTexture() const = 0;
 
+        virtual VertexBuffer *asVertexBuffer() = 0;
+        virtual VertexBuffer const *asVertexBuffer() const = 0;
+        
         virtual ParentRange getParents() = 0;
         virtual ChildRange getChildren() = 0;
 

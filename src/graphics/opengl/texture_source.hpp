@@ -11,15 +11,15 @@ namespace mortified {
         virtual ~TextureSource()
         { }
 
-        virtual bool exists() const = 0;
+        virtual bool isValid() const = 0;
 
         virtual void create() = 0;
         virtual void destroy() = 0;
 
-        virtual int getWidth() const = 0;
-        virtual int getHeight() const = 0;
+        virtual GLsizei getWidth() const = 0;
+        virtual GLsizei getHeight() const = 0;
 
-        virtual void const *getPixels() const = 0;
+        virtual GLvoid const *getData() const = 0;
     };
 }
 

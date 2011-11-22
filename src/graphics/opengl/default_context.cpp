@@ -30,7 +30,7 @@ namespace mortified {
             }
         }
 
-        bool exists() const
+        bool isValid() const
         {
             return context_ != 0;
         }

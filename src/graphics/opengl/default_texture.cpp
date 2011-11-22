@@ -48,7 +48,7 @@ namespace mortified {
             }
         }
 
-        bool exists() const
+        bool isValid() const
         {
             return name_ != 0;
         }
@@ -63,17 +63,17 @@ namespace mortified {
             return this;
         }
 
-        int getName() const
+        GLuint getName() const
         {
             return name_;
         }
 
-        int getWidth() const
+        GLsizei getWidth() const
         {
             return width_;
         }
 
-        int getHeight() const
+        GLsizei getHeight() const
         {
             return height_;
         }
@@ -119,7 +119,7 @@ namespace mortified {
             glBindTexture(GL_TEXTURE_2D, name_);
             glTexImage2D(GL_TEXTURE_2D, 0, 4, width_, height_, 0,
                          GL_RGBA, GL_UNSIGNED_BYTE,
-                         source_ ? source_->getPixels() : 0);
+                         source_ ? source_->getData() : 0);
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, minFilter_);
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, magFilter_);
             glBindTexture(GL_TEXTURE_2D, 0);

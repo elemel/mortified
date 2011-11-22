@@ -7,7 +7,6 @@
 #include "default_actor.hpp"
 #include "default_image.hpp"
 #include "default_stream.hpp"
-#include "empty_texture_source.hpp"
 #include "frame_buffer.hpp"
 #include "game.hpp"
 #include "image.hpp"

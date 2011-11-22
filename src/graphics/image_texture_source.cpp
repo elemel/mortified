@@ -15,7 +15,7 @@ namespace mortified {
             image_(image)
         { }
 
-        bool exists() const
+        bool isValid() const
         {
             return true;
         }
@@ -26,19 +26,19 @@ namespace mortified {
         void destroy()
         { }
 
-        int getWidth() const
+        GLsizei getWidth() const
         {
             return image_->getWidth();
         }
 
-        int getHeight() const
+        GLsizei getHeight() const
         {
             return image_->getHeight();
         }
 
-        void const *getPixels() const
+        GLvoid const *getData() const
         {
-            return image_->getPixels();
+            return image_->getData();
         }
 
     private:

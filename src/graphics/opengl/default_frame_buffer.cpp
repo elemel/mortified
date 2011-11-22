@@ -36,12 +36,12 @@ namespace mortified {
             }
         }
 
-        bool exists() const
+        bool isValid() const
         {
             return name_ != 0;
         }
 
-        int getName() const
+        GLuint getName() const
         {
             return name_;
         }

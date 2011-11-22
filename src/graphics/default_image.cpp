@@ -29,7 +29,7 @@ namespace mortified {
         void convert()
         {
             SDL_Surface *convertedSurface =
-                SDL_ConvertSurfaceFormat(const_cast<SDL_Surface *>(surface_),
+                SDL_ConvertSurfaceFormat(surface_,
                                          SDL_PIXELFORMAT_ABGR8888, 0);
             if (convertedSurface == 0) {
                 throw std::runtime_error(std::string("Failed to convert image to RGBA format: ") +
@@ -49,12 +49,12 @@ namespace mortified {
             return surface_->h;
         }
 
-        void *getPixels()
+        void *getData()
         {
             return surface_->pixels;
         }
 
-        void const *getPixels() const
+        void const *getData() const
         {
             return surface_->pixels;
         }

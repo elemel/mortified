@@ -18,14 +18,14 @@ namespace mortified {
             }
         }
 
-        bool exists() const
+        bool isValid() const
         {
             return false;
         }
         
         void create()
         {
-            if (!exists()) {
+            if (!isValid()) {
                 for (ParentIterator i = parents_.begin(); i != parents_.end();
                      ++i)
                 {
@@ -38,7 +38,7 @@ namespace mortified {
 
         void destroy()
         {
-            if (exists()) {
+            if (isValid()) {
                 for (ChildIterator i = children_.begin(); i != children_.end();
                      ++i)
                 {
@@ -51,7 +51,7 @@ namespace mortified {
         
         void invalidate()
         {
-            if (exists()) {
+            if (isValid()) {
                 invalidateImpl();
 
                 for (ChildIterator i = children_.begin(); i != children_.end();
@@ -88,6 +88,16 @@ namespace mortified {
         }
 
         Texture const *asTexture() const
+        {
+            return 0;
+        }
+
+        VertexBuffer *asVertexBuffer()
+        {
+            return 0;
+        }
+
+        VertexBuffer const *asVertexBuffer() const
         {
             return 0;
         }
