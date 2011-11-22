@@ -139,8 +139,8 @@ namespace mortified {
         void updateTexture()
         {
             if (image_ && !texture_) {
-                texture_ = createTexture(scene_->getContext(),
-                                         createImageTextureSource(image_));
+                texture_ = createTexture(scene_->getContext());
+                texture_->setSource(createImageTextureSource(image_));
             }
         }
 

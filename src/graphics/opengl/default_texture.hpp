@@ -7,14 +7,9 @@
 namespace mortified {
     class Context;
     class Texture;
-    class TextureSource;
 
     boost::intrusive_ptr<Texture>
-    createTexture(boost::intrusive_ptr<Context> context,
-                  boost::intrusive_ptr<TextureSource> source);
-
-    boost::intrusive_ptr<Texture>
-    createTexture(boost::intrusive_ptr<Context> context, int width, int height);
+    createTexture(boost::intrusive_ptr<Context> context);
 }
 
 #endif

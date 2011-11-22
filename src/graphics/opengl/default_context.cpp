@@ -45,15 +45,9 @@ namespace mortified {
             return this;
         }
 
-        boost::intrusive_ptr<Texture>
-        createTexture(boost::intrusive_ptr<TextureSource> source)
+        boost::intrusive_ptr<Texture> createTexture()
         {
-            return mortified::createTexture(this, source);
-        }
-
-        boost::intrusive_ptr<Texture> createTexture(int width, int height)
-        {
-            return mortified::createTexture(this, width, height);
+            return mortified::createTexture(this);
         }
 
         boost::intrusive_ptr<FrameBuffer> createFrameBuffer()

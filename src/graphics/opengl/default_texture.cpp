@@ -14,31 +14,14 @@ namespace mortified {
         private virtual GraphicsResourceBase
     {
     public:
-        DefaultTexture(boost::intrusive_ptr<Context> context,
-                       boost::intrusive_ptr<TextureSource> source) :
-            source_(source),
+        explicit DefaultTexture(boost::intrusive_ptr<Context> context) :
             name_(0),
             width_(0),
             height_(0),
             minFilter_(GL_NEAREST),
             magFilter_(GL_NEAREST)
         {
-            if (context) {
-                addParent(context);
-            }
-        }
-
-        DefaultTexture(boost::intrusive_ptr<Context> context, int width,
-                       int height) :
-            name_(0),
-            width_(width),
-            height_(height),
-            minFilter_(GL_NEAREST),
-            magFilter_(GL_NEAREST)
-        {
-            if (context) {
-                addParent(context);
-            }
+            addParent(context);
         }
 
         ~DefaultTexture()
@@ -76,6 +59,17 @@ namespace mortified {
         GLsizei getHeight() const
         {
             return height_;
+        }
+
+        void setSize(GLsizei width, GLsizei height)
+        {
+            width_ = width;
+            height_ = height;
+        }
+        
+        void setSource(boost::intrusive_ptr<TextureSource> source)
+        {
+            source_ = source;
         }
 
         GLenum getMinFilter() const
@@ -138,16 +132,8 @@ namespace mortified {
     };
 
     boost::intrusive_ptr<Texture>
-    createTexture(boost::intrusive_ptr<Context> context,
-                  boost::intrusive_ptr<TextureSource> source)
+    createTexture(boost::intrusive_ptr<Context> context)
     {
-        return boost::intrusive_ptr<Texture>(new DefaultTexture(context, source));
-    }
-
-    boost::intrusive_ptr<Texture>
-    createTexture(boost::intrusive_ptr<Context> context, int width, int height)
-    {
-        return boost::intrusive_ptr<Texture>(new DefaultTexture(context, width,
-                                                                height));
+        return boost::intrusive_ptr<Texture>(new DefaultTexture(context));
     }
 }

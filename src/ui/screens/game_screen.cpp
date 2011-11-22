@@ -232,10 +232,12 @@ namespace mortified {
                 targetTexture_->getWidth() != 2 * window_->getWidth() ||
                 targetTexture_->getHeight() != 2 * window_->getHeight())
             {
-                targetTexture_ = window_->getContext()->createTexture(2 * window_->getWidth(),
-                                                                      2 * window_->getHeight());
+                targetTexture_ = window_->getContext()->createTexture();
+                targetTexture_->setSize(2 * window_->getWidth(),
+                                        2 * window_->getHeight());
                 targetTexture_->setMinFilter(GL_LINEAR);
                 targetTexture_->setMagFilter(GL_LINEAR);
+
                 targetFrameBuffer_ = window_->getContext()->createFrameBuffer();
                 targetFrameBuffer_->setColorAttachment(targetTexture_);
             }

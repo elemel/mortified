@@ -14,7 +14,6 @@ namespace mortified {
     {
     public:
         explicit DefaultVertexBuffer(boost::intrusive_ptr<Context> context) :
-            context_(context),
             name_(0),
             usage_(GL_STATIC_DRAW),
             mode_(GL_TRIANGLES),
@@ -23,7 +22,7 @@ namespace mortified {
             textureCoordCount_(0),
             colorCompCount_(0)
         {
-            addParent(context_);
+            addParent(context);
         }
 
         ~DefaultVertexBuffer()
@@ -94,7 +93,6 @@ namespace mortified {
         }
         
     private:
-        boost::intrusive_ptr<Context> context_;
         GLuint name_;
         GLenum usage_;
         GLenum mode_;

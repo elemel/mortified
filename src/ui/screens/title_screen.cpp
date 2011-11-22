@@ -32,11 +32,15 @@ namespace mortified {
 
             logoImage_ = font_->render("Mortified");
             logoImage_->flipVertical();
-            logoTexture_ = window_->getContext()->createTexture(createImageTextureSource(logoImage_));
+
+            logoTexture_ = window_->getContext()->createTexture();
+            logoTexture_->setSource(createImageTextureSource(logoImage_));
             logoTexture_->setMinFilter(GL_LINEAR);
             logoTexture_->setMagFilter(GL_LINEAR);
 
-            targetTexture_ = window_->getContext()->createTexture(128, 128);
+            targetTexture_ = window_->getContext()->createTexture();
+            targetTexture_->setSize(128, 128);
+
             targetFrameBuffer_ = window_->getContext()->createFrameBuffer();
             targetFrameBuffer_->setColorAttachment(targetTexture_);
         }

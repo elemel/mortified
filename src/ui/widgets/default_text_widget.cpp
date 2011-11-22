@@ -53,7 +53,8 @@ namespace mortified {
         {
             if (image_.get() == 0 && font_ && !text_.empty()) {
                 image_ = font_->render(text_.c_str());
-                texture_ = context_->createTexture(createImageTextureSource(image_));
+                texture_ = context_->createTexture();
+                texture_->setSource(createImageTextureSource(image_));
             }
     
             if (image_) {
