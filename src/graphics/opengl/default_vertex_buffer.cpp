@@ -18,9 +18,9 @@ namespace mortified {
             usage_(GL_STATIC_DRAW),
             mode_(GL_TRIANGLES),
             count_(0),
-            vertexCoordCount_(0),
-            textureCoordCount_(0),
-            colorCompCount_(0)
+            vertexSize_(0),
+            texCoordSize_(0),
+            colorSize_(0)
         {
             addParent(context);
         }
@@ -60,23 +60,23 @@ namespace mortified {
         void draw()
         {
             glBindBufferARB(GL_ARRAY_BUFFER, name_);
-            if (vertexCoordCount_) {
+            if (vertexSize_) {
                 glEnableClientState(GL_VERTEX_ARRAY);
             }
-            if (textureCoordCount_) {
+            if (texCoordSize_) {
                 glEnableClientState(GL_TEXTURE_COORD_ARRAY);
             }
-            if (colorCompCount_) {
+            if (colorSize_) {
                 glEnableClientState(GL_COLOR_ARRAY);
             }
             glDrawArrays(mode_, 0, count_);
-            if (colorCompCount_) {
+            if (colorSize_) {
                 glDisableClientState(GL_COLOR_ARRAY);
             }
-            if (textureCoordCount_) {
+            if (texCoordSize_) {
                 glDisableClientState(GL_TEXTURE_COORD_ARRAY);
             }
-            if (vertexCoordCount_) {
+            if (vertexSize_) {
                 glDisableClientState(GL_VERTEX_ARRAY);
             }
             glBindBufferARB(GL_ARRAY_BUFFER, 0);
@@ -98,9 +98,9 @@ namespace mortified {
         GLenum mode_;
         boost::intrusive_ptr<VertexBufferSource> source_;
         GLsizei count_;
-        GLsizei vertexCoordCount_;
-        GLsizei textureCoordCount_;
-        GLsizei colorCompCount_;
+        GLsizei vertexSize_;
+        GLsizei texCoordSize_;
+        GLsizei colorSize_;
 
         void createImpl()
         {
@@ -108,32 +108,27 @@ namespace mortified {
             if (source_) {
                 source_->create();
 
+                GLsizei stride = source_->getStride();
                 count_ = source_->getCount();
-                vertexCoordCount_ = source_->getVertexCoordCount();
-                textureCoordCount_ = source_->getTextureCoordCount();
-                colorCompCount_ = source_->getColorCompCount();
+                vertexSize_ = source_->getVertexSize();
+                texCoordSize_ = source_->getTexCoordSize();
+                colorSize_ = source_->getColorSize();
 
                 glBindBufferARB(GL_ARRAY_BUFFER, name_);
-                glBufferDataARB(GL_ARRAY_BUFFER,
-                                source_->getStride() * source_->getCount(),
+                glBufferDataARB(GL_ARRAY_BUFFER, stride * count_,
                                 source_->getData(), usage_);
-                if (vertexCoordCount_) {
-                    glVertexPointer(source_->getVertexCoordCount(),
-                                    source_->getVertexCoordType(),
-                                    source_->getStride(),
-                                    source_->getVertexCoordOffset());
+                if (vertexSize_) {
+                    glVertexPointer(vertexSize_, source_->getVertexType(),
+                                    stride, source_->getVertexOffset());
                 }
-                if (textureCoordCount_) {
-                    glTexCoordPointer(source_->getTextureCoordCount(),
-                                      source_->getTextureCoordType(),
-                                      source_->getStride(),
-                                      source_->getTextureCoordOffset());
+                if (texCoordSize_) {
+                    glTexCoordPointer(texCoordSize_,
+                                      source_->getTexCoordType(), stride,
+                                      source_->getTexCoordOffset());
                 }
-                if (colorCompCount_) {
-                    glColorPointer(source_->getColorCompCount(),
-                                   source_->getColorCompType(),
-                                   source_->getStride(),
-                                   source_->getColorCompOffset());
+                if (colorSize_) {
+                    glColorPointer(colorSize_, source_->getColorType(),
+                                   stride, source_->getColorOffset());
                 }
                 glBindBufferARB(GL_ARRAY_BUFFER, 0);
             }

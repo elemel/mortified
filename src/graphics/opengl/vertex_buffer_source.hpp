@@ -15,17 +15,17 @@ namespace mortified {
         virtual GLsizei getCount() const = 0;
         virtual GLvoid const *getData() const = 0;
 
-        virtual GLint getVertexCoordCount() const = 0;
-        virtual GLenum getVertexCoordType() const = 0;
-        virtual GLvoid const *getVertexCoordOffset() const = 0;
+        virtual GLint getVertexSize() const = 0;
+        virtual GLenum getVertexType() const = 0;
+        virtual GLvoid const *getVertexOffset() const = 0;
 
-        virtual GLint getTextureCoordCount() const = 0;
-        virtual GLenum getTextureCoordType() const = 0;
-        virtual GLvoid const *getTextureCoordOffset() const = 0;
+        virtual GLint getTexCoordSize() const = 0;
+        virtual GLenum getTexCoordType() const = 0;
+        virtual GLvoid const *getTexCoordOffset() const = 0;
 
-        virtual GLint getColorCompCount() const = 0;
-        virtual GLenum getColorCompType() const = 0;
-        virtual GLvoid const *getColorCompOffset() const = 0;
+        virtual GLint getColorSize() const = 0;
+        virtual GLenum getColorType() const = 0;
+        virtual GLvoid const *getColorOffset() const = 0;
     };
 }
 
