@@ -1,11 +1,17 @@
+#include "default_sparse_image.hpp"
+
 #include "color.hpp"
+#include "ref_counted_base.hpp"
 #include "sparse_image.hpp"
 
 #include <elemel/flat_map.hpp>
 #include <SDL/SDL_opengl.h>
 
 namespace mortified {
-    class DefaultSparseImage : public virtual SparseImage {
+    class DefaultSparseImage :
+        public virtual SparseImage,
+        private virtual RefCountedBase
+    {
     public:
         typedef std::pair<short, short> Key;
         typedef elemel::flat_map<Key, Color4> PixelMap;
@@ -114,8 +120,8 @@ namespace mortified {
         int maxY_;
     };
 
-    std::auto_ptr<SparseImage> createSparseImage()
+    boost::intrusive_ptr<SparseImage> createSparseImage()
     {
-        return std::auto_ptr<SparseImage>(new DefaultSparseImage);
+        return boost::intrusive_ptr<SparseImage>(new DefaultSparseImage);
     }
 }

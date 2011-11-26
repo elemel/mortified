@@ -86,7 +86,7 @@ namespace mortified {
             } else {
                 drawScene();
             }
-            drawPhysics();
+            // drawPhysics();
         }
         
     private:

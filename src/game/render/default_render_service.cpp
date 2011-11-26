@@ -4,10 +4,13 @@
 #include "context.hpp"
 #include "default_scene.hpp"
 #include "default_sparse_image.hpp"
+#include "default_vertex_buffer.hpp"
 #include "math.hpp"
 #include "render_service.hpp"
 #include "scene.hpp"
 #include "sparse_image.hpp"
+#include "sparse_image_vertex_buffer_source.hpp"
+#include "vertex_buffer.hpp"
 
 #include <SDL/SDL_opengl.h>
 
@@ -17,6 +20,7 @@ namespace mortified {
         explicit DefaultRenderService(boost::intrusive_ptr<Context> context) :
             scene_(createScene(context)),
             sparseImage_(createSparseImage()),
+            sparseImageVertexBuffer_(createVertexBuffer(context)),
             sparseImageAngle_(0.5),
             sparseImageScale_(0.1)
         {
@@ -70,6 +74,9 @@ namespace mortified {
             sparseImage_->setPixel(19, 4, color);
             sparseImage_->setPixel(20, 3, color);
             sparseImage_->setPixel(20, 4, color);
+
+            sparseImageVertexBuffer_->setSource(createSparseImageVertexBufferSource(sparseImage_));
+            sparseImageVertexBuffer_->setMode(GL_QUADS);
         }
 
         void load(rapidxml::xml_node<> *node)
@@ -117,7 +124,8 @@ namespace mortified {
         std::auto_ptr<Scene> scene_;
         UpdateHandlerList handlers_;
         
-        std::auto_ptr<SparseImage> sparseImage_;
+        boost::intrusive_ptr<SparseImage> sparseImage_;
+        boost::intrusive_ptr<VertexBuffer> sparseImageVertexBuffer_;
         Vector2 sparseImagePosition_;
         float sparseImageAngle_;
         float sparseImageScale_;
@@ -128,7 +136,8 @@ namespace mortified {
             glTranslatef(sparseImagePosition_.x, sparseImagePosition_.y, 0.0f);
             glRotatef(sparseImageAngle_ * 180.0f / M_PI, 0.0f, 0.0f, 1.0f);
             glScalef(sparseImageScale_, sparseImageScale_, 1.0f);
-            sparseImage_->draw();
+            sparseImageVertexBuffer_->create();
+            sparseImageVertexBuffer_->draw();
             glPopMatrix();
         }
     };

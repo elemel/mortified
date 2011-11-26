@@ -1,6 +1,8 @@
 #ifndef MORTIFIED_VERTEX_BUFFER_SOURCE_HPP
 #define MORTIFIED_VERTEX_BUFFER_SOURCE_HPP
 
+#include <SDL/SDL_opengl.h>
+
 namespace mortified {
     class VertexBufferSource {
     public:

@@ -1,16 +1,18 @@
 #ifndef MORTIFIED_SPARSE_IMAGE_HPP
 #define MORTIFIED_SPARSE_IMAGE_HPP
 
+#include "ref_counted.hpp"
+
 #include <utility>
 
 namespace mortified {
     class Color4;
 
-    class SparseImage {
+    class SparseImage : public virtual RefCounted {
     public:
         struct Pixel {
-            short x;
             short y;
+            short x;
             unsigned char red;
             unsigned char green;
             unsigned char blue;
