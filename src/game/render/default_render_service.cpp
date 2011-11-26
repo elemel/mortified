@@ -11,6 +11,7 @@
 #include "sparse_image.hpp"
 #include "sparse_image_vertex_buffer_source.hpp"
 #include "vertex_buffer.hpp"
+#include "vertex_buffer_source.hpp"
 
 #include <SDL/SDL_opengl.h>
 
