@@ -142,6 +142,11 @@ namespace mortified {
                             window_->removeScreen(screen);
                         }
                     }
+                    if (event->key.keysym.sym == SDLK_RETURN &&
+                        event->key.keysym.mod & (KMOD_CTRL | KMOD_ALT | KMOD_META))
+                    {
+                        window_->setFullscreen(!window_->isFullscreen());
+                    }
                     break;
                 }
             }

@@ -53,6 +53,12 @@ namespace mortified {
 
         void setFullscreen(bool fullscreen)
         {
+            if (window_) {
+                if (SDL_SetWindowFullscreen(window_, fullscreen ? SDL_TRUE : SDL_FALSE) == -1) {
+                    throw std::runtime_error(std::string("Failed to change fullscreen mode for window: ") +
+                                             SDL_GetError());
+                }
+            }
             fullscreen_ = fullscreen;
         }
 
