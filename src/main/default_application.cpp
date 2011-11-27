@@ -13,6 +13,7 @@
 #include <memory>
 #include <stdexcept>
 #include <SDL/SDL.h>
+#include <SDL/SDL_mixer.h>
 #include <SDL/SDL_opengl.h>
 #include <SDL/SDL_ttf.h>
 
@@ -46,6 +47,8 @@ namespace mortified {
         {
             window_.reset();
             TTF_Quit();
+            Mix_CloseAudio();
+            Mix_Quit();
             SDL_Quit();
         }
 
@@ -99,18 +102,34 @@ namespace mortified {
 
         void initSdl()
         {
-            if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_NOPARACHUTE) != 0) {
+            if (SDL_Init(SDL_INIT_AUDIO | SDL_INIT_VIDEO | SDL_INIT_NOPARACHUTE) == -1) {
                 throw std::runtime_error(std::string() +
                                          "Failed to initialize SDL: " +
                                          SDL_GetError());
             }
 
-            if (SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1) != 0) {
+            if (SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1) == -1) {
                 std::cerr << "WARNING: Failed to enable double buffering: "
                           << SDL_GetError() << std::endl;
             }
 
-            TTF_Init();
+            if (Mix_Init(MIX_INIT_OGG) == -1) {
+                throw std::runtime_error(std::string() +
+                                         "Failed to initialize sounds: " +
+                                         Mix_GetError());
+            }
+
+            if (Mix_OpenAudio(MIX_DEFAULT_FREQUENCY, MIX_DEFAULT_FORMAT, 2, 1024) == -1) {
+                throw std::runtime_error(std::string() +
+                                         "Failed to initialize sounds: " +
+                                         Mix_GetError());
+            }
+
+            if (TTF_Init() == -1) {
+                throw std::runtime_error(std::string() +
+                                         "Failed to initialize fonts: " +
+                                         TTF_GetError());
+            }
         }
 
         void eventLoop()
