@@ -25,6 +25,9 @@
       </physics-service>
       <graphics-service>
       </graphics-service>
+      <sound-service>
+        <sound-ref>drip</sound-ref>
+      </sound-service>
     </game>
   </game-screen>
 </config>
