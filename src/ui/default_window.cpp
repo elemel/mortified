@@ -40,7 +40,7 @@ namespace mortified {
             return height_;
         }
 
-        void resize(int width, int height)
+        void setSize(int width, int height)
         {
             width_ = width;
             height_ = height;

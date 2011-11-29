@@ -57,7 +57,7 @@ namespace mortified {
             parseCommandLine(argc, argv);
             initSdl();
             window_ = createWindow();
-            window_->resize(640, 480);
+            window_->setSize(640, 480);
             window_->setFullscreen(settings_.fullscreen);
             window_->create();
             if (settings_.editor) {
