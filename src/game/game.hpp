@@ -14,6 +14,7 @@ namespace mortified {
     class PhysicsService;
     class PropertyService;
     class RenderService;
+    class SoundService;
 
     class Game {
     public:
@@ -41,7 +42,10 @@ namespace mortified {
         
         virtual RenderService *getRenderService() = 0;
         virtual RenderService const *getRenderService() const = 0;
-        
+
+        virtual SoundService *getSoundService() = 0;
+        virtual SoundService const *getSoundService() const = 0;
+
         virtual Actor *findActor(char const *name) = 0;
         virtual Actor const *findActor(char const *name) const = 0;
     };

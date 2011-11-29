@@ -7,12 +7,14 @@
 #include "default_physics_service.hpp"
 #include "default_property_service.hpp"
 #include "default_render_service.hpp"
+#include "default_sound_service.hpp"
 #include "default_stream.hpp"
 #include "game.hpp"
 #include "actor.hpp"
 #include "physics_service.hpp"
 #include "property_service.hpp"
 #include "render_service.hpp"
+#include "sound_service.hpp"
 #include "stream.hpp"
 #include "xml.hpp"
 
@@ -32,7 +34,8 @@ namespace mortified {
             propertyService_(createPropertyService()),
             controlService_(createControlService()),
             physicsService_(createPhysicsService()),
-            renderService_(createRenderService(context))
+            renderService_(createRenderService(context)),
+            soundService_(createSoundService())
         { }
         
         ~DefaultGame()
@@ -61,6 +64,9 @@ namespace mortified {
                     if (strcmp(childNode->name(), "render-service") == 0) {
                         renderService_->load(childNode);
                     }
+                    if (strcmp(childNode->name(), "sound-service") == 0) {
+                        soundService_->load(childNode);
+                    }
                 }
             }
         }
@@ -79,6 +85,9 @@ namespace mortified {
             }
             if (renderService_.get()) {
                 renderService_->save(node);
+            }
+            if (soundService_.get()) {
+                soundService_->save(node);
             }
         }
 
@@ -161,12 +170,23 @@ namespace mortified {
             return renderService_.get();
         }
 
+        SoundService *getSoundService()
+        {
+            return soundService_.get();
+        }
+        
+        SoundService const *getSoundService() const
+        {
+            return soundService_.get();
+        }
+
         void update(float dt)
         {
             time_ += dt;
             controlService_->update(dt);
             physicsService_->update(dt);
             renderService_->update(dt);
+            soundService_->update(dt);
         }
 
         Actor *findActor(char const *name)
@@ -191,6 +211,7 @@ namespace mortified {
         std::auto_ptr<ControlService> controlService_;
         std::auto_ptr<PhysicsService> physicsService_;
         std::auto_ptr<RenderService> renderService_;
+        std::auto_ptr<SoundService> soundService_;
         std::vector<Actor *> actors_;
 
         void loadGroup(rapidxml::xml_node<> *node, Matrix3 parentTransform)

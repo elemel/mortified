@@ -7,9 +7,11 @@
 #include "default_physics_component.hpp"
 #include "default_property_component.hpp"
 #include "default_render_component.hpp"
+#include "default_sound_component.hpp"
 #include "physics_component.hpp"
 #include "property_component.hpp"
 #include "render_component.hpp"
+#include "sound_component.hpp"
 #include "xml.hpp"
 
 #include <cstring>
@@ -43,6 +45,7 @@ namespace mortified {
             rapidxml::xml_node<> *controlNode = 0;
             rapidxml::xml_node<> *physicsNode = 0;
             rapidxml::xml_node<> *renderNode = 0;
+            rapidxml::xml_node<> *soundNode = 0;
             for (rapidxml::xml_node<> *childNode = node->first_node();
                  childNode; childNode = childNode->next_sibling())
             {
@@ -62,6 +65,9 @@ namespace mortified {
                     if (std::strcmp(childNode->name(), "render-component") == 0) {
                         renderNode = childNode;
                     }
+                    if (std::strcmp(childNode->name(), "sound-component") == 0) {
+                        soundNode = childNode;
+                    }
                 }
             }
             if (propertyNode) {
@@ -79,6 +85,10 @@ namespace mortified {
             if (renderNode) {
                 renderComponent_ = createRenderComponent(this);
                 renderComponent_->load(renderNode, parentTransform);
+            }
+            if (soundNode) {
+                soundComponent_ = createSoundComponent(this);
+                soundComponent_->load(renderNode, parentTransform);
             }
         }
 
@@ -138,7 +148,17 @@ namespace mortified {
         {
             return renderComponent_.get();
         }
-        
+
+        SoundComponent *getSoundComponent()
+        {
+            return soundComponent_.get();
+        }
+
+        SoundComponent const *getSoundComponent() const
+        {
+            return soundComponent_.get();
+        }
+
     private:
         std::string name_;
         Game *game_;
@@ -146,6 +166,7 @@ namespace mortified {
         std::auto_ptr<PhysicsComponent> physicsComponent_;
         std::auto_ptr<ControlComponent> controlComponent_;
         std::auto_ptr<RenderComponent> renderComponent_;
+        std::auto_ptr<SoundComponent> soundComponent_;
     };
     
     std::auto_ptr<Actor> createActor(Game *game)

@@ -12,6 +12,7 @@ namespace mortified {
     class PhysicsComponent;
     class PropertyComponent;
     class RenderComponent;
+    class SoundComponent;
     
     class Actor {
     public:
@@ -37,6 +38,9 @@ namespace mortified {
 
         virtual RenderComponent *getRenderComponent() = 0;
         virtual RenderComponent const *getRenderComponent() const = 0;
+
+        virtual SoundComponent *getSoundComponent() = 0;
+        virtual SoundComponent const *getSoundComponent() const = 0;
     };
 }
 
