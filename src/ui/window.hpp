@@ -31,6 +31,7 @@ namespace mortified {
         virtual bool handleEvent(SDL_Event const *event) = 0;
         virtual void update() = 0;
         virtual void draw() = 0;
+        virtual void swapBuffers() = 0;
 
         virtual boost::intrusive_ptr<Context> getContext() = 0;
     };

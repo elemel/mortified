@@ -168,11 +168,13 @@ namespace mortified {
 
         void draw()
         {
-            glClearColor(0.0, 0.0, 0.0, 0.0);
-            glClear(GL_COLOR_BUFFER_BIT);
             if (Screen *screen = getCurrentScreen()) {
                 screen->draw();
             }
+        }
+        
+        void swapBuffers()
+        {
             SDL_GL_SwapWindow(window_);
         }
 

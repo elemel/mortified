@@ -137,7 +137,7 @@ namespace mortified {
             while (window_->getCurrentScreen()) {
                 handleEvents();
                 window_->update();
-                window_->draw();
+                draw();
             }
         }
 
@@ -169,6 +169,14 @@ namespace mortified {
                     break;
                 }
             }
+        }
+        
+        void draw()
+        {
+            glClearColor(0.0, 0.0, 0.0, 0.0);
+            glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+            window_->draw();
+            window_->swapBuffers();
         }
     };
 
