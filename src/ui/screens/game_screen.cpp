@@ -27,7 +27,6 @@
 #include <iostream>
 #include <stdexcept>
 #include <Box2D/Box2D.h>
-#include <SDL/SDL_mixer.h>
 #include <SDL/SDL_opengl.h>
 
 namespace mortified {
@@ -38,8 +37,6 @@ namespace mortified {
             updateTime_(0.0f),
             dt_(1.0f / 60.0f),
             cameraScale_(1.0f),
-            dripSound_(0),
-            dripChannel_(-1),
             supersample_(supersample)
         { }
         
@@ -49,25 +46,10 @@ namespace mortified {
             game_ = createGame(window_->getContext());
             loadConfig("../../../data/configs/config.xml");
             game_->loadModule("../../../data/modules/level.xml", Matrix3());
-
-            dripSound_ = Mix_LoadWAV("../../../data/sounds/drip.ogg");
-            if (dripSound_) {
-                dripChannel_ = Mix_PlayChannel(-1, dripSound_, -1);
-            } else {
-                std::string message = std::string("Failed to load sound: ") + Mix_GetError();
-                throw std::runtime_error(message);
-            }
         }
         
         void destroy()
         {
-            if (dripChannel_ != -1) {
-                Mix_HaltChannel(dripChannel_);
-            }
-            if (dripSound_) {
-                Mix_FreeChunk(dripSound_);
-            }
-
             game_->saveModule("../../../data/modules/save.xml", Matrix3());
             targetFrameBuffer_.reset();
             targetTexture_.reset();
@@ -115,8 +97,6 @@ namespace mortified {
         std::auto_ptr<b2Draw> physicsDraw_;
         Vector2 cameraPosition_;
         float cameraScale_;
-        Mix_Chunk *dripSound_;
-        int dripChannel_;
 
         bool supersample_;
         boost::intrusive_ptr<Texture> targetTexture_;
