@@ -1,5 +1,6 @@
 #include "game_screen.hpp"
 
+#include "application.hpp"
 #include "context.hpp"
 #include "default_font.hpp"
 #include "default_image.hpp"
@@ -21,8 +22,9 @@
 namespace mortified {
     class TitleScreen : public virtual Screen {
     public:
-        explicit TitleScreen(Window *window) :
-            window_(window),
+        explicit TitleScreen(Application *application) :
+            application_(application),
+            window_(application->getWindow()),
             angle_(0.0f)
         { }
 
@@ -55,16 +57,16 @@ namespace mortified {
             if (event->type == SDL_KEYDOWN) {
                 switch (event->key.keysym.sym) {
                 case SDLK_e:
-                    window_->addScreen(createEditorScreen(window_));
+                    application_->addScreen(createEditorScreen(application_));
                     return true;
 
                 case SDLK_g:
                 case SDLK_SPACE:
-                    window_->addScreen(createGameScreen(window_, true));
+                    application_->addScreen(createGameScreen(application_, true));
                     return true;
 
                 case SDLK_q:
-                    window_->removeScreen(this);
+                    application_->removeScreen(this);
                     return true;
                 }
             }
@@ -84,6 +86,7 @@ namespace mortified {
         }
         
     private:
+        Application *application_;
         Window *window_;
         boost::intrusive_ptr<Font> font_;
         boost::intrusive_ptr<Image> logoImage_;
@@ -178,8 +181,8 @@ namespace mortified {
         }
     };
 
-    std::auto_ptr<Screen> createTitleScreen(Window *window)
+    std::auto_ptr<Screen> createTitleScreen(Application *application)
     {
-        return std::auto_ptr<Screen>(new TitleScreen(window));
+        return std::auto_ptr<Screen>(new TitleScreen(application));
     }
 }

@@ -45,7 +45,13 @@ namespace mortified {
 
         ~DefaultApplication()
         {
+            while (!screens_.empty()) {
+                screens_.back()->destroy();
+                delete screens_.back();
+                screens_.pop_back();
+            }
             window_.reset();
+
             TTF_Quit();
             Mix_CloseAudio();
             Mix_Quit();
@@ -61,20 +67,52 @@ namespace mortified {
             window_->setFullscreen(settings_.fullscreen);
             window_->create();
             if (settings_.editor) {
-                window_->addScreen(createEditorScreen(window_.get()));
+                addScreen(createEditorScreen(this));
             } else if (settings_.game) {
-                window_->addScreen(createGameScreen(window_.get(),
-                                                    settings_.supersample));
+                addScreen(createGameScreen(this, settings_.supersample));
             } else {
-                window_->addScreen(createTitleScreen(window_.get()));
+                addScreen(createTitleScreen(this));
             }
             eventLoop();
             return 0;
         }
 
+        Screen *getCurrentScreen()
+        {
+            return screens_.empty() ? 0 : screens_.back();
+        }
+        
+        void addScreen(std::auto_ptr<Screen> screen)
+        {
+            screens_.push_back(screen.release());
+            screens_.back()->create();
+        }
+        
+        std::auto_ptr<Screen> removeScreen(Screen *screen)
+        {
+            ScreenIterator i = std::find(screens_.begin(), screens_.end(), screen);
+            assert(i != screens_.end());
+            screens_.erase(i);
+
+            std::auto_ptr<Screen> result(screen);
+            result->destroy();
+            return result;
+        }
+
+        Window *getWindow()
+        {
+            return window_.get();
+        }
+
+        Window const *getWindow() const
+        {
+            return window_.get();
+        }
+
     private:
         ApplicationSettings settings_;
         std::auto_ptr<Window> window_;
+        ScreenList screens_;
 
         void parseCommandLine(int argc, char **argv)
         {
@@ -134,9 +172,9 @@ namespace mortified {
 
         void eventLoop()
         {
-            while (window_->getCurrentScreen()) {
+            while (!screens_.empty()) {
                 handleEvents();
-                window_->update();
+                update();
                 draw();
             }
         }
@@ -152,13 +190,22 @@ namespace mortified {
         void handleEvent(SDL_Event *event)
         {
             assert(event);
-            bool handled = window_->handleEvent(event);
+            bool handled = false;
+            if (event->type == SDL_WINDOWEVENT &&
+                event->window.event == SDL_WINDOWEVENT_RESIZED)
+            {
+                window_->handleResizeEvent();
+                handled = true;
+            }
+            if (!screens_.empty()) {
+                handled = screens_.back()->handleEvent(event);
+            }
             if (!handled) {
                 switch (event->type) {
                 case SDL_KEYDOWN:
                     if (event->key.keysym.sym == SDLK_ESCAPE) {
-                        if (Screen *screen = window_->getCurrentScreen()) {
-                            window_->removeScreen(screen);
+                        if (!screens_.empty()) {
+                            removeScreen(screens_.back());
                         }
                     }
                     if (event->key.keysym.sym == SDLK_RETURN &&
@@ -170,12 +217,21 @@ namespace mortified {
                 }
             }
         }
-        
+
+        void update()
+        {
+            if (!screens_.empty()) {
+                screens_.back()->update();
+            }
+        }
+
         void draw()
         {
             glClearColor(0.0, 0.0, 0.0, 0.0);
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-            window_->draw();
+            if (!screens_.empty()) {
+                screens_.back()->draw();
+            }
             window_->swapBuffers();
         }
     };

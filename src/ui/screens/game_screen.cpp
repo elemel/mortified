@@ -1,6 +1,7 @@
 
 #include "game_screen.hpp"
 
+#include "application.hpp"
 #include "actor.hpp"
 #include "context.hpp"
 #include "default_game.hpp"
@@ -32,8 +33,9 @@
 namespace mortified {
     class GameScreen : public virtual Screen {
     public:
-        GameScreen(Window *window, bool supersample) :
-            window_(window),
+        GameScreen(Application *application, bool supersample) :
+            application_(application),
+            window_(application->getWindow()),
             updateTime_(0.0f),
             dt_(1.0f / 60.0f),
             cameraScale_(1.0f),
@@ -88,6 +90,7 @@ namespace mortified {
         }
         
     private:
+        Application *application_;
         Window *window_;
         float updateTime_;
         float dt_;
@@ -315,8 +318,9 @@ namespace mortified {
         }
     };
 
-    std::auto_ptr<Screen> createGameScreen(Window *window, bool supersample)
+    std::auto_ptr<Screen>
+    createGameScreen(Application *application, bool supersample)
     {
-        return std::auto_ptr<Screen>(new GameScreen(window, supersample));
+        return std::auto_ptr<Screen>(new GameScreen(application, supersample));
     }
 }

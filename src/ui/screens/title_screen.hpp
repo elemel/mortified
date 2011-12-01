@@ -4,10 +4,10 @@
 #include <memory>
 
 namespace mortified {
+    class Application;
     class Screen;
-    class Window;
     
-    std::auto_ptr<Screen> createTitleScreen(Window *window);
+    std::auto_ptr<Screen> createTitleScreen(Application *application);
 }
 
 #endif

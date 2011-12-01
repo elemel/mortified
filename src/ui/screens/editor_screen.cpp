@@ -1,5 +1,6 @@
 #include "editor_screen.hpp"
 
+#include "application.hpp"
 #include "context.hpp"
 #include "canvas_widget.hpp"
 #include "default_font.hpp"
@@ -26,8 +27,9 @@
 namespace mortified {
     class EditorScreen : public virtual Screen {
     public:
-        explicit EditorScreen(Window *window) :
-            window_(window),
+        explicit EditorScreen(Application *application) :
+            application_(application),
+            window_(application->getWindow()),
             width_(0),
             height_(0)
         { }
@@ -94,6 +96,7 @@ namespace mortified {
         }
 
     private:
+        Application *application_;
         Window *window_;
         int width_;
         int height_;
@@ -208,9 +211,8 @@ namespace mortified {
         }
     };
 
-    std::auto_ptr<Screen>
-        createEditorScreen(Window *window)
+    std::auto_ptr<Screen> createEditorScreen(Application *application)
     {
-        return std::auto_ptr<Screen>(new EditorScreen(window));
+        return std::auto_ptr<Screen>(new EditorScreen(application));
     }
 }

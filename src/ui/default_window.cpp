@@ -2,7 +2,6 @@
 
 #include "context.hpp"
 #include "default_context.hpp"
-#include "screen.hpp"
 #include "window.hpp"
 
 #include <cassert>
@@ -13,9 +12,7 @@
 #include <SDL/SDL_opengl.h>
 
 namespace mortified {
-    class DefaultWindow :
-        public virtual Window
-    {
+    class DefaultWindow : public virtual Window {
     public:
         DefaultWindow() :
             width_(0),
@@ -99,8 +96,6 @@ namespace mortified {
 
         void destroy()
         {
-            removeAllScreens();
-
             context_.reset();
 
             if (window_) {
@@ -109,70 +104,13 @@ namespace mortified {
             }
         }
 
-        void addScreen(std::auto_ptr<Screen> screen)
+        void handleResizeEvent()
         {
-            assert(screen.get());
-            screens_.push_back(screen.release());
-            screens_.back()->create();
+            SDL_GetWindowSize(window_, &width_, &height_);
+            context_->invalidate();
+            context_->create();
         }
 
-        std::auto_ptr<Screen> removeScreen(Screen *screen)
-        {
-            assert(screen);
-            for (std::size_t i = screens_.size(); i > 0; --i) {
-                if (screens_[i - 1] == screen) {
-                    screens_[i - 1] = 0;
-                    while (!screens_.empty() && screens_.back() == 0) {
-                        screens_.pop_back();
-                    }
-
-                    std::auto_ptr<Screen> result(screen);
-                    result->destroy();
-                    return result;
-                }
-            }
-            return std::auto_ptr<Screen>();
-        }
-
-        Screen *getCurrentScreen()
-        {
-            assert(screens_.empty() || screens_.back());
-            return !screens_.empty() ? screens_.back() : 0;
-        }
-
-        bool handleEvent(SDL_Event const *event)
-        {
-            bool handled = false;
-            if (event->type == SDL_WINDOWEVENT &&
-                event->window.event == SDL_WINDOWEVENT_RESIZED)
-            {
-                SDL_GetWindowSize(window_, &width_, &height_);
-                handled = true;
-                context_->invalidate();
-                context_->create();
-            }
-            if (!handled) {
-                if (Screen *screen = getCurrentScreen()) {
-                    handled = screen->handleEvent(event);
-                }
-            }
-            return handled;
-        }
-
-        void update()
-        {
-            if (Screen *screen = getCurrentScreen()) {
-                screen->update();
-            }
-        }
-
-        void draw()
-        {
-            if (Screen *screen = getCurrentScreen()) {
-                screen->draw();
-            }
-        }
-        
         void swapBuffers()
         {
             SDL_GL_SwapWindow(window_);
@@ -190,14 +128,6 @@ namespace mortified {
         bool maximized_;
         SDL_Window *window_;
         boost::intrusive_ptr<Context> context_;
-        std::vector<Screen *> screens_;
-
-        void removeAllScreens()
-        {
-            while (getCurrentScreen()) {
-                removeScreen(getCurrentScreen());
-            }
-        }
     };
 
     std::auto_ptr<Window> createWindow()

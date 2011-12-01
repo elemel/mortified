@@ -4,10 +4,11 @@
 #include <memory>
 
 namespace mortified {
+    class Application;
     class Screen;
-    class Window;
 
-    std::auto_ptr<Screen> createGameScreen(Window *window, bool supersample);
+    std::auto_ptr<Screen>
+    createGameScreen(Application *application, bool supersample);
 }
 
 #endif
