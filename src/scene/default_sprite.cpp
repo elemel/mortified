@@ -101,6 +101,7 @@ namespace mortified {
                 texture_->create();
 
                 glColor4ub(color_.red, color_.green, color_.blue, color_.alpha);
+                glMultiTexCoord1f(GL_TEXTURE1, 2.0f);
                 glEnable(GL_TEXTURE_2D);
                 glBindTexture(GL_TEXTURE_2D, texture_->getName());
                 glBegin(GL_QUADS);

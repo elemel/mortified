@@ -54,12 +54,21 @@ namespace mortified {
             game_ = createGame(window_->getContext());
             loadConfig("../../../data/configs/config.xml");
             game_->loadModule("../../../data/modules/level.xml", Matrix3());
-            program_ = createProgram(window_->getContext());
+
+            std::auto_ptr<ShaderSource> vertexShaderSource =
+                createFileShaderSource("../../../data/shaders/texture.vsh");
+            boost::intrusive_ptr<Shader> vertexShader =
+                createShader(window_->getContext());
+            vertexShader->setSource(vertexShaderSource);
+
             std::auto_ptr<ShaderSource> fragmentShaderSource =
                 createFileShaderSource("../../../data/shaders/texture.fsh");
             boost::intrusive_ptr<Shader> fragmentShader =
                 createShader(window_->getContext());
             fragmentShader->setSource(fragmentShaderSource);
+
+            program_ = createProgram(window_->getContext());
+            program_->attachShader(vertexShader);
             program_->attachShader(fragmentShader);
         }
         
