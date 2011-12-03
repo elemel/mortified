@@ -7,7 +7,10 @@
 #include "default_game.hpp"
 #include "default_actor.hpp"
 #include "default_image.hpp"
+#include "default_program.hpp"
+#include "default_shader.hpp"
 #include "default_stream.hpp"
+#include "file_shader_source.hpp"
 #include "frame_buffer.hpp"
 #include "game.hpp"
 #include "image.hpp"
@@ -16,9 +19,12 @@
 #include "physics_draw.hpp"
 #include "physics_component.hpp"
 #include "physics_service.hpp"
+#include "program.hpp"
 #include "property_component.hpp"
 #include "render_service.hpp"
 #include "screen.hpp"
+#include "shader.hpp"
+#include "shader_source.hpp"
 #include "stream.hpp"
 #include "texture.hpp"
 #include "window.hpp"
@@ -48,6 +54,13 @@ namespace mortified {
             game_ = createGame(window_->getContext());
             loadConfig("../../../data/configs/config.xml");
             game_->loadModule("../../../data/modules/level.xml", Matrix3());
+            program_ = createProgram(window_->getContext());
+            std::auto_ptr<ShaderSource> fragmentShaderSource =
+                createFileShaderSource("../../../data/shaders/texture.fsh");
+            boost::intrusive_ptr<Shader> fragmentShader =
+                createShader(window_->getContext());
+            fragmentShader->setSource(fragmentShaderSource);
+            program_->attachShader(fragmentShader);
         }
         
         void destroy()
@@ -102,6 +115,8 @@ namespace mortified {
         bool supersample_;
         boost::intrusive_ptr<Texture> targetTexture_;
         boost::intrusive_ptr<FrameBuffer> targetFrameBuffer_;
+        
+        boost::intrusive_ptr<Program> program_;
 
         void loadConfig(char const *file)
         {
@@ -220,11 +235,14 @@ namespace mortified {
 
         void drawScene()
         {
+            program_->create();
+            program_->bind();
             applyCamera();
             glEnable(GL_BLEND);
             glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
             game_->getRenderService()->draw();
             glDisable(GL_BLEND);
+            program_->unbind();
         }
         
         void drawSceneToTarget()
@@ -247,12 +265,11 @@ namespace mortified {
 
             glViewport(0, 0, window_->getWidth() * 2,
                        window_->getHeight() * 2);
-            glBindFramebufferEXT(GL_FRAMEBUFFER_EXT,
-                                 targetFrameBuffer_->getName());
+            glBindFramebuffer(GL_FRAMEBUFFER, targetFrameBuffer_->getName());
             glClearColor(0.0, 0.0, 0.0, 0.0);
             glClear(GL_COLOR_BUFFER_BIT);
             drawScene();
-            glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);
+            glBindFramebuffer(GL_FRAMEBUFFER, 0);
             glViewport(0, 0, window_->getWidth(), window_->getHeight());
         }
         

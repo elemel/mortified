@@ -28,7 +28,7 @@ namespace mortified {
         ~DefaultVertexBuffer()
         {
             if (name_) {
-                glDeleteBuffersARB(1, &name_);
+                glDeleteBuffers(1, &name_);
             }
         }
 
@@ -59,7 +59,7 @@ namespace mortified {
         
         void draw()
         {
-            glBindBufferARB(GL_ARRAY_BUFFER, name_);
+            glBindBuffer(GL_ARRAY_BUFFER, name_);
             if (vertexSize_) {
                 glEnableClientState(GL_VERTEX_ARRAY);
             }
@@ -79,7 +79,7 @@ namespace mortified {
             if (vertexSize_) {
                 glDisableClientState(GL_VERTEX_ARRAY);
             }
-            glBindBufferARB(GL_ARRAY_BUFFER, 0);
+            glBindBuffer(GL_ARRAY_BUFFER, 0);
         }
 
         VertexBuffer *asVertexBuffer()
@@ -104,7 +104,7 @@ namespace mortified {
 
         void createImpl()
         {
-            glGenBuffersARB(1, &name_);
+            glGenBuffers(1, &name_);
             if (source_.get()) {
                 source_->create();
 
@@ -114,9 +114,9 @@ namespace mortified {
                 texCoordSize_ = source_->getTexCoordSize();
                 colorSize_ = source_->getColorSize();
 
-                glBindBufferARB(GL_ARRAY_BUFFER, name_);
-                glBufferDataARB(GL_ARRAY_BUFFER, stride * count_,
-                                source_->getData(), usage_);
+                glBindBuffer(GL_ARRAY_BUFFER, name_);
+                glBufferData(GL_ARRAY_BUFFER, stride * count_,
+                             source_->getData(), usage_);
                 if (vertexSize_) {
                     glVertexPointer(vertexSize_, source_->getVertexType(),
                                     stride, source_->getVertexOffset());
@@ -130,7 +130,7 @@ namespace mortified {
                     glColorPointer(colorSize_, source_->getColorType(),
                                    stride, source_->getColorOffset());
                 }
-                glBindBufferARB(GL_ARRAY_BUFFER, 0);
+                glBindBuffer(GL_ARRAY_BUFFER, 0);
 
                 source_->destroy();
             }
@@ -138,7 +138,7 @@ namespace mortified {
         
         void destroyImpl()
         {
-            glDeleteBuffersARB(1, &name_);
+            glDeleteBuffers(1, &name_);
             name_ = 0;
         }
 

@@ -113,8 +113,7 @@ namespace mortified {
                                  float(logoTexture_->getHeight()));
             float scale = 0.2f;
             
-            glBindFramebufferEXT(GL_FRAMEBUFFER_EXT,
-                                 targetFrameBuffer_->getName());
+            glBindFramebuffer(GL_FRAMEBUFFER, targetFrameBuffer_->getName());
             glClearColor(0.0, 0.0, 0.0, 0.0);
             glClear(GL_COLOR_BUFFER_BIT);
             glEnable(GL_BLEND);
@@ -140,7 +139,7 @@ namespace mortified {
             glBindTexture(GL_TEXTURE_2D, 0);
             glDisable(GL_TEXTURE_2D);
             glDisable(GL_BLEND);
-            glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);
+            glBindFramebuffer(GL_FRAMEBUFFER, 0);
         }
         
         void drawTargetToScreen()

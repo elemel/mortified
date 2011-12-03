@@ -76,6 +76,7 @@ namespace mortified {
         
         void invalidateImpl()
         {
+            SDL_GL_DeleteContext(context_);
             context_ = 0;
         }
     };

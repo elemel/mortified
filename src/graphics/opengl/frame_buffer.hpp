@@ -14,6 +14,9 @@ namespace mortified {
         virtual GLuint getName() const = 0;
 
         virtual void setColorAttachment(boost::intrusive_ptr<Texture> texture) = 0;
+
+        virtual void bind() = 0;
+        virtual void unbind() = 0;
     };
 }
 

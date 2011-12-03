@@ -5,6 +5,7 @@
 #include "texture.hpp"
 #include "texture_source.hpp"
 
+#include <stdexcept>
 #include <boost/intrusive_ptr.hpp>
 #include <SDL/SDL_opengl.h>
 
@@ -90,6 +91,19 @@ namespace mortified {
         void setMagFilter(GLenum filter)
         {
             magFilter_ = filter;
+        }
+
+        void bind()
+        {
+            if (name_ == 0) {
+                throw std::runtime_error("Must create texture before binding it.");
+            }
+            glBindTexture(GL_TEXTURE_2D, name_);
+        }
+
+        void unbind()
+        {
+            glBindTexture(GL_TEXTURE_2D, 0);
         }
 
     private:

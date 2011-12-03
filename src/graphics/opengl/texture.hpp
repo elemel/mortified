@@ -24,6 +24,9 @@ namespace mortified {
 
         virtual GLenum getMagFilter() const = 0;
         virtual void setMagFilter(GLenum filter) = 0;
+
+        virtual void bind() = 0;
+        virtual void unbind() = 0;
     };
 }
 

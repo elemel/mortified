@@ -5,6 +5,7 @@
 #include "graphics_resource_base.hpp"
 #include "texture.hpp"
 
+#include <stdexcept>
 #include <boost/intrusive_ptr.hpp>
 #include <SDL/SDL_opengl.h>
 
@@ -24,7 +25,7 @@ namespace mortified {
         ~DefaultFrameBuffer()
         {
             if (name_) {
-                glDeleteFramebuffersEXT(1, &name_);
+                glDeleteFramebuffers(1, &name_);
             }
         }
 
@@ -46,6 +47,19 @@ namespace mortified {
             return name_;
         }
 
+        virtual void bind()
+        {
+            if (name_ == 0) {
+                throw std::runtime_error("Must create frame buffer before binding it.");
+            }
+            glBindFramebuffer(GL_FRAMEBUFFER, name_);
+        }
+
+        virtual void unbind()
+        {
+            glBindFramebuffer(GL_FRAMEBUFFER, 0);
+        }
+
         FrameBuffer *asFrameBuffer()
         {
             return this;
@@ -63,17 +77,17 @@ namespace mortified {
 
         void createImpl()
         {
-            glGenFramebuffersEXT(1, &name_);
-            glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, name_);
-            glFramebufferTexture2DEXT(GL_FRAMEBUFFER_EXT,
-                                      GL_COLOR_ATTACHMENT0_EXT,
-                                      GL_TEXTURE_2D, colorAttachment_->getName(), 0);
-            glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);
+            glGenFramebuffers(1, &name_);
+            glBindFramebuffer(GL_FRAMEBUFFER, name_);
+            glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0,
+                                   GL_TEXTURE_2D, colorAttachment_->getName(),
+                                   0);
+            glBindFramebuffer(GL_FRAMEBUFFER, 0);
         }
         
         void destroyImpl()
         {
-            glDeleteFramebuffersEXT(1, &name_);
+            glDeleteFramebuffers(1, &name_);
             name_ = 0;
         }
 
